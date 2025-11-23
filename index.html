@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProBrasil</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Toastify -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <style>
+        .bg-sidebar { background-color: #0f172a; }
+        .active-nav { background-color: #2563eb; color: white; border-right: 4px solid #60a5fa; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .cursor-pointer:hover { background-color: #f8fafc; }
+        
+        @media print {
+            .no-print { display: none !important; }
+            .print-break { page-break-before: always; }
+            body { background: white; }
+            #main-content { margin: 0; padding: 0; height: auto; overflow: visible; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 overflow-hidden">
+
+    <div class="flex h-screen">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-sidebar text-white flex flex-col shadow-2xl z-20 flex-shrink-0 no-print transition-all duration-300">
+            
+            <!-- LOGO DA INSTITUIÇÃO -->
+            <div class="p-6 border-b border-slate-700 flex flex-col items-center justify-center text-center gap-3 bg-slate-900/50">
+                <div>
+                    <!-- Caminho local ou placeholder se não encontrar -->
+                    <img class="w-full h-auto max-h-[80px] object-contain mx-auto" 
+                         src="C:\Users\Dell\Downloads\logo.webp" 
+                         onerror="this.src='https://placehold.co/300x120/2563eb/FFF?text=PROBRASIL+LOGO&font=roboto'" 
+                         alt="ProBrasil Logo">
+                </div>
+    </div>
+
+            <div class="p-4 overflow-y-auto flex-1 space-y-6">
+                <div>
+                    <p class="text-xs uppercase text-slate-500 font-bold mb-3 tracking-wider px-2">Inteligência</p>
+                    <nav class="space-y-1">
+                        <button onclick="showSection('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 p-3 rounded-lg active-nav hover:bg-slate-800 transition group">
+                            <i class="ph ph-chart-pie-slice text-xl group-hover:text-blue-400 transition"></i> Dashboard BI
+                        </button>
+                    </nav>
+                </div>
+
+                <div>
+                    <p class="text-xs uppercase text-slate-500 font-bold mb-3 tracking-wider px-2">Gestão</p>
+                    <nav class="space-y-1">
+                        <button onclick="showSection('alunos')" id="nav-alunos" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                            <i class="ph ph-student text-xl group-hover:text-green-400 transition"></i> Alunos
+                        </button>
+                        <button onclick="showSection('turmas')" id="nav-turmas" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                            <i class="ph ph-chalkboard-teacher text-xl group-hover:text-purple-400 transition"></i> Turmas
+                        </button>
+                        <button onclick="showSection('logs')" id="nav-logs" class="w-full flex items-center gap-3 p-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                            <i class="ph ph-fingerprint text-xl group-hover:text-yellow-400 transition"></i> Controle Acesso
+                        </button>
+                    </nav>
+                </div>
+
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                    <p class="text-xs font-bold text-slate-400 mb-2">DADOS & BACKUP</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="document.getElementById('fileInput').click()" class="flex flex-col items-center justify-center p-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition text-xs">
+                            <i class="ph ph-upload-simple text-lg mb-1 text-green-400"></i> Importar
+                        </button>
+                        <button onclick="exportarDados()" class="flex flex-col items-center justify-center p-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition text-xs">
+                            <i class="ph ph-download-simple text-lg mb-1 text-blue-400"></i> Exportar
+                        </button>
+                    </div>
+                    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importarDados(this)">
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-slate-100 relative scroll-smooth" id="main-content">
+            
+            <!-- HEADER -->
+            <header class="bg-white px-8 py-4 shadow-sm flex justify-between items-center sticky top-0 z-10 no-print border-b border-slate-200">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-700" id="page-title">Visão Geral</h2>
+                    <p class="text-xs text-slate-500 mt-1">Painel Administrativo</p>
+                </div>
+                <div class="flex gap-4 items-center">
+                    <div class="text-right hidden md:block">
+                        <p class="text-xs text-slate-400 font-bold">TOTAL INSCRITOS</p>
+                        <p class="text-xl font-bold text-blue-600" id="header-total">0</p>
+                    </div>
+                    <div class="h-8 w-px bg-slate-200 mx-2"></div>
+                    <button onclick="window.print()" class="p-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition" title="Imprimir">
+                        <i class="ph ph-printer text-2xl"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- SEÇÃO 1: DASHBOARD -->
+            <div id="section-dashboard" class="p-8 space-y-8 fade-in">
+                
+                <!-- Filtros do Dashboard -->
+                <div class="bg-white p-4 rounded-xl shadow-sm flex flex-wrap gap-4 items-center border-l-4 border-blue-600 no-print">
+                    <span class="font-bold text-slate-700 flex items-center gap-2"><i class="ph ph-funnel"></i> Filtrar Visão:</span>
+                    <select id="dash-filter-turma" onchange="atualizarDashboard()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50">
+                        <option value="todos">Todas as Turmas</option>
+                    </select>
+                    <select id="dash-filter-comunidade" onchange="atualizarDashboard()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50">
+                        <option value="todos">Todas as Comunidades</option>
+                    </select>
+                    <button onclick="resetarFiltrosDash()" class="text-xs text-blue-600 hover:underline">Limpar</button>
+                </div>
+
+                <!-- Cards KPI -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-blue-600">
+                        <p class="text-slate-500 text-xs font-bold uppercase">Alunos Filtrados</p>
+                        <h3 class="text-4xl font-bold text-slate-800 mt-2" id="kpi-total">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-green-500">
+                        <p class="text-slate-500 text-xs font-bold uppercase">Matriculados</p>
+                        <h3 class="text-4xl font-bold text-green-600 mt-2" id="kpi-ativos">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-orange-500">
+                        <p class="text-slate-500 text-xs font-bold uppercase">Lista de Espera</p>
+                        <h3 class="text-4xl font-bold text-orange-600 mt-2" id="kpi-espera">0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-b-4 border-pink-500">
+                        <p class="text-slate-500 text-xs font-bold uppercase">Mulheres</p>
+                        <h3 class="text-4xl font-bold text-pink-600 mt-2" id="kpi-mulheres">0%</h3>
+                    </div>
+                </div>
+
+                <!-- Gráficos -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 print-break">
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-slate-700 mb-4">Pirâmide Etária</h3>
+                        <div class="h-64"><canvas id="chartPiramide"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-slate-700 mb-4">Uso do Laboratório</h3>
+                        <div class="h-64 flex justify-center"><canvas id="chartUso"></canvas></div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm">
+                    <h3 class="font-bold text-slate-700 mb-4">Distribuição por Comunidade</h3>
+                    <div class="h-64"><canvas id="chartComunidades"></canvas></div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 2: ALUNOS -->
+            <div id="section-alunos" class="p-8 space-y-6 hidden fade-in">
+                
+                <!-- Filtros Alunos -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-slate-700">Filtros & Ordenação</h3>
+                        <button onclick="limparFiltrosAlunos()" class="text-sm text-red-500 hover:underline">Limpar Tudo</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="col-span-4">
+                            <input type="text" id="filtro-busca" onkeyup="aplicarFiltrosAlunos()" placeholder="Buscar por Nome, RG ou Código..." class="w-full pl-4 pr-4 py-2 border rounded-lg">
+                        </div>
+                        <select id="filtro-turma" onchange="aplicarFiltrosAlunos()" class="border rounded-lg p-2 text-sm"><option value="">Todas Turmas</option></select>
+                        <select id="filtro-comunidade" onchange="aplicarFiltrosAlunos()" class="border rounded-lg p-2 text-sm">
+                            <option value="">Todas Comunidades</option>
+                            <option value="Centro">Centro</option>
+                            <option value="Sítio do Mocó">Sítio do Mocó</option>
+                            <option value="Baixa da Queda">Baixa da Queda</option>
+                            <option value="Serrote">Serrote</option>
+                            <option value="Santa Luzia">Santa Luzia</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                        <select id="filtro-status" onchange="aplicarFiltrosAlunos()" class="border rounded-lg p-2 text-sm">
+                            <option value="">Todos Status</option>
+                            <option value="Matriculado">Matriculado</option>
+                            <option value="Lista de Espera">Lista de Espera</option>
+                        </select>
+                        <select id="filtro-genero" onchange="aplicarFiltrosAlunos()" class="border rounded-lg p-2 text-sm">
+                            <option value="">Todos Gêneros</option>
+                            <option value="F">Feminino</option>
+                            <option value="M">Masculino</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <p class="text-sm text-slate-500 font-bold">Encontrados: <span id="contador-alunos" class="text-blue-600">0</span></p>
+                    <button onclick="abrirModalAluno()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                        <i class="ph ph-plus"></i> Novo Aluno
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse" id="alunos-table">
+                            <thead class="bg-slate-100 text-slate-600 text-xs uppercase font-bold">
+                                <tr>
+                                    <th class="p-4 cursor-pointer hover:text-blue-600" onclick="ordenarAlunos('codigo')">Cód. <i class="ph ph-caret-up-down"></i></th>
+                                    <th class="p-4 cursor-pointer hover:text-blue-600" onclick="ordenarAlunos('nome')">Nome <i class="ph ph-caret-up-down"></i></th>
+                                    <th class="p-4 cursor-pointer hover:text-blue-600" onclick="ordenarAlunos('idade')">Idade <i class="ph ph-caret-up-down"></i></th>
+                                    <th class="p-4 cursor-pointer hover:text-blue-600" onclick="ordenarAlunos('comunidade')">Comunidade <i class="ph ph-caret-up-down"></i></th>
+                                    <th class="p-4 cursor-pointer hover:text-blue-600" onclick="ordenarAlunos('turma')">Turma <i class="ph ph-caret-up-down"></i></th>
+                                    <th class="p-4 cursor-pointer hover:text-blue-600" onclick="ordenarAlunos('status')">Status <i class="ph ph-caret-up-down"></i></th>
+                                    <th class="p-4 text-center">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-alunos-body" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO 3: TURMAS -->
+            <div id="section-turmas" class="p-8 space-y-6 hidden fade-in">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-xl text-slate-700">Gerenciamento de Turmas</h3>
+                    <button onclick="abrirModalTurma()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                        <i class="ph ph-plus"></i> Nova Turma
+                    </button>
+                </div>
+                <div id="grid-turmas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- SEÇÃO 4: LOGS -->
+            <div id="section-logs" class="p-8 space-y-6 hidden fade-in">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-xl text-slate-700">Histórico de Acessos</h3>
+                    <button onclick="abrirModalLog()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2">
+                        <i class="ph ph-clock-user"></i> Registrar Acesso
+                    </button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-800 text-slate-200">
+                            <tr>
+                                <th class="p-3">Data/Hora</th>
+                                <th class="p-3">Aluno</th>
+                                <th class="p-3">Atividade</th>
+                                <th class="p-3">Turma</th>
+                                <th class="p-3 text-right">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-logs-body" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL ALUNO -->
+    <div id="modal-aluno" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-xl w-full max-w-2xl p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="text-xl font-bold text-slate-800" id="titulo-modal-aluno">Cadastrar Aluno</h3>
+                <button onclick="fecharModal('modal-aluno')" class="text-slate-400 hover:text-red-500"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+            <form id="formAluno" onsubmit="salvarAluno(event)">
+                <input type="hidden" id="alunoId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Código *</label>
+                        <input type="text" id="alunoCodigo" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">RG</label>
+                        <input type="text" id="alunoRg" class="w-full border rounded-lg p-2">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Nome Completo *</label>
+                        <input type="text" id="alunoNome" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Idade</label>
+                        <input type="number" id="alunoIdade" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Gênero</label>
+                        <select id="alunoGenero" class="w-full border rounded-lg p-2 bg-white">
+                            <option value="F">Feminino</option>
+                            <option value="M">Masculino</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Comunidade</label>
+                        <select id="alunoComunidade" class="w-full border rounded-lg p-2 bg-white">
+                            <option value="Centro">Centro</option>
+                            <option value="Sítio do Mocó">Sítio do Mocó</option>
+                            <option value="Baixa da Queda">Baixa da Queda</option>
+                            <option value="Serrote">Serrote</option>
+                            <option value="Santa Luzia">Santa Luzia</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Status</label>
+                        <select id="alunoStatus" class="w-full border rounded-lg p-2 bg-white">
+                            <option value="Matriculado">Matriculado</option>
+                            <option value="Lista de Espera">Lista de Espera</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Turma</label>
+                        <select id="alunoTurma" class="w-full border rounded-lg p-2 bg-white">
+                            <!-- JS -->
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="fecharModal('modal-aluno')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TURMA -->
+    <div id="modal-turma" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="text-xl font-bold text-slate-800" id="titulo-modal-turma">Editar Turma</h3>
+                <button onclick="fecharModal('modal-turma')" class="text-slate-400 hover:text-red-500"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+            <form id="formTurma" onsubmit="salvarTurma(event)">
+                <input type="hidden" id="turmaId">
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Nome da Turma</label>
+                        <input type="text" id="turmaNome" class="w-full border rounded-lg p-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Professor</label>
+                        <input type="text" id="turmaProfessor" class="w-full border rounded-lg p-2">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Dias</label>
+                            <input type="text" id="turmaDias" class="w-full border rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Horário</label>
+                            <input type="text" id="turmaHorario" class="w-full border rounded-lg p-2">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Turno</label>
+                        <select id="turmaTurno" class="w-full border rounded-lg p-2 bg-white">
+                            <option>Manhã</option>
+                            <option>Tarde</option>
+                            <option>Noite</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-between pt-4 border-t">
+                    <button type="button" onclick="deletarTurma()" class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg"><i class="ph ph-trash"></i> Excluir</button>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="fecharModal('modal-turma')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Salvar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL LOG (REGISTRO ACESSO) -->
+    <div id="modal-log" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="text-xl font-bold text-slate-800">Registrar Acesso</h3>
+                <button onclick="fecharModal('modal-log')" class="text-slate-400 hover:text-red-500"><i class="ph ph-x text-2xl"></i></button>
+            </div>
+            <form onsubmit="salvarLogManual(event)">
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Aluno</label>
+                        <input list="lista-alunos-datalist" id="logAlunoInput" class="w-full border rounded-lg p-2" placeholder="Digite o nome..." required>
+                        <datalist id="lista-alunos-datalist"></datalist>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Atividade</label>
+                        <select id="logAtividade" class="w-full border rounded-lg p-2 bg-white">
+                            <option>Capacitação/Cursos</option>
+                            <option>Uso Livre</option>
+                            <option>Jogos</option>
+                            <option>Impressão</option>
+                            <option>Pesquisa Escolar</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 mb-1">Turma (Opcional)</label>
+                        <select id="logTurma" class="w-full border rounded-lg p-2 bg-white"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                             <label class="block text-xs font-bold text-slate-500 mb-1">Data</label>
+                             <input type="date" id="logData" class="w-full border rounded-lg p-2" required>
+                        </div>
+                        <div>
+                             <label class="block text-xs font-bold text-slate-500 mb-1">Hora</label>
+                             <input type="time" id="logHora" class="w-full border rounded-lg p-2" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t">
+                    <button type="button" onclick="fecharModal('modal-log')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // === GESTÃO DE DADOS ===
+        let appData = { alunos: [], turmas: [], logs: [] };
+        let chartInstances = {};
+        let sortDirection = 1; // 1 for asc, -1 for desc
+
+        function carregarDados() {
+            const json = localStorage.getItem('probrasil_v7_data');
+            if (json) {
+                appData = JSON.parse(json);
+            } else {
+                appData = {
+                    turmas: [{ id: 1, nome: "Turma A", professor: "Rodrigo", dias: "Seg", horario: "13-15", turno: "Tarde" }],
+                    alunos: [],
+                    logs: []
+                };
+                salvarDados();
+            }
+            preencherFiltrosTurma();
+            aplicarFiltrosAlunos();
+            renderizarTurmas();
+            renderizarLogs();
+            atualizarDashboard();
+        }
+
+        function salvarDados() {
+            localStorage.setItem('probrasil_v7_data', JSON.stringify(appData));
+            notificar('Dados salvos!');
+            atualizarDashboard();
+        }
+
+        function importarDados(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.alunos && imported.turmas) {
+                        appData = imported;
+                        salvarDados();
+                        location.reload(); 
+                    } else { alert('Arquivo inválido'); }
+                } catch (err) { alert('Erro ao ler JSON'); }
+            };
+            reader.readAsText(file);
+        }
+
+        function exportarDados() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+            const node = document.createElement('a');
+            node.href = dataStr;
+            node.download = "backup_probrasil.json";
+            node.click();
+        }
+
+        // === ALUNOS & FILTROS & ORDENAÇÃO ===
+        function preencherFiltrosTurma() {
+            const opcoes = appData.turmas.map(t => `<option value="${t.nome}">${t.nome}</option>`).join('');
+            document.getElementById('filtro-turma').innerHTML = `<option value="">Todas Turmas</option>${opcoes}`;
+            document.getElementById('dash-filter-turma').innerHTML = `<option value="todos">Todas as Turmas</option>${opcoes}`;
+            
+            const comms = [...new Set(appData.alunos.map(a => a.comunidade))].sort();
+            const commOpt = comms.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('dash-filter-comunidade').innerHTML = `<option value="todos">Todas Comunidades</option>${commOpt}`;
+        }
+
+        function ordenarAlunos(campo) {
+            sortDirection *= -1; // Inverte a direção
+            appData.alunos.sort((a, b) => {
+                let valA = a[campo] ? a[campo].toString().toLowerCase() : "";
+                let valB = b[campo] ? b[campo].toString().toLowerCase() : "";
+                
+                if (campo === 'idade') {
+                    valA = parseInt(a[campo]) || 0;
+                    valB = parseInt(b[campo]) || 0;
+                }
+                
+                if (valA < valB) return -1 * sortDirection;
+                if (valA > valB) return 1 * sortDirection;
+                return 0;
+            });
+            aplicarFiltrosAlunos(); // Re-renderiza a tabela
+        }
+
+        function aplicarFiltrosAlunos() {
+            const busca = document.getElementById('filtro-busca').value.toLowerCase();
+            const fTurma = document.getElementById('filtro-turma').value;
+            const fComm = document.getElementById('filtro-comunidade').value;
+            const fStatus = document.getElementById('filtro-status').value;
+            const fGen = document.getElementById('filtro-genero').value;
+
+            const filtrados = appData.alunos.filter(a => {
+                const matchBusca = (a.nome.toLowerCase().includes(busca) || a.codigo.toLowerCase().includes(busca));
+                const matchTurma = fTurma === "" || a.turma === fTurma;
+                const matchComm = fComm === "" || a.comunidade === fComm;
+                const matchStatus = fStatus === "" || (a.status || 'Matriculado') === fStatus;
+                const matchGen = fGen === "" || a.genero === fGen;
+                return matchBusca && matchTurma && matchComm && matchStatus && matchGen;
+            });
+            renderizarTabelaAlunos(filtrados);
+        }
+
+        function renderizarTabelaAlunos(lista) {
+            const tbody = document.getElementById('tabela-alunos-body');
+            tbody.innerHTML = '';
+            document.getElementById('contador-alunos').innerText = lista.length;
+
+            lista.forEach(a => {
+                let badge = a.status === 'Lista de Espera' 
+                    ? '<span class="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-bold">Espera</span>'
+                    : '<span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">Ativo</span>';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100">
+                        <td class="p-4 font-mono text-xs text-slate-500">${a.codigo}</td>
+                        <td class="p-4 font-bold text-slate-700">${a.nome}</td>
+                        <td class="p-4 text-sm">${a.idade}</td>
+                        <td class="p-4 text-sm">${a.comunidade}</td>
+                        <td class="p-4 text-sm">${a.turma || '-'}</td>
+                        <td class="p-4">${badge}</td>
+                        <td class="p-4 text-center flex gap-2 justify-center">
+                            <button onclick="editarAluno(${a.id})" class="text-blue-500 hover:bg-blue-100 p-2 rounded"><i class="ph ph-pencil-simple"></i></button>
+                            <button onclick="deletarAluno(${a.id})" class="text-red-400 hover:bg-red-100 p-2 rounded"><i class="ph ph-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function limparFiltrosAlunos() {
+            document.getElementById('filtro-busca').value = '';
+            document.getElementById('filtro-turma').value = '';
+            document.getElementById('filtro-comunidade').value = '';
+            document.getElementById('filtro-status').value = '';
+            document.getElementById('filtro-genero').value = '';
+            aplicarFiltrosAlunos();
+        }
+
+        // === MODAIS ALUNOS ===
+        function abrirModalAluno() {
+            document.getElementById('formAluno').reset();
+            document.getElementById('alunoId').value = '';
+            document.getElementById('titulo-modal-aluno').innerText = 'Novo Aluno';
+            const select = document.getElementById('alunoTurma');
+            select.innerHTML = '<option value="">Sem Turma</option>' + appData.turmas.map(t => `<option value="${t.nome}">${t.nome}</option>`).join('');
+            document.getElementById('modal-aluno').classList.remove('hidden');
+        }
+
+        function editarAluno(id) {
+            const a = appData.alunos.find(x => x.id === id);
+            if(!a) return;
+            abrirModalAluno();
+            document.getElementById('titulo-modal-aluno').innerText = 'Editar Aluno';
+            document.getElementById('alunoId').value = a.id;
+            document.getElementById('alunoCodigo').value = a.codigo;
+            document.getElementById('alunoRg').value = a.rg || '';
+            document.getElementById('alunoNome').value = a.nome;
+            document.getElementById('alunoIdade').value = a.idade;
+            document.getElementById('alunoGenero').value = a.genero;
+            document.getElementById('alunoComunidade').value = a.comunidade;
+            document.getElementById('alunoTurma').value = a.turma;
+            document.getElementById('alunoStatus').value = a.status || 'Matriculado';
+        }
+
+        function salvarAluno(e) {
+            e.preventDefault();
+            const id = document.getElementById('alunoId').value;
+            const novo = {
+                id: id ? parseInt(id) : Date.now(),
+                codigo: document.getElementById('alunoCodigo').value,
+                rg: document.getElementById('alunoRg').value,
+                nome: document.getElementById('alunoNome').value,
+                idade: parseInt(document.getElementById('alunoIdade').value),
+                genero: document.getElementById('alunoGenero').value,
+                comunidade: document.getElementById('alunoComunidade').value,
+                turma: document.getElementById('alunoTurma').value,
+                status: document.getElementById('alunoStatus').value
+            };
+            if(id) {
+                const idx = appData.alunos.findIndex(x => x.id == id);
+                appData.alunos[idx] = novo;
+            } else { appData.alunos.push(novo); }
+            salvarDados();
+            fecharModal('modal-aluno');
+            aplicarFiltrosAlunos();
+        }
+
+        function deletarAluno(id) {
+            if(confirm('Excluir aluno?')) {
+                appData.alunos = appData.alunos.filter(a => a.id !== id);
+                salvarDados();
+                aplicarFiltrosAlunos();
+            }
+        }
+
+        // === TURMAS ===
+        function renderizarTurmas() {
+            const grid = document.getElementById('grid-turmas');
+            grid.innerHTML = '';
+            appData.turmas.forEach(t => {
+                const count = appData.alunos.filter(a => a.turma === t.nome).length;
+                grid.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-sm border-l-4 border-blue-500 p-4">
+                        <h4 class="font-bold text-lg text-slate-700">${t.nome}</h4>
+                        <p class="text-sm text-slate-500">${t.professor}</p>
+                        <p class="text-xs mt-2 bg-slate-100 inline-block px-2 py-1 rounded">${t.dias} - ${t.horario}</p>
+                        <div class="mt-3 flex justify-between items-center border-t pt-2">
+                            <span class="text-xs font-bold">${count} Alunos</span>
+                            <button onclick="editarTurma(${t.id})" class="text-blue-600 text-xs hover:underline">Editar</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function abrirModalTurma() {
+            document.getElementById('formTurma').reset();
+            document.getElementById('turmaId').value = '';
+            document.getElementById('modal-turma').classList.remove('hidden');
+        }
+
+        function editarTurma(id) {
+            const t = appData.turmas.find(x => x.id === id);
+            if(!t) return;
+            abrirModalTurma();
+            document.getElementById('turmaId').value = t.id;
+            document.getElementById('turmaNome').value = t.nome;
+            document.getElementById('turmaProfessor').value = t.professor;
+            document.getElementById('turmaDias').value = t.dias;
+            document.getElementById('turmaHorario').value = t.horario;
+        }
+
+        function salvarTurma(e) {
+            e.preventDefault();
+            const id = document.getElementById('turmaId').value;
+            const nova = {
+                id: id ? parseInt(id) : Date.now(),
+                nome: document.getElementById('turmaNome').value,
+                professor: document.getElementById('turmaProfessor').value,
+                dias: document.getElementById('turmaDias').value,
+                horario: document.getElementById('turmaHorario').value,
+                turno: document.getElementById('turmaTurno').value
+            };
+            if(id) {
+                const idx = appData.turmas.findIndex(x => x.id == id);
+                appData.turmas[idx] = nova;
+            } else { appData.turmas.push(nova); }
+            salvarDados();
+            fecharModal('modal-turma');
+            renderizarTurmas();
+        }
+
+        function deletarTurma() {
+            const id = parseInt(document.getElementById('turmaId').value);
+            if(confirm('Excluir turma?')) {
+                appData.turmas = appData.turmas.filter(t => t.id !== id);
+                salvarDados();
+                fecharModal('modal-turma');
+                renderizarTurmas();
+            }
+        }
+
+        // === LOGS & DASHBOARD ===
+        function renderizarLogs() {
+            const tbody = document.getElementById('tabela-logs-body');
+            tbody.innerHTML = appData.logs.slice().reverse().slice(0,50).map((l, i) => `
+                <tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-3 font-mono text-xs text-slate-500">${l.data}</td>
+                    <td class="p-3 font-bold text-slate-700">${l.aluno}</td>
+                    <td class="p-3 text-xs"><span class="bg-slate-100 px-2 py-1 rounded border">${l.atividade}</span></td>
+                    <td class="p-3 text-xs text-slate-500">${l.turma || '-'}</td>
+                    <td class="p-3 text-right"><button onclick="deletarLog(${appData.logs.length - 1 - i})" class="text-red-400 hover:text-red-600"><i class="ph ph-trash"></i></button></td>
+                </tr>`).join('');
+        }
+
+        function abrirModalLog() {
+            const datalist = document.getElementById('lista-alunos-datalist');
+            datalist.innerHTML = appData.alunos.map(a => `<option value="${a.nome}">`).join('');
+            const selectTurma = document.getElementById('logTurma');
+            selectTurma.innerHTML = '<option value="-">Nenhuma</option>' + appData.turmas.map(t => `<option value="${t.nome}">${t.nome}</option>`).join('');
+            
+            const now = new Date();
+            document.getElementById('logData').valueAsDate = now;
+            document.getElementById('logHora').value = now.toTimeString().substring(0,5);
+            document.getElementById('logAlunoInput').value = '';
+            document.getElementById('modal-log').classList.remove('hidden');
+        }
+
+        function salvarLogManual(e) {
+            e.preventDefault();
+            const dt = new Date(document.getElementById('logData').value + 'T' + document.getElementById('logHora').value);
+            appData.logs.push({
+                data: dt.toLocaleString('pt-BR').slice(0,16).replace(',',''),
+                aluno: document.getElementById('logAlunoInput').value,
+                atividade: document.getElementById('logAtividade').value,
+                turma: document.getElementById('logTurma').value
+            });
+            salvarDados();
+            fecharModal('modal-log');
+            renderizarLogs();
+        }
+
+        function deletarLog(idx) {
+            if(confirm('Remover log?')) {
+                appData.logs.splice(idx, 1);
+                salvarDados();
+                renderizarLogs();
+            }
+        }
+
+        function atualizarDashboard() {
+            const fTurma = document.getElementById('dash-filter-turma').value;
+            const fComm = document.getElementById('dash-filter-comunidade').value;
+
+            const filtrados = appData.alunos.filter(a => {
+                return (fTurma === 'todos' || a.turma === fTurma) && (fComm === 'todos' || a.comunidade === fComm);
+            });
+
+            document.getElementById('kpi-total').innerText = filtrados.length;
+            document.getElementById('kpi-ativos').innerText = filtrados.filter(a => (a.status || 'Matriculado') === 'Matriculado').length;
+            document.getElementById('kpi-espera').innerText = filtrados.filter(a => a.status === 'Lista de Espera').length;
+            const mulheres = filtrados.filter(a => a.genero === 'F').length;
+            document.getElementById('kpi-mulheres').innerText = filtrados.length > 0 ? Math.round((mulheres/filtrados.length)*100) + '%' : '0%';
+            document.getElementById('header-total').innerText = appData.alunos.length;
+
+            atualizarGraficos(filtrados);
+        }
+
+        function atualizarGraficos(dados) {
+            // Pirâmide
+            const faixas = ['10-13', '14-17', '18-25', '26-40', '40+'];
+            const h = [0,0,0,0,0], m = [0,0,0,0,0];
+            dados.forEach(a => {
+                let idx = 4;
+                if (a.idade <= 13) idx=0; else if(a.idade <= 17) idx=1; else if(a.idade <= 25) idx=2; else if(a.idade <= 40) idx=3;
+                if(a.genero === 'M') h[idx]++; else m[idx]++;
+            });
+
+            if(chartInstances.piramide) chartInstances.piramide.destroy();
+            chartInstances.piramide = new Chart(document.getElementById('chartPiramide'), {
+                type: 'bar',
+                data: { labels: faixas, datasets: [{label:'H', data:h, backgroundColor:'#3b82f6'}, {label:'M', data:m, backgroundColor:'#ec4899'}] },
+                options: { responsive:true, maintainAspectRatio:false, scales:{x:{stacked:false}, y:{beginAtZero:true}} }
+            });
+
+            // Comunidades
+            const comms = {};
+            dados.forEach(a => comms[a.comunidade] = (comms[a.comunidade] || 0) + 1);
+            if(chartInstances.comm) chartInstances.comm.destroy();
+            chartInstances.comm = new Chart(document.getElementById('chartComunidades'), {
+                type: 'bar',
+                data: { labels: Object.keys(comms), datasets:[{label:'Alunos', data:Object.values(comms), backgroundColor:'#10b981'}] },
+                options: { responsive:true, maintainAspectRatio:false }
+            });
+
+            // Uso
+            const ativ = {};
+            appData.logs.forEach(l => ativ[l.atividade] = (ativ[l.atividade] || 0) + 1);
+            if(chartInstances.uso) chartInstances.uso.destroy();
+            chartInstances.uso = new Chart(document.getElementById('chartUso'), {
+                type: 'doughnut',
+                data: { labels: Object.keys(ativ), datasets:[{data:Object.values(ativ), backgroundColor:['#3b82f6','#eab308','#a855f7','#22c55e']}] },
+                options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right'}} }
+            });
+        }
+
+        function resetarFiltrosDash() {
+            document.getElementById('dash-filter-turma').value = 'todos';
+            document.getElementById('dash-filter-comunidade').value = 'todos';
+            atualizarDashboard();
+        }
+
+        function showSection(id) {
+            ['dashboard','alunos','turmas','logs'].forEach(s => {
+                document.getElementById('section-'+s).classList.add('hidden');
+                document.getElementById('nav-'+s).classList.remove('active-nav');
+            });
+            document.getElementById('section-'+id).classList.remove('hidden');
+            document.getElementById('nav-'+id).classList.add('active-nav');
+            document.getElementById('page-title').innerText = id.charAt(0).toUpperCase() + id.slice(1);
+            if(id === 'dashboard') atualizarDashboard();
+        }
+
+        function fecharModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function notificar(msg) { Toastify({ text: msg, duration: 3000, style: { background: "#10b981" } }).showToast(); }
+        
+        document.addEventListener('DOMContentLoaded', carregarDados);
+    </script>
+</body>
+</html>
