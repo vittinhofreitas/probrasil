@@ -12,7 +12,6 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .chart-container { position: relative; height: 300px; width: 100%; }
         
-        /* Estilos específicos para a Apresentação */
         .slide-content { animation: fadeIn 0.5s ease-out; height: 100%; display: flex; flex-direction: column; justify-content: center; }
         .img-overlay { position: relative; overflow: hidden; border-radius: 24px; height: 100%; min-height: 300px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); background-color: #e2e8f0; }
         .img-placeholder { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s; }
@@ -20,10 +19,10 @@
         .img-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: white; font-weight: 700; letter-spacing: 0.5px; }
         .card-stat { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9; }
         
-        /* Placeholder styling for missing images */
-        img[src=""] { display: none; }
-        .img-overlay:has(img[src=""]) { display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #94a3b8; font-weight: bold; text-align: center; padding: 20px; border: 2px dashed #cbd5e1; }
-        .img-overlay:has(img[src=""])::after { content: attr(data-label); display: block; }
+        /* Estilo para quando a imagem não carrega (Placeholder) */
+        img[src=""], img[src="#"] { display: none; }
+        .img-overlay.missing-img { display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #94a3b8; font-weight: bold; text-align: center; padding: 20px; border: 2px dashed #cbd5e1; }
+        .img-overlay.missing-img::after { content: attr(data-label); display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -34,8 +33,7 @@
     <div id="dashboard-view" class="min-h-screen flex flex-col">
         <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <!-- LOGO PLACEHOLDER -->
-                <img src="./assets/logo_probrasil.png" onerror="this.src='https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png'" alt="ProBrasil Logo" class="h-10 object-contain">
+                <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil Logo" class="h-10 object-contain">
                 <div class="h-8 w-px bg-slate-200"></div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-800 leading-tight">Painel de Governança</h1>
@@ -95,7 +93,6 @@
                     <div id="timeline-list" class="space-y-6 flex-grow overflow-y-auto pr-2 custom-scrollbar">
                         <!-- JS injected -->
                     </div>
-                    <!-- Botão de Download com Função JS -->
                     <button onclick="downloadCSV()" class="w-full mt-6 py-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center space-x-2 border border-slate-100 cursor-pointer">
                         <i data-lucide="download" class="w-4 h-4"></i>
                         <span>Baixar Relatório (CSV)</span>
@@ -114,7 +111,7 @@
 
         <div class="px-8 py-4 flex justify-between items-center bg-white border-b border-slate-200 shadow-sm">
             <div class="flex items-center space-x-4">
-                <img src="./assets/logo_probrasil.png" onerror="this.src='https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png'" alt="ProBrasil" class="h-8 object-contain">
+                <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil" class="h-8 object-contain">
                 <div class="h-4 w-px bg-slate-300"></div>
                 <span id="slide-number-label" class="text-xs font-black tracking-widest text-slate-400 uppercase">Visão Geral</span>
             </div>
@@ -155,21 +152,26 @@
             { mes: 'Set', entradas: 6144.50, saidas: 41765.28, destaque: 'Sustentabilidade', info: 'Manutenção Energia Solar.' },
         ];
 
-        // LOGO PADRÃO (Substitua na pasta assets)
-        const logoUrl = "./assets/logo_probrasil.png"; 
-        // Fallback logo online se a local não existir
-        const fallbackLogoUrl = "https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png";
-
+        // LOGO PADRÃO
+        const logoUrl = "https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png";
         let currentSlide = 0;
 
+        // FUNÇÃO AUXILIAR PARA IMAGENS
+        function getImg(src, label) {
+            return `<div class="img-overlay h-full w-full relative">
+                <img src="./assets/${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
+                <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">${label}</div>
+                <div class="img-caption">${label}</div>
+            </div>`;
+        }
+
         // --- CONTEÚDO DOS 15 SLIDES ---
-        // OBS: Para adicionar fotos, coloque os arquivos na pasta "assets" e use nomes simples como "terreno_antes.jpg"
         const slides = [
             // 1. Capa
             { title: "Capa", content: `
                 <div class="flex flex-col items-center justify-center h-full text-center space-y-8 animate-in fade-in zoom-in duration-700">
                     <div class="p-10 bg-slate-50 rounded-[2rem] mb-6 border border-slate-100">
-                        <img src="${logoUrl}" onerror="this.src='${fallbackLogoUrl}'" class="h-48 object-contain">
+                        <img src="${logoUrl}" class="h-48 object-contain">
                     </div>
                     <div>
                         <h1 class="text-6xl font-black text-slate-900 tracking-tight mb-4">RELATÓRIO DE GOVERNANÇA</h1>
@@ -230,26 +232,16 @@
                         </div>
                     </div>
                     <div class="grid grid-rows-2 gap-6 h-full max-h-[600px]">
-                        <!-- SUBSTITUIR POR: ./assets/terreno_antes.jpg -->
-                        <div class="img-overlay" data-label="FOTO: ENTULHOS (ANTES)">
-                            <img src="./terreno_m.jpeg" class="img-placeholder">
-                            <div class="img-caption bg-rose-600">ESTADO INICIAL</div>
-                        </div>
-                        <!-- SUBSTITUIR POR: ./assets/terreno_depois.jpg -->
-                        <div class="img-overlay" data-label="FOTO: TERRENO LIMPO (DEPOIS)">
-                            <img src="./terreno_l.jpeg" onerror="this.style.display='none'" class="img-placeholder">
-                            <div class="img-caption bg-emerald-600">ATUAL: PRONTO PARA OBRAS</div>
-                        </div>
+                        ${getImg('./terreno_antes.jpg', 'ESTADO INICIAL: ENTULHOS')}
+                        ${getImg('./terreno_depois.jpg', 'ATUAL: PRONTO PARA OBRAS')}
                     </div>
                 </div>`
             },
             // 5. Prédio JK Externo
             { title: "Prédio JK Externo", content: `
                 <div class="grid grid-cols-12 gap-8 h-full items-center">
-                    <div class="col-span-5 h-[500px] img-overlay" data-label="FOTO FACHADA PINTADA">
-                        <!-- SUBSTITUIR POR: ./assets/predio_fachada.jpg -->
-                        <img src="./assets/predio_fachada.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                        <div class="img-caption">FACHADA RENOVADA</div>
+                    <div class="col-span-5 h-[500px]">
+                        ${getImg('fachada.jpg', 'FACHADA RENOVADA')}
                     </div>
                     <div class="col-span-7 space-y-8 pl-4">
                         <h2 class="text-4xl font-bold text-slate-800">Renovação do Prédio JK</h2>
@@ -271,16 +263,8 @@
                         <h2 class="text-4xl font-bold text-slate-800">Conforto e Climatização</h2>
                     </div>
                     <div class="grid grid-cols-3 gap-8 h-[400px]">
-                        <!-- SUBSTITUIR POR: ./assets/ar_condicionado.jpg -->
-                        <div class="img-overlay bg-slate-100" data-label="FOTO AC NOVO">
-                            <img src="./assets/ar_condicionado.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                            <div class="img-caption">NOVOS APARELHOS</div>
-                        </div>
-                        <!-- SUBSTITUIR POR: ./assets/eletrica.jpg -->
-                        <div class="img-overlay bg-slate-100" data-label="FOTO ELÉTRICA">
-                            <img src="./assets/eletrica.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                            <div class="img-caption">REVISÃO ELÉTRICA</div>
-                        </div>
+                        ${getImg('./novos_aparelhos.jpeg', 'NOVOS APARELHOS DE AR')}
+                        ${getImg('./eletrica.jpeg', 'REVISÃO ELÉTRICA')}
                         <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50">
                             <h3 class="text-xl font-bold text-slate-700">Destaques</h3>
                             <ul class="space-y-4">
@@ -306,9 +290,8 @@
                             <p class="text-blue-200 mt-4 text-sm font-semibold">Realizado em Julho e Agosto de 2025</p>
                         </div>
                     </div>
-                    <!-- SUBSTITUIR POR: ./assets/laboratorio.jpg -->
-                    <div class="h-[500px] img-overlay bg-blue-50 flex items-center justify-center" data-label="FOTO DO LABORATÓRIO">
-                        <img src="./assets/laboratorio.jpg" onerror="this.style.display='none'" class="img-placeholder">
+                    <div class="h-[500px]">
+                        ${getImg('./centro.jpeg', 'FOTO DO LABORATÓRIO')}
                     </div>
                 </div>`
             },
@@ -343,9 +326,8 @@
             // 9. Segurança Alimentar
             { title: "Segurança Alimentar", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center">
-                    <!-- SUBSTITUIR POR: ./assets/cestas_basicas.jpg -->
-                    <div class="h-[500px] img-overlay bg-rose-50 flex items-center justify-center text-rose-300 font-bold" data-label="FOTO CESTAS BÁSICAS">
-                        <img src="./assets/cestas_basicas.jpg" onerror="this.style.display='none'" class="img-placeholder">
+                    <div class="h-[500px]">
+                        ${getImg('./causa.jpeg', 'FOTO CESTAS BÁSICAS / AÇÃO SOCIAL')}
                     </div>
                     <div class="space-y-8">
                         <div class="inline-flex items-center space-x-2 bg-rose-100 text-rose-700 px-4 py-2 rounded-full font-bold text-sm">
@@ -362,15 +344,14 @@
                     </div>
                 </div>`
             },
-            // 10. Educação
-            { title: "Educação", content: `
+            // 10. Educação (ATUALIZADO)
+            { title: "Projeto Criando Futuro", content: `
                 <div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full">
-                    <h2 class="text-4xl font-bold text-slate-800 mb-8 text-center">Educação e Capacitação</h2>
+                    <h2 class="text-4xl font-bold text-slate-800 mb-2 text-center">Projeto Criando Futuro</h2>
+                    <p class="text-xl text-slate-500 mb-8 text-center">Inclusão Digital no Sertão do Piauí</p>
                     <div class="grid grid-cols-12 gap-8 h-[450px]">
-                        <!-- SUBSTITUIR POR: ./assets/sala_aula.jpg -->
-                        <div class="col-span-8 img-overlay bg-slate-200 flex items-center justify-center text-slate-500 font-bold text-2xl" data-label="FOTO SALA DE AULA">
-                            <img src="./assets/sala_aula.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                            <div class="img-caption">PROJETO PRACTICE BOM FIM</div>
+                        <div class="col-span-8 h-full">
+                            ${getImg('./aula.jpeg', 'FOTO SALA DE AULA / ALUNOS')}
                         </div>
                         <div class="col-span-4 flex flex-col gap-4">
                             <div class="card-stat bg-slate-50 flex-1 flex flex-col justify-center border-none"><p class="text-slate-400 font-bold uppercase text-xs mb-2">Instrutores</p><p class="font-bold text-slate-800">Pagamento Prof. Informática</p></div>
@@ -380,25 +361,27 @@
                     </div>
                 </div>`
             },
-            // 11. Sustentabilidade
-            { title: "Sustentabilidade", content: `
+            // 11. Gestão Administrativa (SUBSTITUINDO ENERGIA SOLAR)
+            { title: "Conformidade e Gestão", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto">
                     <div class="space-y-6">
-                        <div class="inline-flex items-center space-x-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full font-bold text-sm">
-                            <i data-lucide="sun" class="w-4 h-4"></i><span>SUSTENTABILIDADE</span>
+                        <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-bold text-sm">
+                            <i data-lucide="building" class="w-4 h-4"></i><span>GOVERNANÇA</span>
                         </div>
-                        <h2 class="text-4xl font-bold text-slate-900">Energia Limpa</h2>
+                        <h2 class="text-4xl font-bold text-slate-900">Conformidade e Gestão Administrativa</h2>
                         <p class="text-xl text-slate-600">
-                            Manutenção constante do nosso sistema de energia solar, garantindo eficiência e redução de custos operacionais a longo prazo.
+                            A regularidade institucional é a base do nosso trabalho. Garantimos que todas as obrigações legais e contábeis sejam cumpridas rigorosamente.
                         </p>
                         <ul class="space-y-4">
-                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-amber-500"></i><span>Limpeza de Placas (Setembro - R$ 350,00)</span></li>
-                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-amber-500"></i><span>Geração de Energia Renovável</span></li>
+                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-indigo-500"></i><span>Contabilidade (R&R) em Dia</span></li>
+                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-indigo-500"></i><span>Taxas Legais e Cartoriais Pagas</span></li>
+                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-indigo-500"></i><span>Sistemas de Gestão Ativos</span></li>
                         </ul>
                     </div>
-                    <!-- SUBSTITUIR POR: ./assets/placas_solares.jpg -->
-                    <div class="h-[400px] img-overlay bg-amber-50 flex items-center justify-center text-amber-300 font-bold" data-label="FOTO PLACAS SOLARES">
-                        <img src="./assets/placas_solares.jpg" onerror="this.style.display='none'" class="img-placeholder">
+                    <div class="h-[400px] rounded-[2rem] bg-indigo-50 flex flex-col items-center justify-center border-2 border-indigo-100 shadow-inner p-8 text-center">
+                        <i data-lucide="file-check" class="w-24 h-24 text-indigo-300 mb-6"></i>
+                        <h3 class="text-2xl font-bold text-indigo-800">100% Regular</h3>
+                        <p class="text-indigo-600 mt-2">A ProBrasil Nordeste opera com total transparência fiscal e administrativa.</p>
                     </div>
                 </div>`
             },
@@ -411,28 +394,22 @@
                     </div>
                     <div class="grid grid-cols-3 gap-8">
                         <div class="card-stat">
-                            <!-- SUBSTITUIR POR: ./assets/toro.jpg -->
                             <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                <img src="./assets/toro.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                                <span class="absolute" style="z-index:-1">FOTO TORO</span>
+                                <i data-lucide="car" class="w-12 h-12"></i>
                             </div>
                             <h3 class="text-xl font-bold text-slate-800">Fiat Toro</h3>
                             <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 2.450,00+</p><p class="text-xs text-slate-400">Pneus e Revisão</p></div>
                         </div>
                         <div class="card-stat">
-                            <!-- SUBSTITUIR POR: ./assets/doblo.jpg -->
                             <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                <img src="./assets/doblo.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                                <span class="absolute" style="z-index:-1">FOTO DOBLO</span>
+                                <i data-lucide="bus" class="w-12 h-12"></i>
                             </div>
                             <h3 class="text-xl font-bold text-slate-800">Fiat Doblo</h3>
                             <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 1.890,00+</p><p class="text-xs text-slate-400">Vidros e Suspensão</p></div>
                         </div>
                         <div class="card-stat">
-                            <!-- SUBSTITUIR POR: ./assets/moto.jpg -->
                             <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                <img src="./assets/moto.jpg" onerror="this.style.display='none'" class="img-placeholder">
-                                <span class="absolute" style="z-index:-1">FOTO MOTO</span>
+                                <i data-lucide="bike" class="w-12 h-12"></i>
                             </div>
                             <h3 class="text-xl font-bold text-slate-800">Moto Brós</h3>
                             <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 646,00+</p><p class="text-xs text-slate-400">Revisão Geral</p></div>
@@ -451,7 +428,7 @@
                     </div>
                     <div class="space-y-6">
                         <h2 class="text-4xl font-bold text-slate-800">Eficiência Operacional</h2>
-                        <p class="text-xl text-slate-600">A gestão administrativa e contábil (R&R Contabilidade) manteve-se em dia, garantindo a regularidade fiscal da ProBrasil.</p>
+                        <p class="text-xl text-slate-600">A infraestrutura de comunicação garantiu que todos os projetos e atendimentos continuassem sem interrupções.</p>
                     </div>
                 </div>`
             },
@@ -608,4 +585,3 @@
     </script>
 </body>
 </html>
-
