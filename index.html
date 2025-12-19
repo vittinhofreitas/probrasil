@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Governança ProBrasil Nordeste - 2025</title>
+    <title>Governança ProBrasil Nordeste</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -19,32 +19,25 @@
         .img-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: white; font-weight: 700; letter-spacing: 0.5px; }
         .card-stat { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9; }
         
-        /* Placeholder para imagens ausentes */
+        /* Estilo para quando a imagem não carrega (Placeholder) */
         img[src=""], img[src="#"], img[src*="undefined"] { display: none; }
         .img-overlay.missing-img { display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #94a3b8; font-weight: bold; text-align: center; padding: 20px; border: 2px dashed #cbd5e1; }
         .img-overlay.missing-img::after { content: attr(data-label); display: block; }
 
         .podium-item { transition: transform 0.3s; }
         .podium-item:hover { transform: translateY(-10px); }
-        
-        .lang-btn, .pres-lang-btn { transition: all 0.2s; opacity: 0.6; }
-        .lang-btn:hover, .pres-lang-btn:hover { opacity: 1; background-color: #e2e8f0; }
-        .lang-btn.active, .pres-lang-btn.active { background-color: #2563eb; color: white; opacity: 1; border-color: #2563eb; }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .lang-btn.active, .pres-lang-btn.active { background-color: #2563eb; color: white; border-color: #2563eb; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="overflow-x-hidden text-slate-900">
 
+    <!-- DASHBOARD VIEW -->
     <div id="dashboard-view" class="min-h-screen flex flex-col">
         <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-4">
-                <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil Logo" class="h-12 object-contain">
+                <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil Logo" class="h-10 object-contain">
                 <div class="h-8 w-px bg-slate-200"></div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-800 leading-tight t-app-title">Painel de Governança</h1>
@@ -53,10 +46,11 @@
             </div>
 
             <div class="flex items-center space-x-6">
+                <!-- Seletor de Idioma -->
                 <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
-                    <button onclick="setLang('pt')" id="lang-pt" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold" data-l="pt">PT</button>
-                    <button onclick="setLang('en')" id="lang-en" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold" data-l="en">EN</button>
-                    <button onclick="setLang('de')" id="lang-de" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold" data-l="de">DE</button>
+                    <button onclick="setLang('pt')" id="lang-pt" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all active">PT</button>
+                    <button onclick="setLang('en')" id="lang-en" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all">EN</button>
+                    <button onclick="setLang('de')" id="lang-de" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all">DE</button>
                 </div>
                 
                 <button onclick="toggleView('presentation')" class="group flex items-center space-x-3 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all font-bold shadow-lg shadow-blue-200 active:scale-95">
@@ -106,10 +100,11 @@
                     </div>
                 </div>
 
-                <div class="card-stat flex flex-col h-[400px]">
+                <div class="card-stat flex flex-col">
                     <h3 class="text-xl font-bold text-slate-800 mb-6 t-highlights-title">Destaques Estratégicos</h3>
                     <div id="timeline-list" class="space-y-6 flex-grow overflow-y-auto pr-2 custom-scrollbar text-sm font-medium">
-                        </div>
+                        <!-- JS injected -->
+                    </div>
                     <button onclick="downloadCSV()" class="w-full mt-6 py-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center space-x-2 border border-slate-100 cursor-pointer">
                         <i data-lucide="download" class="w-4 h-4"></i>
                         <span class="t-btn-download">Baixar Relatório (CSV)</span>
@@ -119,6 +114,7 @@
         </main>
     </div>
 
+    <!-- PRESENTATION VIEW (18 SLIDES) -->
     <div id="presentation-view" class="hidden h-screen w-screen flex flex-col bg-slate-50 fixed top-0 left-0 z-[100]">
         <div class="h-1 bg-slate-200 w-full">
             <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
@@ -132,9 +128,9 @@
             </div>
             <div class="flex items-center space-x-4">
                 <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
-                    <button onclick="setLang('pt')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold" data-l="pt">PT</button>
-                    <button onclick="setLang('en')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold" data-l="en">EN</button>
-                    <button onclick="setLang('de')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold" data-l="de">DE</button>
+                    <button onclick="setLang('pt')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="pt">PT</button>
+                    <button onclick="setLang('en')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="en">EN</button>
+                    <button onclick="setLang('de')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="de">DE</button>
                 </div>
                 <button onclick="toggleView('dashboard')" class="flex items-center space-x-2 text-slate-500 hover:text-red-600 transition-colors font-bold text-sm bg-slate-100 px-4 py-2 rounded-full">
                     <span class="t-btn-close">Encerrar</span>
@@ -145,7 +141,8 @@
 
         <div class="flex-grow relative overflow-hidden flex items-center justify-center p-8">
             <div id="slide-container" class="w-full h-full max-w-[1400px] max-h-[800px] bg-white rounded-[40px] shadow-2xl p-12 relative border border-white overflow-hidden">
-                </div>
+                <!-- Slide content injected by JS -->
+            </div>
         </div>
 
         <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center space-x-6 bg-white/90 backdrop-blur px-8 py-4 rounded-full shadow-lg border border-slate-200">
@@ -160,14 +157,18 @@
     </div>
 
     <script>
+        const totalSlides = 18; 
+        let currentLang = 'pt';
+        let currentSlide = 0;
+
         // --- DICIONÁRIO DE TRADUÇÃO COMPLETO ---
         const translations = {
             pt: {
                 appTitle: "Painel de Governança", appSubtitle: "Relatório Integrado 2025", btnStart: "Iniciar Apresentação", audited: "AUDITADO", kpiIn: "Total Entradas", kpiOut: "Total Saídas", kpiBalance: "Saldo em Caixa", kpiSocial: "Impacto Social", kpiSocialVal: "+700 Beneficiários", chartTitle: "Fluxo de Caixa Mensal", legendIn: "Entradas", legendOut: "Saídas", highlights: "Destaques Estratégicos", download: "Baixar Relatório (CSV)", presLabel: "Apresentação Executiva", close: "Encerrar", nav: "Navegação",
-                months: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
                 slides: {
                     title1: "Relatório de Governança", subtitle1: "Resultados 2025", footer1: "Diretoria Executiva • Coronel José Dias, PI",
                     title2: "Números Consolidados", subtitle2: "Relatório Integrado de Gestão (Jan-Set)", efficiency: "97% de Eficiência: Quase a totalidade do recurso foi convertida em infraestrutura social e educacional direta.",
+                    title3: "Fluxo de Caixa Mensal",
                     title4: "O Terreno", desc4: "Limpeza profunda e preparação do solo para a sede e expansões.", inv4: "Investimento em Limpeza (Fev/Mar)",
                     title5: "Renovação do Prédio JK", desc5: "Pintura externa e interna finalizada (Jan-Abr). Património vital revitalizado para acolher projetos e a comunidade.",
                     title6: "Climatização e Conforto", highlight6_1: "AC 9000 BTUs Instalados", highlight6_2: "Reparos Hidráulicos Finais",
@@ -181,16 +182,16 @@
                     title14: "Gestão de Logística",
                     title15: "Conformidade e Gestão", check15_1: "Contabilidade R&R em Dia", check15_2: "Taxas Legais e Cartoriais", check15_3: "Conectividade 100% Online", card15: "Gestão 100% Regular",
                     title16: "Rigor e Transparência", desc16: "9 meses de lançamentos auditados e documentados para prestação de contas absoluta.", card16_1: "Recibos Auditados", card16_2: "Notas Fiscais Validadas", card16_3: "Conciliação Jan-Set",
-                    title17: "Excelência Operacional", desc17: "Manutenção da rede para Hostel JK, Centro Ambiental e Panificadora.",
+                    title17: "Eficiência em Tempo Real", desc17: "Manutenção da rede para Hostel JK, Centro Ambiental e Panificadora.", support: "Suporte Contínuo", supportDesc: "Operação ininterrupta.", remote: "Gestão Remota", remoteDesc: "Monitoramento em tempo real.",
                     title18: "O Impacto é Visível", quote18: "Transformando cada real investido em futuro para o Sertão do Piauí.", footer18: "Responsabilidade • Transparência • Eficiência"
                 }
             },
             en: {
                 appTitle: "Governance Dashboard", appSubtitle: "Integrated Report 2025", btnStart: "Start Presentation", audited: "AUDITED", kpiIn: "Total Inflow", kpiOut: "Total Outflow", kpiBalance: "Cash Balance", kpiSocial: "Social Impact", kpiSocialVal: "+700 Beneficiaries", chartTitle: "Monthly Cash Flow", legendIn: "Inflows", legendOut: "Outflows", highlights: "Strategic Highlights", download: "Download Report (CSV)", presLabel: "Executive Presentation", close: "Close", nav: "Navigation",
-                months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 slides: {
                     title1: "Governance Report", subtitle1: "Results 2025", footer1: "Executive Board • Coronel José Dias, PI",
                     title2: "Consolidated Numbers", subtitle2: "Integrated Management Report (Jan-Sep)", efficiency: "97% Efficiency: Almost all resources were converted into direct social and educational infrastructure.",
+                    title3: "Monthly Cash Flow",
                     title4: "The Land", desc4: "Deep cleaning and soil preparation for the headquarters and expansions.", inv4: "Cleaning Investment (Feb/Mar)",
                     title5: "JK Building Renovation", desc5: "External and internal painting completed (Jan-Apr). Vital heritage revitalized to host projects and the community.",
                     title6: "Climatization and Comfort", highlight6_1: "9000 BTUs AC Units Installed", highlight6_2: "Final Hydraulic Repairs",
@@ -204,16 +205,16 @@
                     title14: "Logistics Management",
                     title15: "Compliance and Management", check15_1: "Accounting (R&R) Up to Date", check15_2: "Legal Fees and Notary Fees", check15_3: "100% Online Connectivity", card15: "100% Regular Management",
                     title16: "Rigor and Transparency", desc16: "9 months of audited and documented transactions for absolute accountability.", card16_1: "Audited Receipts", card16_2: "Validated Invoices", card16_3: "Conciliation Jan-Sep",
-                    title17: "Operational Excellence", desc17: "Network maintenance for Hostel JK, Environmental Center and Bakery.",
+                    title17: "Real-Time Efficiency", desc17: "Network maintenance for Hostel JK, Environmental Center and Bakery.", support: "Continuous Support", supportDesc: "Uninterrupted operation.", remote: "Remote Management", remoteDesc: "Real-time monitoring.",
                     title18: "The Impact is Visible", quote18: "Transforming every invested real into a future for the Piauí Sertão.", footer18: "Responsibility • Transparency • Efficiency"
                 }
             },
             de: {
                 appTitle: "Governance-Dashboard", appSubtitle: "Integrierter Bericht 2025", btnStart: "Präsentation Starten", audited: "GEPRÜFT", kpiIn: "Einnahmen Gesamt", kpiOut: "Ausgaben Gesamt", kpiBalance: "Kassenbestand", kpiSocial: "Soziale Wirkung", kpiSocialVal: "+700 Begünstigte", chartTitle: "Monatlicher Cashflow", legendIn: "Einnahmen", legendOut: "Ausgaben", highlights: "Strategische Highlights", download: "Bericht Herunterladen (CSV)", presLabel: "Vorstandspräsentation", close: "Beenden", nav: "Navigation",
-                months: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
                 slides: {
                     title1: "Governance-Bericht", subtitle1: "Ergebnisse 2025", footer1: "Vorstand • Coronel José Dias, PI",
-                    title2: "Konsolidierte Zahlen", subtitle2: "Integrierter Managementbericht (Jan-Sep)", efficiency: "97% Effizienz: Fast alle Mittel wurden direkt in soziale und pädagogische Infrastruktur investiert.",
+                    title2: "Konsolidierte Zahlen", subtitle2: "Integrierter Managementbericht (Jan-Sep)", efficiency: "97% Effizienz: Fast alle Mittel wurden direkt in soziale und pädagogische Infrastruktur umgewandelt.",
+                    title3: "Monatlicher Cashflow",
                     title4: "Das Grundstück", desc4: "Tiefenreinigung und Bodenvorbereitung für den Hauptsitz und Erweiterungen.", inv4: "Reinigungsinvestition (Feb/März)",
                     title5: "JK-Gebäude Renovierung", desc5: "Außen- und Innenanstrich abgeschlossen (Jan-Apr). Vitales Erbe revitalisiert für Projekte und die Gemeinschaft.",
                     title6: "Klimatisierung und Komfort", highlight6_1: "9000 BTUs Klimageräte Installiert", highlight6_2: "Letzte Hydraulische Reparaturen",
@@ -227,29 +228,22 @@
                     title14: "Logistikmanagement",
                     title15: "Compliance und Management", check15_1: "Buchhaltung (R&R) auf aktuellem Stand", check15_2: "Rechts- und Notargebühren", check15_3: "100% Online-Konnektivität", card15: "100% Ordnungsgemäße Verwaltung",
                     title16: "Strenge und Transparenz", desc16: "9 Monate geprüfte und dokumentierte Transaktionen für absolute Rechenschaftspflicht.", card16_1: "Geprüfte Quittungen", card16_2: "Validierte Rechnungen", card16_3: "Abstimmung Jan-Sep",
-                    title17: "Operative Exzellenz", desc17: "Netzwerkwartung für Hostel JK, Umweltzentrum und Bäckerei.",
+                    title17: "Echtzeit-Effizienz", desc17: "Netzwerkwartung für Hostel JK, Umweltzentrum und Bäckerei.", support: "Kontinuierlicher Support", supportDesc: "Ununterbrochener Betrieb.", remote: "Fernverwaltung", remoteDesc: "Echtzeit-Überwachung.",
                     title18: "Die Wirkung ist Sichtbar", quote18: "Jeden investierten Real in eine Zukunft für den Sertão von Piauí verwandeln.", footer18: "Verantwortung • Transparenz • Effizienz"
                 }
             }
         };
 
-        let currentLang = localStorage.getItem('probrasil_lang') || 'pt';
-        let mainChartInstance = null;
-        let slides = Array.from({length: 18}); // Placeholder para contagem de slides
-        let currentSlide = 0;
-
         function setLang(lang) {
             currentLang = lang;
-            localStorage.setItem('probrasil_lang', lang); // Salva a preferência
             const t = translations[lang];
             
-            // Atualiza botões
             document.querySelectorAll('.lang-btn, .pres-lang-btn').forEach(btn => {
+                const btnId = btn.getAttribute('id');
                 const btnData = btn.dataset.l;
-                btn.classList.toggle('active', btnData === lang);
+                btn.classList.toggle('active', btnId === `lang-${lang}` || btnData === lang);
             });
             
-            // Atualiza Textos Estáticos
             document.querySelector('.t-app-title').innerText = t.appTitle;
             document.querySelector('.t-app-subtitle').innerText = t.appSubtitle;
             document.querySelector('.t-btn-start').innerText = t.btnStart;
@@ -268,35 +262,26 @@
             document.querySelector('.t-btn-close').innerText = t.close;
             document.querySelector('.t-nav').innerText = t.nav;
 
-            // Re-renderiza componentes dinâmicos
             initTimeline();
-            if (mainChartInstance) {
-                mainChartInstance.destroy();
-                initMainChart();
-            }
             if (document.getElementById('presentation-view').classList.contains('active-view')) { renderSlide(); }
         }
 
-        // --- DADOS REAIS (Separando dados numéricos de texto) ---
-        const dataRaw = [
-            { mesIdx: 0, entradas: 6156.82, saidas: 5000.00, destaque: {pt: 'Reforma JK', en: 'JK Renovation', de: 'JK Renovierung'}, info: 'Início das pinturas' },
-            { mesIdx: 1, entradas: 41189.74, saidas: 43969.48, destaque: {pt: 'Ação Social', en: 'Social Action', de: 'Soziale Aktion'}, info: 'Cestas Básicas' },
-            { mesIdx: 2, entradas: 53531.08, saidas: 56981.04, destaque: {pt: 'PRACTICE Março', en: 'PRACTICE March', de: 'PRACTICE März'}, info: 'Início do Programa' },
-            { mesIdx: 3, entradas: 27290.53, saidas: 25252.15, destaque: {pt: 'Manutenção', en: 'Maintenance', de: 'Wartung'}, info: 'Centro Ambiental' },
-            { mesIdx: 4, entradas: 25653.60, saidas: 31184.00, destaque: {pt: 'Capacitação', en: 'Training', de: 'Schulung'}, info: 'Projeto Criando Futuro' },
-            { mesIdx: 5, entradas: 56991.34, saidas: 31810.50, destaque: {pt: 'PRACTICE Junho', en: 'PRACTICE June', de: 'PRACTICE Juni'}, info: 'Visitas Técnicas' },
-            { mesIdx: 6, entradas: 86701.22, saidas: 30523.11, destaque: {pt: 'Inclusão Digital', en: 'Digital Inclusion', de: 'Digitale Inklusion'}, info: 'Upgrade TI' },
-            { mesIdx: 7, entradas: 53800.91, saidas: 80611.38, destaque: {pt: 'Infraestrutura', en: 'Infrastructure', de: 'Infrastruktur'}, info: 'Finalização Elétrica' },
-            { mesIdx: 8, entradas: 6144.50, saidas: 41765.28, destaque: {pt: 'Governança', en: 'Governance', de: 'Governance'}, info: 'Gestão Ativa' },
+        // --- DADOS REAIS ---
+        const dataConsolidada = [
+            { mes: 'Jan', entradas: 6156.82, saidas: 5000.00, destaque: {pt: 'Reforma JK', en: 'JK Renovation', de: 'JK Renovierung'}, info: 'Início das pinturas' },
+            { mes: 'Fev', entradas: 41189.74, saidas: 43969.48, destaque: {pt: 'Ação Social', en: 'Social Action', de: 'Soziale Aktion'}, info: 'Cestas Básicas' },
+            { mes: 'Mar', entradas: 53531.08, saidas: 56981.04, destaque: {pt: 'PRACTICE Março', en: 'PRACTICE March', de: 'PRACTICE März'}, info: 'Início do Programa' },
+            { mes: 'Abr', entradas: 27290.53, saidas: 25252.15, destaque: {pt: 'Manutenção', en: 'Maintenance', de: 'Wartung'}, info: 'Centro Ambiental' },
+            { mes: 'Mai', entradas: 25653.60, saidas: 31184.00, destaque: {pt: 'Criando Futuro', en: 'Creating Future', de: 'Zukunft Gestalten'}, info: 'Capacitação' },
+            { mes: 'Jun', entradas: 56991.34, saidas: 31810.50, destaque: {pt: 'PRACTICE Junho', en: 'PRACTICE June', de: 'PRACTICE Juni'}, info: 'Visitas Técnicas' },
+            { mes: 'Jul', entradas: 86701.22, saidas: 30523.11, destaque: {pt: 'Inclusão Digital', en: 'Digital Inclusion', de: 'Digitale Inklusion'}, info: 'Upgrade TI' },
+            { mes: 'Ago', entradas: 53800.91, saidas: 80611.38, destaque: {pt: 'Infraestrutura', en: 'Infrastructure', de: 'Infrastruktur'}, info: 'Finalização Elétrica' },
+            { mes: 'Set', entradas: 6144.50, saidas: 41765.28, destaque: {pt: 'Governança', en: 'Governance', de: 'Governance'}, info: 'Gestão Ativa' },
         ];
-
-        function getMonthName(idx) {
-            return translations[currentLang].months[idx];
-        }
 
         function getImg(src, label) {
             return `<div class="img-overlay h-full w-full relative">
-                <img src="./${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')" alt="${label}">
+                <img src="./${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
                 <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">RECURSO: ${src}</div>
                 <div class="img-caption">${label}</div>
             </div>`;
@@ -317,9 +302,9 @@
                     <h2 class="text-4xl font-bold text-slate-800 mb-2 text-center uppercase tracking-tight">${t.title2}</h2>
                     <p class="text-slate-500 mb-12 text-xl text-center">${t.subtitle2}</p>
                     <div class="grid grid-cols-3 gap-8">
-                        <div class="card-stat border-l-8 border-emerald-500"><p class="text-emerald-600 font-bold uppercase text-xs mb-2">${translations[currentLang].kpiIn}</p><p class="text-4xl font-black text-emerald-700 tracking-tight">R$ 357.459,74</p></div>
-                        <div class="card-stat border-l-8 border-blue-500"><p class="text-blue-600 font-bold uppercase text-xs mb-2">${translations[currentLang].kpiOut}</p><p class="text-4xl font-black text-blue-700 tracking-tight">R$ 347.096,94</p></div>
-                        <div class="card-stat border-l-8 border-slate-800 bg-slate-900 text-white"><p class="text-slate-400 font-bold uppercase text-xs mb-2">${translations[currentLang].kpiBalance}</p><p class="text-4xl font-black text-white tracking-tight">+ R$ 10.362,80</p></div>
+                        <div class="card-stat border-l-8 border-emerald-500"><p class="text-emerald-600 font-bold uppercase text-xs mb-2">PT: Entradas</p><p class="text-4xl font-black text-emerald-700 tracking-tight">R$ 357.459,74</p></div>
+                        <div class="card-stat border-l-8 border-blue-500"><p class="text-blue-600 font-bold uppercase text-xs mb-2">PT: Saídas</p><p class="text-4xl font-black text-blue-700 tracking-tight">R$ 347.096,94</p></div>
+                        <div class="card-stat border-l-8 border-slate-800 bg-slate-900 text-white"><p class="text-slate-400 font-bold uppercase text-xs mb-2">PT: Saldo</p><p class="text-4xl font-black text-white tracking-tight">+ R$ 10.362,80</p></div>
                     </div>
                     <div class="mt-12 p-8 bg-blue-50 rounded-2xl border border-blue-100 flex items-center space-x-6 shadow-sm"><i data-lucide="info" class="text-blue-600 w-12 h-12"></i><p class="text-blue-900 font-medium text-xl leading-relaxed">${t.efficiency}</p></div>
                 </div>`,
@@ -358,17 +343,17 @@
                 `<div class="grid grid-cols-2 gap-12 h-full items-center">
                     <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter">${t.title10}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc10}</p>
                         <div class="grid grid-cols-2 gap-4"><div class="p-6 bg-white border-2 border-emerald-100 rounded-3xl shadow-sm"><p class="text-emerald-600 font-black text-3xl tracking-tighter">+500</p><p class="text-xs font-bold text-slate-400 uppercase">PT: Alunos</p></div><div class="p-6 bg-white border-2 border-blue-100 rounded-3xl shadow-sm"><p class="text-blue-600 font-black text-3xl tracking-tighter">228</p><p class="text-xs font-bold text-slate-400 uppercase">PT: Saúde</p></div></div></div>
-                    <div class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px]">${getImg('1.jpeg', 'PRAC 1')}${getImg('2.jpeg', 'PRAC 2')}${getImg('3.jpeg', 'PRAC 3')}${getImg('4.jpeg', 'PRAC 4')}</div>
+                    <div class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px]">${getImg('1.jpeg', 'PRACTICE 1')}${getImg('2.jpeg', 'PRACTICE 2')}${getImg('3.jpeg', 'PRACTICE 3')}${getImg('4.jpeg', 'PRACTICE 4')}</div>
                 </div>`,
                 // 11. PRACTICE IMPACTO PREVENÇÃO
                 `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><div class="grid grid-cols-12 gap-8 h-[500px] items-center">
-                        <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('7.jpeg', 'PRAC 7')}${getImg('8.jpeg', 'PRAC 8')}</div>
+                        <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('7.jpeg', 'PRACTICE 7')}${getImg('8.jpeg', 'PRACTICE 8')}</div>
                         <div class="col-span-5 space-y-6 text-right"><i data-lucide="users" class="w-16 h-16 text-emerald-600 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title11}</h2><p class="text-xl text-slate-600 font-medium">${t.desc11}</p></div>
                     </div></div>`,
                 // 12. PRACTICE IMPACTO SAÚDE
                 `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><div class="grid grid-cols-12 gap-8 h-[500px] items-center">
                         <div class="col-span-5 space-y-6"><i data-lucide="activity" class="w-16 h-16 text-blue-600"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title12}</h2><p class="text-xl text-slate-600 font-medium">${t.desc12}</p></div>
-                        <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('5.jpeg', 'PRAC 5')}${getImg('6.jpeg', 'PRAC 6')}</div>
+                        <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('5.jpeg', 'PRACTICE 5')}${getImg('6.jpeg', 'PRACTICE 6')}</div>
                     </div></div>`,
                 // 13. PÓDIO MARÇO
                 `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><h2 class="text-4xl font-black text-slate-900 mb-10 text-center uppercase tracking-tighter">${t.title13}</h2><div class="flex justify-center items-end space-x-6 h-[400px]">
@@ -384,15 +369,35 @@
                     </div></div>`,
                 // 15. Conformidade
                 `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto"><div class="space-y-6"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter leading-none">${t.title15}</h2><ul class="space-y-6 font-bold text-slate-600 text-xl"><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_1}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_2}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_3}</span></li></ul></div>
-                    <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner"><i data-lucide="shield-check" class="w-24 h-24 text-indigo-300 mb-6"></i><h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">${t.card15}</h3></div>
+                    <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner"><i data-lucide="file-check" class="w-24 h-24 text-indigo-300 mb-6"></i><h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">${t.card15}</h3></div>
                 </div>`,
                 // 16. Auditoria
                 `<div class="max-w-4xl mx-auto text-center h-full flex flex-col justify-center"><i data-lucide="shield-check" class="w-20 h-20 text-emerald-600 mx-auto mb-8"></i><h2 class="text-5xl font-black text-slate-900 mb-6 tracking-tighter uppercase leading-tight">${t.title16}</h2><p class="text-2xl text-slate-500 mb-12 font-medium">${t.desc16}</p>
                     <div class="grid grid-cols-3 gap-6 text-left"><div class="card-stat border-t-4 border-emerald-500"><p class="font-bold text-slate-800 uppercase text-xs">${t.card16_1}</p></div><div class="card-stat border-t-4 border-emerald-500"><p class="font-bold text-slate-800 uppercase text-xs">${t.card16_2}</p></div><div class="card-stat border-t-4 border-emerald-500"><p class="font-bold text-slate-800 uppercase text-xs">${t.card16_3}</p></div></div>
                 </div>`,
-                // 17. Conectividade
-                `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-5xl mx-auto"><div class="card-stat bg-slate-900 text-white p-10 border-none shadow-2xl"><i data-lucide="wifi" class="w-12 h-12 text-blue-400 mb-6"></i><h3 class="text-3xl font-bold mb-4 tracking-tighter">${t.title17}</h3><p class="text-slate-400">${t.desc17}</p></div>
-                    <div class="h-[400px] grid grid-cols-2 gap-4">${getImg('12.jpeg', 'OPS')}${getImg('13.jpeg', 'NET')}</div></div>`,
+                // 17. Conectividade (SEM FOTOS, APENAS ÍCONES E TEXTO)
+                `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-5xl mx-auto">
+                    <div class="card-stat bg-slate-900 text-white p-10 border-none shadow-2xl">
+                        <i data-lucide="wifi" class="w-12 h-12 text-blue-400 mb-6"></i>
+                        <h3 class="text-3xl font-bold mb-4 tracking-tighter">${t.title17}</h3>
+                        <p class="text-slate-400 text-lg leading-relaxed">${t.desc17}</p>
+                        <ul class="mt-6 space-y-4 font-semibold text-white">
+                            <li>• Prédio JK (Hostel)</li>
+                            <li>• Centro Ambiental</li>
+                            <li>• Panificadora Brothaus</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6 flex flex-col justify-center">
+                        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">${t.support}</h4>
+                            <p class="text-slate-500 text-sm">${t.supportDesc}</p>
+                        </div>
+                        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">${t.remote}</h4>
+                            <p class="text-slate-500 text-sm">${t.remoteDesc}</p>
+                        </div>
+                    </div>
+                </div>`,
                 // 18. Conclusão
                 `<div class="flex flex-col items-center justify-center h-full text-center space-y-10 max-w-4xl mx-auto animate-in fade-in duration-1000"><h2 class="text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">${t.title18}</h2><p class="text-3xl text-blue-600 font-bold max-w-2xl italic leading-relaxed">"${t.quote18}"</p>
                     <div class="p-10 bg-slate-900 rounded-[3rem] text-white w-full shadow-2xl"><h3 class="text-2xl font-bold mb-2">ProBrasil Nordeste 2025</h3><p class="text-slate-400 font-bold uppercase tracking-widest text-sm">${t.footer18}</p></div>
@@ -409,7 +414,6 @@
                 document.getElementById('presentation-view').classList.add('active-view');
                 currentSlide = 0;
                 renderSlide();
-                // Tenta tela cheia
                 document.documentElement.requestFullscreen().catch(() => {});
             } else {
                 document.getElementById('presentation-view').classList.remove('active-view');
@@ -421,24 +425,23 @@
             const container = document.getElementById('slide-container');
             container.innerHTML = getSlideContent(currentSlide);
             const slideTitle = translations[currentLang].slides[`title${currentSlide+1}`] || "Slide";
-            document.getElementById('slide-number-label').innerText = `${slideTitle} (${currentSlide + 1}/${slides.length})`;
+            document.getElementById('slide-number-label').innerText = `${slideTitle} (${currentSlide + 1}/${totalSlides})`;
             
-            const progress = ((currentSlide) / (slides.length - 1)) * 100;
+            const progress = ((currentSlide) / (totalSlides - 1)) * 100;
             document.getElementById('progress-bar').style.width = `${progress}%`;
 
             lucide.createIcons();
             if (currentSlide === 2) { setTimeout(initSlideChart, 100); }
         }
 
-        function nextSlide() { if (currentSlide < slides.length - 1) { currentSlide++; renderSlide(); } }
+        function nextSlide() { if (currentSlide < totalSlides - 1) { currentSlide++; renderSlide(); } }
         function prevSlide() { if (currentSlide > 0) { currentSlide--; renderSlide(); } }
 
         function downloadCSV() {
             let csvContent = "data:text/csv;charset=utf-8,Month,Inflow,Outflow,Highlight,Info\n";
-            dataRaw.forEach(row => {
-                const month = getMonthName(row.mesIdx);
+            dataConsolidada.forEach(row => {
                 const highlight = row.destaque[currentLang];
-                csvContent += `${month},${row.entradas},${row.saidas},"${highlight}","${row.info}"\n`;
+                csvContent += `${row.mes},${row.entradas},${row.saidas},"${highlight}","${row.info}"\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
@@ -450,15 +453,14 @@
         }
 
         function initMainChart() {
-            const ctx = document.getElementById('mainChart');
-            if(!ctx) return;
-            mainChartInstance = new Chart(ctx.getContext('2d'), {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: dataRaw.map(d => getMonthName(d.mesIdx)),
+                    labels: dataConsolidada.map(d => d.mes),
                     datasets: [
-                        { label: translations[currentLang].legendIn, data: dataRaw.map(d => d.entradas), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 },
-                        { label: translations[currentLang].legendOut, data: dataRaw.map(d => d.saidas), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 }
+                        { label: translations[currentLang].legendIn, data: dataConsolidada.map(d => d.entradas), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 },
+                        { label: translations[currentLang].legendOut, data: dataConsolidada.map(d => d.saidas), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top' } } }
@@ -471,10 +473,10 @@
             new Chart(ctx.getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: dataRaw.map(d => getMonthName(d.mesIdx)),
+                    labels: dataConsolidada.map(d => d.mes),
                     datasets: [
-                        { label: translations[currentLang].legendIn, data: dataRaw.map(d => d.entradas), backgroundColor: '#10b981', borderRadius: 8 },
-                        { label: translations[currentLang].legendOut, data: dataRaw.map(d => d.saidas), backgroundColor: '#3b82f6', borderRadius: 8 }
+                        { label: translations[currentLang].legendIn, data: dataConsolidada.map(d => d.entradas), backgroundColor: '#10b981', borderRadius: 8 },
+                        { label: translations[currentLang].legendOut, data: dataConsolidada.map(d => d.saidas), backgroundColor: '#3b82f6', borderRadius: 8 }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
@@ -483,9 +485,9 @@
 
         function initTimeline() {
             const list = document.getElementById('timeline-list');
-            list.innerHTML = dataRaw.slice().reverse().map(item => `
+            list.innerHTML = dataConsolidada.slice().reverse().map(item => `
                 <div class="flex space-x-4 p-3 hover:bg-slate-50 rounded-xl transition-colors">
-                    <div class="w-12 h-12 bg-white text-slate-800 rounded-xl flex items-center justify-center font-black text-xs border border-slate-100 shadow-sm flex-shrink-0">${getMonthName(item.mesIdx)}</div>
+                    <div class="w-12 h-12 bg-white text-slate-800 rounded-xl flex items-center justify-center font-black text-xs border border-slate-100 shadow-sm flex-shrink-0">${item.mes}</div>
                     <div>
                         <p class="text-sm font-bold text-slate-800">${item.destaque[currentLang]}</p>
                         <p class="text-xs text-slate-500 line-clamp-1">${item.info}</p>
@@ -503,7 +505,9 @@
 
         window.onload = () => {
             lucide.createIcons();
-            setLang(currentLang); // Inicia com o idioma salvo ou padrão
+            initMainChart();
+            initTimeline();
+            setLang('pt');
         };
     </script>
 </body>
