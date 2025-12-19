@@ -110,7 +110,7 @@
         </main>
     </div>
 
-    <!-- PRESENTATION VIEW (18 SLIDES) -->
+    <!-- PRESENTATION VIEW -->
     <div id="presentation-view" class="hidden h-screen w-screen flex flex-col bg-slate-50 fixed top-0 left-0 z-[100]">
         <div class="h-1 bg-slate-200 w-full">
             <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
@@ -154,7 +154,8 @@
     </div>
 
     <script>
-        const totalSlides = 18; 
+        // Total slides updated: Removed 2 slides, added 1 new satellite slide = 17 Total
+        const totalSlides = 17; 
         let currentLang = 'pt';
         let currentSlide = 0;
 
@@ -166,21 +167,21 @@
                     title1: "Relatório de Governança", subtitle1: "Resultados 2025", footer1: "Diretoria Executiva • Coronel José Dias, PI",
                     title2: "Números Consolidados", subtitle2: "Relatório Integrado de Gestão (Jan-Set)", efficiency: "97% de Eficiência: Quase a totalidade do recurso foi convertida em infraestrutura social e educacional direta.",
                     title3: "Fluxo de Caixa Mensal",
-                    title4: "O Terreno", desc4: "Limpeza profunda e preparação do solo para a sede e expansões.", inv4: "Investimento em Limpeza (Fev/Mar)",
-                    title5: "Renovação do Prédio JK", desc5: "Pintura externa e interna finalizada (Jan-Abr). Património vital revitalizado para acolher projetos e a comunidade.",
-                    title6: "Climatização e Conforto", highlight6_1: "AC 9000 BTUs Instalados", highlight6_2: "Reparos Hidráulicos Finais",
-                    title7: "Infraestrutura Digital", desc7: "Upgrade realizado em Julho e Agosto. Laboratório 100% equipado para o Projeto Criando Futuro.", inv7: "Investimento em TI",
-                    title8: "Segurança Alimentar", desc8: "Distribuição emergencial de alimentos realizada em Fevereiro para as famílias atendidas.", inv8: "R$ 4.000,00 Doação Direta",
-                    title9: "Projeto Criando Futuro", subtitle9: "Inclusão no Sertão", desc9: "Capacitação intensiva de jovens e adultos, unindo educação ao desenvolvimento do Piauí.",
-                    title10: "Projeto PRACTICE", desc10: "Aliança estratégica com a GIZ (Alemanha) e o Hospital ukb de Berlim para salvaguardar vidas.", check10_1: "Prevenção de Traumas Infantis", check10_2: "Treinamentos de Urgência",
-                    title11: "PRACTICE: Impacto", desc11: "Educação preventiva abrangente para crianças e pais sobre segurança no trânsito e traumas domiciliares.", label11: "Alunos Atendidos",
-                    title12: "PRACTICE: Saúde", desc12: "Capacitação técnica em urgência e emergência para equipas de saúde de São Raimundo Nonato e região.", label12: "Profissionais Treinados",
-                    title13: "Pódio de Março", pod1: "Preparo Académico ukb Berlim", pod2: "Visitas Técnicas Fortaleza", pod3: "Mapeamento Serra da Capivara", podQuote: "Mês fundamental de estruturação acadêmica e logística.",
+                    // New Satellite Slide
+                    title4: "Localização Estratégica", desc4: "Serra da Capivara: Um patrimônio mundial no coração do Piauí. Nossa atuação em Coronel José Dias conecta o Sertão ao Mundo.", label4_1: "Visão Macro: Brasil", label4_2: "Visão Local: Parque Nacional",
+                    title5: "O Terreno", desc5: "Limpeza profunda e preparação do solo para a sede e expansões.", inv5: "Investimento em Limpeza (Fev/Mar)",
+                    title6: "Renovação do Prédio JK", desc6: "Pintura externa e interna finalizada (Jan-Abr). Património vital revitalizado para acolher projetos e a comunidade.",
+                    title7: "Climatização e Conforto", highlight7_1: "AC 9000 BTUs Instalados", highlight7_2: "Reparos Hidráulicos Finais",
+                    title8: "Infraestrutura Digital", desc8: "Upgrade realizado em Julho e Agosto. Laboratório 100% equipado para o Projeto Criando Futuro.", inv8: "Investimento em TI",
+                    title9: "Segurança Alimentar", desc9: "Distribuição emergencial de alimentos realizada em Fevereiro para as famílias atendidas.", inv9: "R$ 4.000,00 Doação Direta",
+                    title10: "Projeto Criando Futuro", subtitle10: "Inclusão no Sertão", desc10: "Capacitação intensiva de jovens e adultos, unindo educação ao desenvolvimento do Piauí.",
+                    title11: "Projeto PRACTICE", desc11: "Aliança estratégica com a GIZ (Alemanha) e o Hospital ukb de Berlim para salvaguardar vidas.", check11_1: "Prevenção de Traumas Infantis", check11_2: "Treinamentos de Urgência",
+                    title12: "PRACTICE: Impacto", desc12: "Educação preventiva abrangente para crianças e pais sobre segurança no trânsito e traumas domiciliares.", label12: "Alunos Atendidos",
+                    title13: "PRACTICE: Saúde", desc13: "Capacitação técnica em urgência e emergência para equipas de saúde de São Raimundo Nonato e região.", label13: "Profissionais Treinados",
                     title14: "Gestão de Logística",
                     title15: "Conformidade e Gestão", check15_1: "Contabilidade R&R em Dia", check15_2: "Taxas Legais e Cartoriais", check15_3: "Conectividade 100% Online", card15: "Gestão 100% Regular",
-                    title16: "Rigor e Transparência", desc16: "9 meses de lançamentos auditados e documentados para prestação de contas absoluta.", card16_1: "Recibos Auditados", card16_2: "Notas Fiscais Validadas", card16_3: "Conciliação Jan-Set",
-                    title17: "Eficiência em Tempo Real", desc17: "Manutenção da rede para Hostel JK, Centro Ambiental e Panificadora.", support: "Suporte Contínuo", supportDesc: "Operação ininterrupta.", remote: "Gestão Remota", remoteDesc: "Monitoramento em tempo real.",
-                    title18: "O Impacto é Visível", quote18: "Transformando cada real investido em futuro para o Sertão do Piauí.", footer18: "Responsabilidade • Transparência • Eficiência"
+                    title16: "Eficiência em Tempo Real", desc16: "Manutenção da rede para Hostel JK, Centro Ambiental e Panificadora.", support: "Suporte Contínuo", supportDesc: "Operação ininterrupta.", remote: "Gestão Remota", remoteDesc: "Monitoramento em tempo real.",
+                    title17: "O Impacto é Visível", quote17: "Transformando cada real investido em futuro para o Sertão do Piauí.", footer17: "Responsabilidade • Transparência • Eficiência"
                 }
             },
             en: {
@@ -189,21 +190,21 @@
                     title1: "Governance Report", subtitle1: "Results 2025", footer1: "Executive Board • Coronel José Dias, PI",
                     title2: "Consolidated Numbers", subtitle2: "Integrated Management Report (Jan-Sep)", efficiency: "97% Efficiency: Almost all resources were converted into direct social and educational infrastructure.",
                     title3: "Monthly Cash Flow",
-                    title4: "The Land", desc4: "Deep cleaning and soil preparation for the headquarters and expansions.", inv4: "Cleaning Investment (Feb/Mar)",
-                    title5: "JK Building Renovation", desc5: "External and internal painting completed (Jan-Apr). Vital heritage revitalized to host projects and the community.",
-                    title6: "Climatization and Comfort", highlight6_1: "9000 BTUs AC Units Installed", highlight6_2: "Final Hydraulic Repairs",
-                    title7: "Digital Infrastructure", desc7: "Upgrade completed in July and August. Laboratory 100% equipped for the Creating Future Project.", inv7: "IT Investment",
-                    title8: "Food Security", desc8: "Emergency food distribution carried out in February for the families served.", inv8: "R$ 4,000.00 Direct Donation",
-                    title9: "Creating Future Project", subtitle9: "Inclusion in the Sertão", desc9: "Intensive training for youth and adults, linking education to the development of Piauí.",
-                    title10: "PRACTICE Project", desc10: "Strategic alliance with GIZ (Germany) and ukb Hospital Berlin to safeguard lives.", check10_1: "Childhood Trauma Prevention", check10_2: "Emergency Training",
-                    title11: "PRACTICE: Impact", desc11: "Comprehensive preventive education for children and parents on traffic safety and home traumas.", label11: "Students Served",
-                    title12: "PRACTICE: Health", desc12: "Technical training in urgency and emergency for health teams in São Raimundo Nonato and region.", label12: "Professionals Trained",
-                    title13: "March Podium", pod1: "Academic Prep ukb Berlin", pod2: "Technical Visits Fortaleza", pod3: "Serra da Capivara Mapping", podQuote: "A fundamental month for academic and logistical structuring.",
+                    // New Satellite Slide
+                    title4: "Strategic Location", desc4: "Serra da Capivara: A world heritage site in the heart of Piauí. Connecting the Sertão to the World in Coronel José Dias.", label4_1: "Macro View: Brazil", label4_2: "Local View: National Park",
+                    title5: "The Land", desc5: "Deep cleaning and soil preparation for the headquarters and expansions.", inv5: "Cleaning Investment (Feb/Mar)",
+                    title6: "JK Building Renovation", desc6: "External and internal painting completed (Jan-Apr). Vital heritage revitalized to host projects and the community.",
+                    title7: "Climatization and Comfort", highlight7_1: "9000 BTUs AC Units Installed", highlight7_2: "Final Hydraulic Repairs",
+                    title8: "Digital Infrastructure", desc8: "Upgrade completed in July and August. Laboratory 100% equipped for the Creating Future Project.", inv8: "IT Investment",
+                    title9: "Food Security", desc9: "Emergency food distribution carried out in February for the families served.", inv9: "R$ 4,000.00 Direct Donation",
+                    title10: "Creating Future Project", subtitle10: "Inclusion in the Sertão", desc10: "Intensive training for youth and adults, linking education to the development of Piauí.",
+                    title11: "PRACTICE Project", desc11: "Strategic alliance with GIZ (Germany) and ukb Hospital Berlin to safeguard lives.", check11_1: "Childhood Trauma Prevention", check11_2: "Emergency Training",
+                    title12: "PRACTICE: Impact", desc12: "Comprehensive preventive education for children and parents on traffic safety and home traumas.", label12: "Students Served",
+                    title13: "PRACTICE: Health", desc13: "Technical training in urgency and emergency for health teams in São Raimundo Nonato and region.", label13: "Professionals Trained",
                     title14: "Logistics Management",
                     title15: "Compliance and Management", check15_1: "Accounting (R&R) Up to Date", check15_2: "Legal Fees and Notary Fees", check15_3: "100% Online Connectivity", card15: "100% Regular Management",
-                    title16: "Rigor and Transparency", desc16: "9 months of audited and documented transactions for absolute accountability.", card16_1: "Audited Receipts", card16_2: "Validated Invoices", card16_3: "Conciliation Jan-Sep",
-                    title17: "Operational Excellence", desc17: "Network maintenance for Hostel JK, Environmental Center and Bakery.",
-                    title18: "The Impact is Visible", quote18: "Transforming every invested real into a future for the Piauí Sertão.", footer18: "Responsibility • Transparency • Efficiency"
+                    title16: "Operational Excellence", desc16: "Network maintenance for Hostel JK, Environmental Center and Bakery.", support: "Continuous Support", supportDesc: "Uninterrupted operation.", remote: "Remote Management", remoteDesc: "Real-time monitoring.",
+                    title17: "The Impact is Visible", quote17: "Transforming every invested real into a future for the Piauí Sertão.", footer17: "Responsibility • Transparency • Efficiency"
                 }
             },
             de: {
@@ -212,21 +213,21 @@
                     title1: "Governance-Bericht", subtitle1: "Ergebnisse 2025", footer1: "Vorstand • Coronel José Dias, PI",
                     title2: "Konsolidierte Zahlen", subtitle2: "Integrierter Managementbericht (Jan-Sep)", efficiency: "97% Effizienz: Fast alle Mittel wurden direkt in soziale und pädagogische Infrastruktur umgewandelt.",
                     title3: "Monatlicher Cashflow",
-                    title4: "Das Grundstück", desc4: "Tiefenreinigung und Bodenvorbereitung für den Hauptsitz und Erweiterungen.", inv4: "Reinigungsinvestition (Feb/März)",
-                    title5: "JK-Gebäude Renovierung", desc5: "Außen- und Innenanstrich abgeschlossen (Jan-Apr). Vitales Erbe revitalisiert für Projekte und die Gemeinschaft.",
-                    title6: "Klimatisierung und Komfort", highlight6_1: "9000 BTUs Klimageräte Installiert", highlight6_2: "Letzte Hydraulische Reparaturen",
-                    title7: "Digitale Infrastruktur", desc7: "Upgrade im Juli und August abgeschlossen. Labor zu 100 % für das Projekt 'Zukunft Gestalten' ausgestattet.", inv7: "IT-Investition",
-                    title8: "Ernährungssicherheit", desc8: "Notfall-Lebensmittelverteilung im Februar für die betreuten Familien durchgeführt.", inv8: "R$ 4.000,00 Direktspende",
-                    title9: "Projekt Zukunft Gestalten", subtitle9: "Inklusion im Sertão", desc9: "Intensive Schulung für Jugendliche und Erwachsene, die Bildung mit der Entwicklung von Piauí verbindet.",
-                    title10: "PRACTICE Projekt", desc10: "Strategische Allianz mit der GIZ (Deutschland) und dem ukb Krankenhaus Berlin zum Schutz von Leben.", check10_1: "Prävention von Kindertrauma", check10_2: "Notfallschulungen",
-                    title11: "PRACTICE: Wirkung", desc11: "Umfassende präventive Aufklärung für Kinder und Eltern über Verkehrssicherheit und häusliche Traumen.", label11: "Betreute Schüler",
-                    title12: "PRACTICE: Gesundheit", desc12: "Technische Schulung in Dringlichkeit und Notfall für Gesundheitsteams in São Raimundo Nonato und Region.", label12: "Geschulte Fachkräfte",
-                    title13: "Podium März", pod1: "Akademische Vorbereitung ukb Berlin", pod2: "Technische Besuche Fortaleza", pod3: "Serra da Capivara Kartierung", podQuote: "Ein grundlegender Monat für die akademische und logistische Strukturierung.",
+                    // New Satellite Slide
+                    title4: "Strategische Lage", desc4: "Serra da Capivara: Ein Weltkulturerbe im Herzen von Piauí. Wir verbinden den Sertão mit der Welt in Coronel José Dias.", label4_1: "Makroansicht: Brasilien", label4_2: "Lokale Ansicht: Nationalpark",
+                    title5: "Das Grundstück", desc5: "Tiefenreinigung und Bodenvorbereitung für den Hauptsitz und Erweiterungen.", inv5: "Reinigungsinvestition (Feb/März)",
+                    title6: "JK-Gebäude Renovierung", desc6: "Außen- und Innenanstrich abgeschlossen (Jan-Apr). Vitales Erbe revitalisiert für Projekte und die Gemeinschaft.",
+                    title7: "Klimatisierung und Komfort", highlight7_1: "9000 BTUs Klimageräte Installiert", highlight7_2: "Letzte Hydraulische Reparaturen",
+                    title8: "Digitale Infrastruktur", desc8: "Upgrade im Juli und August abgeschlossen. Labor zu 100 % für das Projekt 'Zukunft Gestalten' ausgestattet.", inv8: "IT-Investition",
+                    title9: "Ernährungssicherheit", desc9: "Notfall-Lebensmittelverteilung im Februar für die betreuten Familien durchgeführt.", inv9: "R$ 4.000,00 Direktspende",
+                    title10: "Projekt Zukunft Gestalten", subtitle10: "Inklusion im Sertão", desc10: "Intensive Schulung für Jugendliche und Erwachsene, die Bildung mit der Entwicklung von Piauí verbindet.",
+                    title11: "PRACTICE Projekt", desc11: "Strategische Allianz mit der GIZ (Deutschland) und dem ukb Krankenhaus Berlin zum Schutz von Leben.", check11_1: "Prävention von Kindertrauma", check11_2: "Notfallschulungen",
+                    title12: "PRACTICE: Wirkung", desc12: "Umfassende präventive Aufklärung für Kinder und Eltern über Verkehrssicherheit und häusliche Traumen.", label12: "Betreute Schüler",
+                    title13: "PRACTICE: Gesundheit", desc13: "Technische Schulung in Dringlichkeit und Notfall für Gesundheitsteams in São Raimundo Nonato und Region.", label13: "Geschulte Fachkräfte",
                     title14: "Logistikmanagement",
                     title15: "Compliance und Management", check15_1: "Buchhaltung (R&R) auf aktuellem Stand", check15_2: "Rechts- und Notargebühren", check15_3: "100% Online-Konnektivität", card15: "100% Ordnungsgemäße Verwaltung",
-                    title16: "Strenge und Transparenz", desc16: "9 Monate geprüfte und dokumentierte Transaktionen für absolute Rechenschaftspflicht.", card16_1: "Geprüfte Quittungen", card16_2: "Validierte Rechnungen", card16_3: "Abstimmung Jan-Sep",
-                    title17: "Operative Exzellenz", desc17: "Netzwerkwartung für Hostel JK, Umweltzentrum und Bäckerei.",
-                    title18: "Die Wirkung ist Sichtbar", quote18: "Jeden investierten Real in eine Zukunft für den Sertão von Piauí verwandeln.", footer18: "Verantwortung • Transparenz • Effizienz"
+                    title16: "Operative Exzellenz", desc16: "Netzwerkwartung für Hostel JK, Umweltzentrum und Bäckerei.", support: "Dauerhafter Support", supportDesc: "Unterbrechungsfreier Betrieb.", remote: "Fernverwaltung", remoteDesc: "Echtzeit-Überwachung.",
+                    title17: "Die Wirkung ist Sichtbar", quote17: "Jeden investierten Real in eine Zukunft für den Sertão von Piauí verwandeln.", footer17: "Verantwortung • Transparenz • Effizienz"
                 }
             }
         };
@@ -284,7 +285,7 @@
             </div>`;
         }
 
-        // --- CONTEÚDO DOS 18 SLIDES DINÂMICOS ---
+        // --- CONTEÚDO DOS 17 SLIDES DINÂMICOS ---
         function getSlideContent(idx) {
             const t = translations[currentLang].slides;
             const content = [
@@ -307,57 +308,71 @@
                 </div>`,
                 // 3. Gráfico
                 `<div class="flex flex-col h-full w-full max-w-6xl mx-auto"><h2 class="text-4xl font-black text-slate-800 mb-8 text-center uppercase tracking-tight">${translations[currentLang].chartTitle}</h2><div class="flex-grow relative w-full"><canvas id="slideChart"></canvas></div></div>`,
-                // 4. Terreno
+                
+                // 4. NOVO SLIDE: SATÉLITE / LOCALIZAÇÃO
+                `<div class="flex flex-col h-full justify-center max-w-7xl mx-auto w-full">
+                    <div class="mb-8 text-center">
+                        <h2 class="text-5xl font-black text-slate-900 leading-tight uppercase mb-4">${t.title4}</h2>
+                        <p class="text-xl text-slate-600 max-w-3xl mx-auto font-medium">${t.desc4}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 h-[500px]">
+                        <div class="flex flex-col h-full">
+                            ${getImg('imagem1.png', t.label4_1)}
+                        </div>
+                        <div class="flex flex-col h-full">
+                            ${getImg('imagem2.png', t.label4_2)}
+                        </div>
+                    </div>
+                </div>`,
+
+                // 5. O Terreno (Antigo Slide 4)
                 `<div class="grid grid-cols-2 gap-12 h-full items-center">
-                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight">${t.title4}</h2><p class="text-xl text-slate-600 leading-relaxed italic font-medium">"${t.desc4}"</p><div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 w-fit"><p class="text-3xl font-black text-slate-800">R$ 4.000,00+</p><p class="text-sm text-slate-400 font-bold uppercase">${t.inv4}</p></div></div>
+                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight">${t.title5}</h2><p class="text-xl text-slate-600 leading-relaxed italic font-medium">"${t.desc5}"</p><div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 w-fit"><p class="text-3xl font-black text-slate-800">R$ 4.000,00+</p><p class="text-sm text-slate-400 font-bold uppercase">${t.inv5}</p></div></div>
                     <div class="grid grid-rows-2 gap-6 h-full max-h-[600px]">${getImg('terreno_m.jpeg', 'BEFORE')}${getImg('terreno_l.jpeg', 'AFTER')}</div>
                 </div>`,
-                // 5. Prédio JK Fachada
+                // 6. Prédio JK Fachada
                 `<div class="grid grid-cols-12 gap-8 h-full items-center">
                     <div class="col-span-6 h-[550px]">${getImg('fachada.jpg', 'FACADE')}</div>
-                    <div class="col-span-6 space-y-8 pl-4"><h2 class="text-4xl font-black text-slate-800 tracking-tight uppercase leading-none">${t.title5}</h2><p class="text-lg text-slate-600 leading-relaxed font-medium">${t.desc5}</p></div>
+                    <div class="col-span-6 space-y-8 pl-4"><h2 class="text-4xl font-black text-slate-800 tracking-tight uppercase leading-none">${t.title6}</h2><p class="text-lg text-slate-600 leading-relaxed font-medium">${t.desc6}</p></div>
                 </div>`,
-                // 6. Prédio JK Interno
-                `<div class="flex flex-col h-full justify-center"><h2 class="text-4xl font-black text-slate-800 mb-8 text-center uppercase tracking-tight">${t.title6}</h2><div class="grid grid-cols-3 gap-8 h-[400px]">
+                // 7. Prédio JK Interno
+                `<div class="flex flex-col h-full justify-center"><h2 class="text-4xl font-black text-slate-800 mb-8 text-center uppercase tracking-tight">${t.title7}</h2><div class="grid grid-cols-3 gap-8 h-[400px]">
                         ${getImg('novos_aparelhos.jpeg', 'AC UNITS')}${getImg('eletrica.jpeg', 'ELECTRICAL')}
-                        <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50 border-none shadow-sm"><ul class="space-y-4 font-semibold text-slate-600"><li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>${t.highlight6_1}</span></li><li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>${t.highlight6_2}</span></li></ul></div>
+                        <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50 border-none shadow-sm"><ul class="space-y-4 font-semibold text-slate-600"><li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>${t.highlight7_1}</span></li><li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>${t.highlight7_2}</span></li></ul></div>
                     </div></div>`,
-                // 7. Centro Informática
+                // 8. Centro Informática
                 `<div class="grid grid-cols-2 gap-12 h-full items-center">
-                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase leading-none">${t.title7}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc7}</p><div class="card-stat bg-blue-600 text-white p-10 border-none shadow-xl"><p class="text-blue-200 font-bold uppercase text-sm mb-2 tracking-widest">${t.inv7}</p><p class="text-5xl font-black tracking-tighter">R$ 38.000,00+</p></div></div>
+                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase leading-none">${t.title8}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc8}</p><div class="card-stat bg-blue-600 text-white p-10 border-none shadow-xl"><p class="text-blue-200 font-bold uppercase text-sm mb-2 tracking-widest">${t.inv8}</p><p class="text-5xl font-black tracking-tighter">R$ 38.000,00+</p></div></div>
                     ${getImg('centro.jpeg', 'IT LAB')}
                 </div>`,
-                // 8. Segurança Alimentar
+                // 9. Segurança Alimentar
                 `<div class="grid grid-cols-2 gap-12 h-full items-center">${getImg('causa.jpeg', 'SOCIAL')}
-                    <div class="space-y-8 text-right"><i data-lucide="heart" class="text-rose-500 w-16 h-16 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 leading-tight uppercase">${t.title8}</h2><p class="text-xl text-slate-600 font-medium">${t.desc8}</p><p class="text-3xl font-black text-rose-600 tracking-tighter uppercase uppercase">${t.inv8}</p></div>
+                    <div class="space-y-8 text-right"><i data-lucide="heart" class="text-rose-500 w-16 h-16 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 leading-tight uppercase">${t.title9}</h2><p class="text-xl text-slate-600 font-medium">${t.desc9}</p><p class="text-3xl font-black text-rose-600 tracking-tighter uppercase uppercase">${t.inv9}</p></div>
                 </div>`,
-                // 9. Projeto Criando Futuro
-                `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight leading-none">${t.title9}</h2><div class="grid grid-cols-12 gap-8 h-[450px]">
+                // 10. Projeto Criando Futuro
+                `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight leading-none">${t.title10}</h2><div class="grid grid-cols-12 gap-8 h-[450px]">
                         <div class="col-span-8 h-full">${getImg('aula.jpeg', 'AULA DIGITAL')}</div>
-                        <div class="col-span-4 flex flex-col justify-center space-y-6"><h3 class="text-2xl font-bold text-blue-700 italic">"${t.subtitle9}"</h3><p class="text-lg text-slate-600 font-medium leading-relaxed">${t.desc9}</p></div>
+                        <div class="col-span-4 flex flex-col justify-center space-y-6"><h3 class="text-2xl font-bold text-blue-700 italic">"${t.subtitle10}"</h3><p class="text-lg text-slate-600 font-medium leading-relaxed">${t.desc10}</p></div>
                     </div></div>`,
-                // 10. PRACTICE VISÃO GERAL
+                // 11. PRACTICE VISÃO GERAL
                 `<div class="grid grid-cols-2 gap-12 h-full items-center">
-                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter">${t.title10}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc10}</p>
+                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter">${t.title11}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc11}</p>
                         <div class="grid grid-cols-2 gap-4"><div class="p-6 bg-white border-2 border-emerald-100 rounded-3xl shadow-sm"><p class="text-emerald-600 font-black text-3xl tracking-tighter">+500</p><p class="text-xs font-bold text-slate-400 uppercase">PT: Alunos</p></div><div class="p-6 bg-white border-2 border-blue-100 rounded-3xl shadow-sm"><p class="text-blue-600 font-black text-3xl tracking-tighter">228</p><p class="text-xs font-bold text-slate-400 uppercase">PT: Saúde</p></div></div></div>
                     <div class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px]">${getImg('1.jpeg', 'PRACTICE 1')}${getImg('2.jpeg', 'PRACTICE 2')}${getImg('3.jpeg', 'PRACTICE 3')}${getImg('4.jpeg', 'PRACTICE 4')}</div>
                 </div>`,
-                // 11. PRACTICE IMPACTO PREVENÇÃO
+                // 12. PRACTICE IMPACTO PREVENÇÃO
                 `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><div class="grid grid-cols-12 gap-8 h-[500px] items-center">
                         <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('7.jpeg', 'PRACTICE 7')}${getImg('8.jpeg', 'PRACTICE 8')}</div>
-                        <div class="col-span-5 space-y-6 text-right"><i data-lucide="users" class="w-16 h-16 text-emerald-600 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title11}</h2><p class="text-xl text-slate-600 font-medium">${t.desc11}</p></div>
+                        <div class="col-span-5 space-y-6 text-right"><i data-lucide="users" class="w-16 h-16 text-emerald-600 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title12}</h2><p class="text-xl text-slate-600 font-medium">${t.desc12}</p></div>
                     </div></div>`,
-                // 12. PRACTICE IMPACTO SAÚDE
+                // 13. PRACTICE IMPACTO SAÚDE
                 `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><div class="grid grid-cols-12 gap-8 h-[500px] items-center">
-                        <div class="col-span-5 space-y-6"><i data-lucide="activity" class="w-16 h-16 text-blue-600"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title12}</h2><p class="text-xl text-slate-600 font-medium">${t.desc12}</p></div>
+                        <div class="col-span-5 space-y-6"><i data-lucide="activity" class="w-16 h-16 text-blue-600"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title13}</h2><p class="text-xl text-slate-600 font-medium">${t.desc13}</p></div>
                         <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('5.jpeg', 'PRACTICE 5')}${getImg('6.jpeg', 'PRACTICE 6')}</div>
                     </div></div>`,
-                // 13. PÓDIO MARÇO
-                `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><h2 class="text-4xl font-black text-slate-900 mb-10 text-center uppercase tracking-tighter">${t.title13}</h2><div class="flex justify-center items-end space-x-6 h-[400px]">
-                        <div class="podium-item w-1/3 bg-slate-100 rounded-t-[3rem] p-8 flex flex-col items-center justify-end h-[70%] border border-slate-200"><div class="w-full h-32 mb-4 rounded-2xl flex items-center justify-center bg-slate-200"><i data-lucide="map-pin" class="w-12 h-12 text-slate-400"></i></div><span class="text-4xl font-black text-slate-300 mb-2">2º</span><h4 class="font-bold text-slate-700 text-center text-sm">${t.pod2}</h4></div>
-                        <div class="podium-item w-1/3 bg-blue-600 rounded-t-[3rem] p-8 flex flex-col items-center justify-end h-full shadow-2xl"><div class="w-full h-40 mb-4 rounded-2xl flex items-center justify-center bg-blue-500"><i data-lucide="graduation-cap" class="w-16 h-16 text-white"></i></div><span class="text-5xl font-black text-blue-200 mb-2">1º</span><h4 class="font-black text-white text-center text-lg">${t.pod1}</h4></div>
-                        <div class="podium-item w-1/3 bg-emerald-500 rounded-t-[3rem] p-8 flex flex-col items-center justify-end h-[85%] border border-emerald-400"><div class="w-full h-32 mb-4 rounded-2xl flex items-center justify-center bg-emerald-400"><i data-lucide="map" class="w-12 h-12 text-white"></i></div><span class="text-4xl font-black text-emerald-200 mb-2">3º</span><h4 class="font-bold text-white text-center text-xs">${t.pod3}</h4></div>
-                    </div></div>`,
+                
+                // REMOVIDO SLIDE 13 (Pódio de Março)
+
                 // 14. Frota
                 `<div class="flex flex-col h-full justify-center"><h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight leading-none">${t.title14}</h2><div class="grid grid-cols-3 gap-8">
                         <div class="card-stat">${getImg('toro.jpg', 'TORO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Toro</h3></div>
@@ -368,19 +383,18 @@
                 `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto"><div class="space-y-6"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter leading-none">${t.title15}</h2><ul class="space-y-6 font-bold text-slate-600 text-xl"><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_1}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_2}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_3}</span></li></ul></div>
                     <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner"><i data-lucide="file-check" class="w-24 h-24 text-indigo-300 mb-6"></i><h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">${t.card15}</h3></div>
                 </div>`,
-                // 16. Auditoria
-                `<div class="max-w-4xl mx-auto text-center h-full flex flex-col justify-center"><i data-lucide="shield-check" class="w-20 h-20 text-emerald-600 mx-auto mb-8"></i><h2 class="text-5xl font-black text-slate-900 mb-6 tracking-tighter uppercase leading-tight">${t.title16}</h2><p class="text-2xl text-slate-500 mb-12 font-medium">${t.desc16}</p>
-                    <div class="grid grid-cols-3 gap-6 text-left"><div class="card-stat border-t-4 border-emerald-500"><p class="font-bold text-slate-800 uppercase text-xs">${t.card16_1}</p></div><div class="card-stat border-t-4 border-emerald-500"><p class="font-bold text-slate-800 uppercase text-xs">${t.card16_2}</p></div><div class="card-stat border-t-4 border-emerald-500"><p class="font-bold text-slate-800 uppercase text-xs">${t.card16_3}</p></div></div>
-                </div>`,
-                // 17. Conectividade
-                `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-5xl mx-auto"><div class="card-stat bg-slate-900 text-white p-10 border-none shadow-2xl"><i data-lucide="wifi" class="w-12 h-12 text-blue-400 mb-6"></i><h3 class="text-3xl font-bold mb-4 tracking-tighter">${t.title17}</h3><p class="text-slate-400">${t.desc17}</p></div>
+                
+                // REMOVIDO SLIDE 16 (Auditoria / Rigor)
+
+                // 16. Conectividade (Antigo 17) - Chaves corrigidas no dicionário EN/DE
+                `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-5xl mx-auto"><div class="card-stat bg-slate-900 text-white p-10 border-none shadow-2xl"><i data-lucide="wifi" class="w-12 h-12 text-blue-400 mb-6"></i><h3 class="text-3xl font-bold mb-4 tracking-tighter">${t.title16}</h3><p class="text-slate-400">${t.desc16}</p></div>
                     <div class="space-y-6 flex flex-col justify-center">
                         <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm"><h4 class="font-bold text-slate-800 mb-2">${t.support}</h4><p class="text-slate-500 text-sm">${t.supportDesc}</p></div>
                         <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm"><h4 class="font-bold text-slate-800 mb-2">${t.remote}</h4><p class="text-slate-500 text-sm">${t.remoteDesc}</p></div>
                     </div></div>`,
-                // 18. Conclusão
-                `<div class="flex flex-col items-center justify-center h-full text-center space-y-10 max-w-4xl mx-auto animate-in fade-in duration-1000"><h2 class="text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">${t.title18}</h2><p class="text-3xl text-blue-600 font-bold max-w-2xl italic leading-relaxed">"${t.quote18}"</p>
-                    <div class="p-10 bg-slate-900 rounded-[3rem] text-white w-full shadow-2xl"><h3 class="text-2xl font-bold mb-2">ProBrasil Nordeste 2025</h3><p class="text-slate-400 font-bold uppercase tracking-widest text-sm">${t.footer18}</p></div>
+                // 17. Conclusão (Antigo 18)
+                `<div class="flex flex-col items-center justify-center h-full text-center space-y-10 max-w-4xl mx-auto animate-in fade-in duration-1000"><h2 class="text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">${t.title17}</h2><p class="text-3xl text-blue-600 font-bold max-w-2xl italic leading-relaxed">"${t.quote17}"</p>
+                    <div class="p-10 bg-slate-900 rounded-[3rem] text-white w-full shadow-2xl"><h3 class="text-2xl font-bold mb-2">ProBrasil Nordeste 2025</h3><p class="text-slate-400 font-bold uppercase tracking-widest text-sm">${t.footer17}</p></div>
                 </div>`
             ];
             return content[idx];
