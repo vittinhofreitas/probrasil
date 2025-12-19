@@ -345,9 +345,15 @@
                     <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase leading-none">${t.title8}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc8}</p><div class="card-stat bg-blue-600 text-white p-10 border-none shadow-xl"><p class="text-blue-200 font-bold uppercase text-sm mb-2 tracking-widest">${t.inv8}</p><p class="text-5xl font-black tracking-tighter">R$ 38.000,00+</p></div></div>
                     ${getImg('centro.jpg', 'IT LAB')}
                 </div>`,
-                // 9. Segurança Alimentar
-                `<div class="grid grid-cols-2 gap-12 h-full items-center">${getImg('causa.jpeg', 'SOCIAL')}
-                    <div class="space-y-8 text-right"><i data-lucide="heart" class="text-rose-500 w-16 h-16 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 leading-tight uppercase">${t.title9}</h2><p class="text-xl text-slate-600 font-medium">${t.desc9}</p><p class="text-3xl font-black text-rose-600 tracking-tighter uppercase uppercase">${t.inv9}</p></div>
+                // 9. Segurança Alimentar (Layout alterado para imagem wide)
+                `<div class="flex flex-col h-full justify-center space-y-8">
+                    <div class="h-[300px] w-full">${getImg('causa.jpeg', 'SOCIAL')}</div>
+                    <div class="space-y-6 text-center max-w-4xl mx-auto">
+                        <i data-lucide="heart" class="text-rose-500 w-16 h-16 mx-auto"></i>
+                        <h2 class="text-4xl font-black text-slate-900 leading-tight uppercase">${t.title9}</h2>
+                        <p class="text-xl text-slate-600 font-medium">${t.desc9}</p>
+                        <p class="text-3xl font-black text-rose-600 tracking-tighter uppercase uppercase">${t.inv9}</p>
+                    </div>
                 </div>`,
                 // 10. Projeto Criando Futuro
                 `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight leading-none">${t.title10}</h2><div class="grid grid-cols-12 gap-8 h-[450px]">
@@ -506,6 +512,7 @@
     </script>
 </body>
 </html>
+
 
 
 
