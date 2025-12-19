@@ -156,7 +156,7 @@
         const logoUrl = "https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png";
         let currentSlide = 0;
 
-        // FUNÇÃO AUXILIAR PARA IMAGENS (Corrigido para buscar na mesma pasta)
+        // FUNÇÃO AUXILIAR PARA IMAGENS
         function getImg(src, label) {
             return `<div class="img-overlay h-full w-full relative">
                 <img src="./${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
@@ -232,8 +232,8 @@
                         </div>
                     </div>
                     <div class="grid grid-rows-2 gap-6 h-full max-h-[600px]">
-                        ${getImg('terreno_antes.jpg', 'ESTADO INICIAL')}
-                        ${getImg('terreno_depois.jpg', 'ATUAL: PRONTO PARA OBRAS')}
+                        ${getImg('./terreno_m.jpeg', 'ESTADO INICIAL')}
+                        ${getImg('./terreno_l.jpeg', 'ATUAL')}
                     </div>
                 </div>`
             },
@@ -241,7 +241,7 @@
             { title: "Prédio JK Externo", content: `
                 <div class="grid grid-cols-12 gap-8 h-full items-center">
                     <div class="col-span-5 h-[500px]">
-                        ${getImg('fachada.jpg', 'FACHADA RENOVADA')}
+                        ${getImg('./fachada.jpg', 'FACHADA RENOVADA')}
                     </div>
                     <div class="col-span-7 space-y-8 pl-4">
                         <h2 class="text-4xl font-bold text-slate-800">Renovação do Prédio JK</h2>
@@ -263,8 +263,8 @@
                         <h2 class="text-4xl font-bold text-slate-800">Conforto e Climatização</h2>
                     </div>
                     <div class="grid grid-cols-3 gap-8 h-[400px]">
-                        ${getImg('novos_aparelhos.jpeg', 'NOVOS APARELHOS DE AR')}
-                        ${getImg('eletrica.jpeg', 'REVISÃO ELÉTRICA')}
+                        ${getImg('./novos_aparelhos.jpeg', 'NOVOS APARELHOS DE AR')}
+                        ${getImg('./eletrica.jpeg', 'REVISÃO ELÉTRICA')}
                         <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50">
                             <h3 class="text-xl font-bold text-slate-700">Destaques</h3>
                             <ul class="space-y-4">
@@ -291,7 +291,7 @@
                         </div>
                     </div>
                     <div class="h-[500px]">
-                        ${getImg('centro.jpeg', 'FOTO DO LABORATÓRIO')}
+                        ${getImg('./laboratorio.jpeg', 'FOTO DO LABORATÓRIO')}
                     </div>
                 </div>`
             },
@@ -327,7 +327,7 @@
             { title: "Segurança Alimentar", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center">
                     <div class="h-[500px]">
-                        ${getImg('causa.jpeg', 'FOTO CESTAS BÁSICAS / AÇÃO SOCIAL')}
+                        ${getImg('./causa.jpeg', 'FOTO CESTAS BÁSICAS / AÇÃO SOCIAL')}
                     </div>
                     <div class="space-y-8">
                         <div class="inline-flex items-center space-x-2 bg-rose-100 text-rose-700 px-4 py-2 rounded-full font-bold text-sm">
@@ -351,7 +351,7 @@
                     <p class="text-xl text-slate-500 mb-8 text-center">Inclusão Digital no Sertão do Piauí</p>
                     <div class="grid grid-cols-12 gap-8 h-[450px]">
                         <div class="col-span-8 h-full">
-                            ${getImg('aula.jpeg', 'FOTO SALA DE AULA / ALUNOS')}
+                            ${getImg('./aula.jpeg', 'FOTO SALA DE AULA / ALUNOS')}
                         </div>
                         <div class="col-span-4 flex flex-col gap-4">
                             <div class="card-stat bg-slate-50 flex-1 flex flex-col justify-center border-none"><p class="text-slate-400 font-bold uppercase text-xs mb-2">Instrutores</p><p class="font-bold text-slate-800">Pagamento Prof. Informática</p></div>
@@ -361,7 +361,7 @@
                     </div>
                 </div>`
             },
-            // 11. Gestão Administrativa
+            // 11. Gestão Administrativa (SUBSTITUINDO ENERGIA SOLAR)
             { title: "Conformidade e Gestão", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto">
                     <div class="space-y-6">
@@ -385,7 +385,7 @@
                     </div>
                 </div>`
             },
-            // 12. Frota (CORRIGIDO: SINTAXE E CAMINHOS)
+            // 12. Frota
             { title: "Frota", content: `
                 <div class="flex flex-col justify-center h-full max-w-6xl mx-auto w-full">
                     <div class="flex items-center justify-between mb-10">
@@ -394,23 +394,17 @@
                     </div>
                     <div class="grid grid-cols-3 gap-8">
                         <div class="card-stat">
-                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                ${getImg('toro.jpg', 'FOTO TORO')}
-                            </div>
+                            ${getImg('./toro.jpg')}
                             <h3 class="text-xl font-bold text-slate-800">Fiat Toro</h3>
                             <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 2.450,00+</p><p class="text-xs text-slate-400">Pneus e Revisão</p></div>
                         </div>
                         <div class="card-stat">
-                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                ${getImg('doblo.jpg', 'FOTO DOBLO')}
-                            </div>
+                            ${getImg('./doblo.jpg')}
                             <h3 class="text-xl font-bold text-slate-800">Fiat Doblo</h3>
                             <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 1.890,00+</p><p class="text-xs text-slate-400">Vidros e Suspensão</p></div>
                         </div>
                         <div class="card-stat">
-                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                ${getImg('moto.jpg', 'FOTO MOTO')}
-                            </div>
+                            ${getImg('./moto.jpg')}
                             <h3 class="text-xl font-bold text-slate-800">Moto Brós</h3>
                             <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 646,00+</p><p class="text-xs text-slate-400">Revisão Geral</p></div>
                         </div>
@@ -585,3 +579,8 @@
     </script>
 </body>
 </html>
+
+
+
+
+
