@@ -157,11 +157,11 @@
 
         let currentSlide = 0;
 
-        // FUNÇÃO AUXILIAR PARA IMAGENS (NUMERAÇÃO 1 A 13)
-        function getImg(num, label) {
+        // FUNÇÃO AUXILIAR PARA IMAGENS (RESTABELECIDA PARA NOMES ORIGINAIS, EXCETO PRACTICE)
+        function getImg(src, label) {
             return `<div class="img-overlay h-full w-full relative">
-                <img src="./${num}.jpg" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
-                <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">RECURSO VISUAL: ${num}.jpg<br>${label}</div>
+                <img src="./${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
+                <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">RECURSO VISUAL: ${src}<br>${label}</div>
                 <div class="img-caption">${label}</div>
             </div>`;
         }
@@ -217,8 +217,8 @@
                         </div>
                     </div>
                     <div class="grid grid-rows-2 gap-6 h-full max-h-[600px]">
-                        ${getImg('1', 'ESTADO INICIAL')}
-                        ${getImg('2', 'TERRENO LIMPO')}
+                        ${getImg('terreno_m.jpeg', 'ESTADO INICIAL')}
+                        ${getImg('terreno_l.jpeg', 'TERRENO LIMPO')}
                     </div>
                 </div>`
             },
@@ -226,7 +226,7 @@
             { title: "Prédio JK: Fachada", content: `
                 <div class="grid grid-cols-12 gap-8 h-full items-center">
                     <div class="col-span-6 h-[550px]">
-                        ${getImg('3', 'FACHADA RENOVADA')}
+                        ${getImg('fachada.jpg', 'FACHADA RENOVADA')}
                     </div>
                     <div class="col-span-6 space-y-8 pl-4">
                         <h2 class="text-4xl font-black text-slate-800 tracking-tight uppercase">Renovação do Prédio JK</h2>
@@ -240,8 +240,8 @@
                 <div class="flex flex-col h-full justify-center">
                     <h2 class="text-4xl font-black text-slate-800 mb-8 text-center uppercase tracking-tight">Conforto e Climatização</h2>
                     <div class="grid grid-cols-3 gap-8 h-[400px]">
-                        ${getImg('4', 'NOVOS APARELHOS DE AR')}
-                        ${getImg('5', 'REVISÃO ELÉTRICA')}
+                        ${getImg('novos_aparelhos.jpeg', 'NOVOS APARELHOS DE AR')}
+                        ${getImg('eletrica.jpeg', 'REVISÃO ELÉTRICA')}
                         <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50 border-none">
                             <h3 class="text-xl font-bold text-slate-700">Destaques</h3>
                             <ul class="space-y-4 font-semibold text-slate-600">
@@ -263,13 +263,13 @@
                             <p class="text-5xl font-black tracking-tighter">R$ 38.000,00+</p>
                         </div>
                     </div>
-                    ${getImg('6', 'CENTRO DE INFORMÁTICA')}
+                    ${getImg('centro.jpeg', 'CENTRO DE INFORMÁTICA')}
                 </div>`
             },
             // 8. Segurança Alimentar
             { title: "Ação Social", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center">
-                    ${getImg('7', 'CESTAS BÁSICAS')}
+                    ${getImg('causa.jpeg', 'CESTAS BÁSICAS')}
                     <div class="space-y-8 text-right">
                         <i data-lucide="heart" class="text-rose-500 w-16 h-16 ml-auto"></i>
                         <h2 class="text-4xl font-black text-slate-900 leading-tight uppercase tracking-tighter">Segurança Alimentar</h2>
@@ -284,7 +284,7 @@
                     <h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tighter">Projeto Criando Futuro</h2>
                     <div class="grid grid-cols-12 gap-8 h-[450px]">
                         <div class="col-span-7 h-full">
-                            ${getImg('8', 'AULA DE INCLUSÃO')}
+                            ${getImg('aula.jpeg', 'AULA DE INCLUSÃO')}
                         </div>
                         <div class="col-span-5 flex flex-col justify-center space-y-6">
                             <h3 class="text-2xl font-bold text-blue-700 italic">"Inclusão Digital no Sertão"</h3>
@@ -307,8 +307,8 @@
                         </ul>
                     </div>
                     <div class="grid grid-cols-2 gap-4 h-[500px]">
-                        ${getImg('9', 'PREPARO VISITA MARÇO')}
-                        ${getImg('10', 'TREINAMENTOS JUNHO')}
+                        ${getImg('practice_1.jpg', 'PREPARO VISITA MARÇO')}
+                        ${getImg('practice_2.jpg', 'TREINAMENTOS JUNHO')}
                     </div>
                 </div>`
             },
@@ -366,9 +366,9 @@
                 <div class="flex flex-col h-full justify-center">
                     <h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight">Gestão de Logística</h2>
                     <div class="grid grid-cols-3 gap-8">
-                        <div class="card-stat">${getImg('11', 'FIAT TORO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Toro</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Revisão e Pneus</div></div>
-                        <div class="card-stat">${getImg('12', 'FIAT DOBLO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Doblo</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Suspensão e Vidros</div></div>
-                        <div class="card-stat">${getImg('13', 'MOTO BRÓS')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Moto Brós</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Revisão Geral</div></div>
+                        <div class="card-stat">${getImg('toro.jpg', 'FIAT TORO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Toro</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Revisão e Pneus</div></div>
+                        <div class="card-stat">${getImg('doblo.jpg', 'FIAT DOBLO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Doblo</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Suspensão e Vidros</div></div>
+                        <div class="card-stat">${getImg('moto.jpg', 'MOTO BRÓS')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Moto Brós</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Revisão Geral</div></div>
                     </div>
                 </div>`
             },
