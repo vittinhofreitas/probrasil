@@ -20,9 +20,12 @@
         .card-stat { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9; }
         
         /* Estilo para quando a imagem não carrega (Placeholder) */
-        img[src=""], img[src="#"] { display: none; }
+        img[src=""], img[src="#"], img[src*="undefined"] { display: none; }
         .img-overlay.missing-img { display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #94a3b8; font-weight: bold; text-align: center; padding: 20px; border: 2px dashed #cbd5e1; }
         .img-overlay.missing-img::after { content: attr(data-label); display: block; }
+
+        .podium-item { transition: transform 0.3s; }
+        .podium-item:hover { transform: translateY(-10px); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -37,7 +40,7 @@
                 <div class="h-8 w-px bg-slate-200"></div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-800 leading-tight">Painel de Governança</h1>
-                    <p class="text-xs text-slate-400 font-medium">Jan - Set 2025</p>
+                    <p class="text-xs text-slate-400 font-medium">Relatório Integrado 2025</p>
                 </div>
             </div>
             
@@ -68,16 +71,16 @@
                     <p class="text-3xl font-black text-emerald-600">+ R$ 10.362,80</p>
                 </div>
                 <div class="card-stat group">
-                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-6 h-6"></i></div>
+                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="award" class="w-6 h-6"></i></div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Impacto Social</p>
-                    <p class="text-3xl font-black text-slate-800">+350 Alunos</p>
+                    <p class="text-3xl font-black text-slate-800">+700 Vidas</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 card-stat">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold text-slate-800">Fluxo de Caixa (Valores Validados)</h3>
+                        <h3 class="text-xl font-bold text-slate-800">Fluxo de Caixa Mensal</h3>
                         <div class="flex space-x-4 text-sm font-semibold">
                             <span class="flex items-center"><div class="w-3 h-3 rounded-full bg-emerald-500 mr-2"></div>Entradas</span>
                             <span class="flex items-center"><div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>Saídas</span>
@@ -89,7 +92,7 @@
                 </div>
 
                 <div class="card-stat flex flex-col">
-                    <h3 class="text-xl font-bold text-slate-800 mb-6">Últimas Atualizações</h3>
+                    <h3 class="text-xl font-bold text-slate-800 mb-6">Destaques Estratégicos</h3>
                     <div id="timeline-list" class="space-y-6 flex-grow overflow-y-auto pr-2 custom-scrollbar">
                         <!-- JS injected -->
                     </div>
@@ -102,9 +105,8 @@
         </main>
     </div>
 
-    <!-- PRESENTATION VIEW (15 SLIDES) -->
+    <!-- PRESENTATION VIEW (18 SLIDES) -->
     <div id="presentation-view" class="hidden h-screen w-screen flex flex-col bg-slate-50 fixed top-0 left-0 z-[100]">
-        <!-- Barra de Progresso -->
         <div class="h-1 bg-slate-200 w-full">
             <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
         </div>
@@ -113,7 +115,7 @@
             <div class="flex items-center space-x-4">
                 <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil" class="h-8 object-contain">
                 <div class="h-4 w-px bg-slate-300"></div>
-                <span id="slide-number-label" class="text-xs font-black tracking-widest text-slate-400 uppercase">Visão Geral</span>
+                <span id="slide-number-label" class="text-xs font-black tracking-widest text-slate-400 uppercase">Apresentação Executiva</span>
             </div>
             <button onclick="toggleView('dashboard')" class="flex items-center space-x-2 text-slate-500 hover:text-red-600 transition-colors font-bold text-sm bg-slate-100 px-4 py-2 rounded-full">
                 <span>Encerrar</span>
@@ -131,7 +133,7 @@
             <button onclick="prevSlide()" class="p-3 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
                 <i data-lucide="chevron-left" class="w-6 h-6"></i>
             </button>
-            <span class="text-sm font-bold text-slate-400 select-none">NAVEGAÇÃO</span>
+            <span class="text-sm font-bold text-slate-400 select-none uppercase tracking-widest">Navegação</span>
             <button onclick="nextSlide()" class="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-md transition-all transform hover:scale-105">
                 <i data-lucide="chevron-right" class="w-6 h-6"></i>
             </button>
@@ -143,320 +145,256 @@
         const dataConsolidada = [
             { mes: 'Jan', entradas: 6156.82, saidas: 5000.00, destaque: 'Reforma Prédio JK', info: 'Início das pinturas e manutenção.' },
             { mes: 'Fev', entradas: 41189.74, saidas: 43969.48, destaque: 'Ação Social', info: 'Segurança alimentar (Cestas Básicas).' },
-            { mes: 'Mar', entradas: 53531.08, saidas: 56981.04, destaque: 'Infraestrutura', info: 'Limpeza e preparação do Terreno.' },
+            { mes: 'Mar', entradas: 53531.08, saidas: 56981.04, destaque: 'PRACTICE Março', info: 'Início do programa e grandes preparos.' },
             { mes: 'Abr', entradas: 27290.53, saidas: 25252.15, destaque: 'Manutenção', info: 'Expansão Centro Ambiental.' },
-            { mes: 'Mai', entradas: 25653.60, saidas: 31184.00, destaque: 'Cursos', info: 'Projeto Practice Bom Fim.' },
-            { mes: 'Jun', entradas: 56991.34, saidas: 31810.50, destaque: 'Doações', info: 'Recebimento de doação específica para TI.' },
-            { mes: 'Jul', entradas: 86701.22, saidas: 30523.11, destaque: 'Pico de Atividade', info: 'Ajuste de conciliação mensal.' },
-            { mes: 'Ago', entradas: 53800.91, saidas: 80611.38, destaque: 'Inclusão Digital', info: 'Laboratório de TI e Elétrica.' },
-            { mes: 'Set', entradas: 6144.50, saidas: 41765.28, destaque: 'Sustentabilidade', info: 'Manutenção Energia Solar.' },
+            { mes: 'Mai', entradas: 25653.60, saidas: 31184.00, destaque: 'Criando Futuro', info: 'Capacitação Digital no Sertão.' },
+            { mes: 'Jun', entradas: 56991.34, saidas: 31810.50, destaque: 'PRACTICE Junho', info: 'Visitas técnicas e treinamentos.' },
+            { mes: 'Jul', entradas: 86701.22, saidas: 30523.11, destaque: 'Inclusão Digital', info: 'Upgrade tecnológico do laboratório.' },
+            { mes: 'Ago', entradas: 53800.91, saidas: 80611.38, destaque: 'Infraestrutura', info: 'Finalização elétrica e climatização.' },
+            { mes: 'Set', entradas: 6144.50, saidas: 41765.28, destaque: 'PRACTICE Outubro', info: 'Preparação visitas finais e Fortaleza.' },
         ];
 
-        // LOGO PADRÃO
-        const logoUrl = "https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png";
         let currentSlide = 0;
 
-        // FUNÇÃO AUXILIAR PARA IMAGENS
-        function getImg(src, label) {
-            // Remove ./ duplicado se houver
-            const cleanSrc = src.startsWith('./') ? src : `./${src}`;
+        // FUNÇÃO AUXILIAR PARA IMAGENS (NUMERAÇÃO SOLICITADA)
+        function getImg(num, label) {
             return `<div class="img-overlay h-full w-full relative">
-                <img src="${cleanSrc}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
-                <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">${label}</div>
+                <img src="./${num}.jpg" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
+                <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">RECURSO VISUAL: ${num}.jpg<br>${label}</div>
                 <div class="img-caption">${label}</div>
             </div>`;
         }
 
-        // --- CONTEÚDO DOS 15 SLIDES ---
+        // --- CONTEÚDO DOS 18 SLIDES ---
         const slides = [
-            // 1. Capa
             { title: "Capa", content: `
                 <div class="flex flex-col items-center justify-center h-full text-center space-y-8 animate-in fade-in zoom-in duration-700">
                     <div class="p-10 bg-slate-50 rounded-[2rem] mb-6 border border-slate-100">
-                        <img src="${logoUrl}" class="h-48 object-contain">
+                        <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" class="h-48 object-contain">
                     </div>
                     <div>
-                        <h1 class="text-6xl font-black text-slate-900 tracking-tight mb-4">RELATÓRIO DE GOVERNANÇA</h1>
-                        <div class="inline-block bg-blue-600 text-white text-xl font-bold px-6 py-2 rounded-full tracking-widest uppercase">Ano 2025</div>
+                        <h1 class="text-6xl font-black text-slate-900 tracking-tight mb-4 uppercase">Relatório de Governança</h1>
+                        <div class="inline-block bg-blue-600 text-white text-xl font-bold px-6 py-2 rounded-full tracking-widest uppercase">Resultados 2025</div>
                     </div>
-                    <div class="w-32 h-2 bg-gradient-to-r from-blue-600 to-emerald-400 rounded-full mt-8"></div>
                     <p class="text-slate-400 font-bold uppercase tracking-widest mt-8">Diretoria Executiva • Coronel José Dias, PI</p>
                 </div>` 
             },
-            // 2. Visão Geral
             { title: "Visão Geral", content: `
                 <div class="flex flex-col justify-center h-full max-w-5xl mx-auto w-full">
-                    <h2 class="text-4xl font-bold text-slate-800 mb-2">Visão Geral Financeira</h2>
-                    <p class="text-slate-500 mb-12 text-xl">Consolidado auditado de Janeiro a Setembro.</p>
+                    <h2 class="text-4xl font-bold text-slate-800 mb-2">Resumo Financeiro Auditado</h2>
+                    <p class="text-slate-500 mb-12 text-xl">Total acumulado de Janeiro a Setembro de 2025.</p>
                     <div class="grid grid-cols-3 gap-8">
-                        <div class="card-stat border-l-8 border-emerald-500 bg-emerald-50/50">
-                            <p class="text-emerald-600 font-bold uppercase text-sm mb-2">Entradas Totais</p>
-                            <p class="text-4xl font-black text-emerald-700 tracking-tight">R$ 357.459,74</p>
-                        </div>
-                        <div class="card-stat border-l-8 border-blue-500 bg-blue-50/50">
-                            <p class="text-blue-600 font-bold uppercase text-sm mb-2">Investimentos (Saídas)</p>
-                            <p class="text-4xl font-black text-blue-700 tracking-tight">R$ 347.096,94</p>
-                        </div>
-                        <div class="card-stat border-l-8 border-slate-700 bg-slate-800 text-white">
-                            <p class="text-slate-400 font-bold uppercase text-sm mb-2">Saldo em Caixa</p>
-                            <p class="text-4xl font-black text-white tracking-tight">+ R$ 10.362,80</p>
-                        </div>
+                        <div class="card-stat border-l-8 border-emerald-500"><p class="text-emerald-600 font-bold uppercase text-xs mb-2">Entradas</p><p class="text-4xl font-black text-emerald-700 tracking-tight">R$ 357.459,74</p></div>
+                        <div class="card-stat border-l-8 border-blue-500"><p class="text-blue-600 font-bold uppercase text-xs mb-2">Saídas</p><p class="text-4xl font-black text-blue-700 tracking-tight">R$ 347.096,94</p></div>
+                        <div class="card-stat border-l-8 border-slate-800 bg-slate-900 text-white"><p class="text-slate-400 font-bold uppercase text-xs mb-2">Saldo</p><p class="text-4xl font-black text-white tracking-tight">+ R$ 10.362,80</p></div>
                     </div>
-                    <div class="mt-12 p-6 bg-blue-50 rounded-2xl border border-blue-100 flex items-center space-x-4">
-                        <i data-lucide="info" class="text-blue-600 w-8 h-8 flex-shrink-0"></i>
-                        <p class="text-blue-800 font-medium text-lg">
-                            Demonstração de eficiência: <span class="font-bold">97% dos recursos</span> foram reinvestidos diretamente na missão da entidade (Obras, Projetos e Social).
-                        </p>
+                    <div class="mt-12 p-8 bg-blue-50 rounded-2xl border border-blue-100 flex items-center space-x-6">
+                        <i data-lucide="info" class="text-blue-600 w-12 h-12"></i>
+                        <p class="text-blue-900 font-medium text-xl leading-relaxed"><strong>97% de Eficiência:</strong> Quase a totalidade dos recursos foi convertida diretamente em infraestrutura e projetos sociais.</p>
                     </div>
                 </div>`
             },
-            // 3. Gráfico Fluxo
-            { title: "Fluxo de Caixa", content: `
+            { title: "Fluxo Mensal", content: `
                 <div class="flex flex-col h-full w-full max-w-6xl mx-auto">
-                    <h2 class="text-4xl font-bold text-slate-800 mb-8">Evolução Mensal do Investimento</h2>
+                    <h2 class="text-4xl font-bold text-slate-800 mb-8">Fluxo de Caixa Mensal</h2>
                     <div class="flex-grow relative w-full"><canvas id="slideChart"></canvas></div>
                 </div>`
             },
-            // 4. Terreno
-            { title: "Infraestrutura: Terreno", content: `
+            { title: "Terreno: Preparo", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center">
                     <div class="space-y-8">
-                        <div class="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold text-sm">
-                            <i data-lucide="shovel" class="w-4 h-4"></i><span>INFRAESTRUTURA</span>
-                        </div>
-                        <h2 class="text-5xl font-bold text-slate-900 leading-tight">O Terreno: <br>Transformação</h2>
-                        <p class="text-xl text-slate-600 leading-relaxed">
-                            A primeira grande ação do ano (Fev/Mar). Limpamos e preparamos o solo para as futuras expansões.
-                        </p>
-                        <div class="border-t border-slate-200 pt-6">
-                            <p class="text-3xl font-bold text-slate-800">R$ 4.000,00+</p>
-                            <p class="text-sm text-slate-500 mt-1">Investidos em limpeza e regularização.</p>
+                        <div class="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold text-sm uppercase">Infraestrutura</div>
+                        <h2 class="text-5xl font-bold text-slate-900 leading-tight">O Terreno</h2>
+                        <p class="text-xl text-slate-600 leading-relaxed italic">"Limpeza e preparação do solo para o crescimento futuro."</p>
+                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                             <p class="text-3xl font-black text-slate-800 tracking-tighter">R$ 4.000,00+</p>
+                             <p class="text-sm text-slate-400 font-bold uppercase">Investimento em Limpeza</p>
                         </div>
                     </div>
                     <div class="grid grid-rows-2 gap-6 h-full max-h-[600px]">
-                        ${getImg('terreno_m.jpeg', 'ESTADO INICIAL')}
-                        ${getImg('terreno_l.jpeg', 'ATUAL: PRONTO PARA OBRAS')}
+                        ${getImg('1', 'ESTADO INICIAL')}
+                        ${getImg('2', 'TERRENO LIMPO')}
                     </div>
                 </div>`
             },
-            // 5. Prédio JK Externo
-            { title: "Prédio JK Externo", content: `
+            { title: "Prédio JK: Fachada", content: `
                 <div class="grid grid-cols-12 gap-8 h-full items-center">
-                    <div class="col-span-5 h-[500px]">
-                        ${getImg('fachada.jpg', 'FACHADA RENOVADA')}
+                    <div class="col-span-6 h-[500px]">
+                        ${getImg('3', 'FACHADA RENOVADA')}
                     </div>
-                    <div class="col-span-7 space-y-8 pl-4">
+                    <div class="col-span-6 space-y-8 pl-4">
                         <h2 class="text-4xl font-bold text-slate-800">Renovação do Prédio JK</h2>
-                        <p class="text-lg text-slate-600 leading-relaxed">
-                            O coração da nossa operação recebeu uma reforma completa. A nova pintura e os reparos estruturais garantem a longevidade do patrimônio.
-                        </p>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="card-stat bg-slate-50 border-none"><p class="text-slate-400 text-xs font-bold uppercase mb-2">Manutenção Predial</p><p class="text-2xl font-black text-slate-800">R$ 15.400,00</p></div>
-                            <div class="card-stat bg-slate-50 border-none"><p class="text-slate-400 text-xs font-bold uppercase mb-2">Cronograma</p><p class="text-2xl font-black text-slate-800">Jan - Abr</p></div>
-                        </div>
+                        <p class="text-lg text-slate-600 leading-relaxed font-medium">Reforma completa e nova pintura (Jan-Abr). Patrimônio revitalizado para receber alunos e visitantes.</p>
+                        <div class="card-stat bg-slate-50 border-none"><p class="text-slate-400 text-xs font-bold uppercase mb-2">Manutenção Predial</p><p class="text-2xl font-black text-slate-800">R$ 15.400,00</p></div>
                     </div>
                 </div>`
             },
-            // 6. Prédio JK Interno
-            { title: "Prédio JK Interno", content: `
+            { title: "Prédio JK: Interno", content: `
                 <div class="flex flex-col h-full justify-center">
-                    <div class="flex items-center space-x-4 mb-8">
-                        <i data-lucide="wind" class="text-blue-500 w-10 h-10"></i>
-                        <h2 class="text-4xl font-bold text-slate-800">Conforto e Climatização</h2>
-                    </div>
+                    <h2 class="text-4xl font-bold text-slate-800 mb-8">Conforto e Climatização</h2>
                     <div class="grid grid-cols-3 gap-8 h-[400px]">
-                        ${getImg('novos_aparelhos.jpeg', 'NOVOS APARELHOS DE AR')}
-                        ${getImg('eletrica.jpeg', 'REVISÃO ELÉTRICA')}
+                        ${getImg('4', 'NOVOS APARELHOS DE AR')}
+                        ${getImg('5', 'REVISÃO ELÉTRICA')}
                         <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50">
-                            <h3 class="text-xl font-bold text-slate-700">Destaques</h3>
-                            <ul class="space-y-4">
-                                <li class="flex items-start space-x-3 text-slate-600"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>Instalação AC 9000 BTUs</span></li>
-                                <li class="flex items-start space-x-3 text-slate-600"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>Manutenção Preventiva</span></li>
-                                <li class="flex items-start space-x-3 text-slate-600"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>Reparos Hidráulicos</span></li>
+                            <h3 class="text-xl font-bold text-slate-700">Manutenção</h3>
+                            <ul class="space-y-4 font-semibold text-slate-600">
+                                <li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>AC 9000 BTUs</span></li>
+                                <li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>Instalações Hidráulicas</span></li>
                             </ul>
                         </div>
                     </div>
                 </div>`
             },
-            // 7. Inclusão Digital Capa
             { title: "Inclusão Digital", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center">
                     <div class="space-y-8">
-                        <h2 class="text-5xl font-bold text-slate-900">Centro de Inclusão Digital</h2>
-                        <p class="text-xl text-slate-600 leading-relaxed">
-                            O maior investimento estratégico do segundo semestre. Criamos um ambiente moderno para capacitar a comunidade em tecnologia.
-                        </p>
-                        <div class="card-stat bg-blue-600 text-white border-none p-10">
-                            <p class="text-blue-200 font-bold uppercase text-sm mb-2">Investimento Total em TI</p>
+                        <h2 class="text-5xl font-black text-slate-900 leading-tight">Infraestrutura Digital</h2>
+                        <p class="text-xl text-slate-600 leading-relaxed font-medium text-blue-600">Upgrade Tecnológico em Julho e Agosto.</p>
+                        <div class="card-stat bg-blue-600 text-white p-10 border-none">
+                            <p class="text-blue-200 font-bold uppercase text-sm mb-2">Investimento TI</p>
                             <p class="text-5xl font-black">R$ 38.000,00+</p>
-                            <p class="text-blue-200 mt-4 text-sm font-semibold">Realizado em Julho e Agosto de 2025</p>
                         </div>
                     </div>
-                    <div class="h-[500px]">
-                        ${getImg('centro.jpeg', 'FOTO DO LABORATÓRIO')}
-                    </div>
+                    ${getImg('6', 'CENTRO DE INFORMÁTICA')}
                 </div>`
             },
-            // 8. Inclusão Digital Detalhes
-            { title: "Detalhes TI", content: `
-                <div class="flex flex-col justify-center h-full max-w-6xl mx-auto w-full">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-12 text-center">Upgrade Tecnológico Completo</h2>
-                    <div class="grid grid-cols-4 gap-6">
-                        <div class="card-stat text-center hover:-translate-y-2 transition-transform cursor-pointer">
-                            <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600"><i data-lucide="monitor" class="w-8 h-8"></i></div>
-                            <h3 class="font-bold text-slate-800">Novos PCs</h3>
-                            <p class="text-sm text-slate-500 mt-2">Alta performance para cursos.</p>
-                        </div>
-                        <div class="card-stat text-center hover:-translate-y-2 transition-transform cursor-pointer">
-                            <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600"><i data-lucide="projector" class="w-8 h-8"></i></div>
-                            <h3 class="font-bold text-slate-800">Projetor Epson</h3>
-                            <p class="text-sm text-slate-500 mt-2">R$ 3.159,00 em audiovisual.</p>
-                        </div>
-                        <div class="card-stat text-center hover:-translate-y-2 transition-transform cursor-pointer">
-                            <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600"><i data-lucide="plug" class="w-8 h-8"></i></div>
-                            <h3 class="font-bold text-slate-800">Elétrica de Piso</h3>
-                            <p class="text-sm text-slate-500 mt-2">Instalação Leroy Merlin.</p>
-                        </div>
-                        <div class="card-stat text-center hover:-translate-y-2 transition-transform cursor-pointer">
-                            <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600"><i data-lucide="wifi" class="w-8 h-8"></i></div>
-                            <h3 class="font-bold text-slate-800">Rede Estruturada</h3>
-                            <p class="text-sm text-slate-500 mt-2">Cabeamento e Switch novos.</p>
-                        </div>
-                    </div>
-                </div>`
-            },
-            // 9. Segurança Alimentar
-            { title: "Segurança Alimentar", content: `
+            { title: "Ação Social", content: `
                 <div class="grid grid-cols-2 gap-12 h-full items-center">
-                    <div class="h-[500px]">
-                        ${getImg('causa.jpeg', 'FOTO CESTAS BÁSICAS / AÇÃO SOCIAL')}
-                    </div>
-                    <div class="space-y-8">
-                        <div class="inline-flex items-center space-x-2 bg-rose-100 text-rose-700 px-4 py-2 rounded-full font-bold text-sm">
-                            <i data-lucide="heart" class="w-4 h-4"></i><span>AÇÃO SOCIAL</span>
-                        </div>
-                        <h2 class="text-4xl font-bold text-slate-900">Segurança Alimentar</h2>
-                        <p class="text-xl text-slate-600 leading-relaxed">
-                            Além da infraestrutura, cuidamos das pessoas. Em Fevereiro, realizamos uma ação vital de distribuição de alimentos.
-                        </p>
-                        <div class="p-6 border-l-4 border-rose-500 bg-white shadow-sm rounded-r-xl">
-                            <p class="font-bold text-slate-800 text-lg">Doação Direta</p>
-                            <p class="text-slate-500">Repasse de <strong class="text-slate-900">R$ 4.000,00</strong> para compra de alimentos emergenciais.</p>
-                        </div>
+                    ${getImg('7', 'CESTAS BÁSICAS FEVEREIRO')}
+                    <div class="space-y-8 text-right">
+                        <i data-lucide="heart" class="text-rose-500 w-16 h-16 ml-auto"></i>
+                        <h2 class="text-4xl font-bold text-slate-900 leading-tight">Segurança Alimentar</h2>
+                        <p class="text-xl text-slate-600 font-medium">Distribuição emergencial de alimentos para famílias da região.</p>
+                        <p class="text-3xl font-black text-rose-600 tracking-tighter">R$ 4.000,00 Doação Direta</p>
                     </div>
                 </div>`
             },
-            // 10. Educação
-            { title: "Projeto Criando Futuro", content: `
+            { title: "Criando Futuro", content: `
                 <div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full">
-                    <h2 class="text-4xl font-bold text-slate-800 mb-2 text-center">Projeto Criando Futuro</h2>
-                    <p class="text-xl text-slate-500 mb-8 text-center">Inclusão Digital no Sertão do Piauí</p>
+                    <h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tighter">Projeto Criando Futuro</h2>
                     <div class="grid grid-cols-12 gap-8 h-[450px]">
-                        <div class="col-span-8 h-full">
-                            ${getImg('aula.jpeg', 'FOTO SALA DE AULA / ALUNOS')}
+                        <div class="col-span-7 h-full">
+                            ${getImg('8', 'AULA DE INCLUSÃO DIGITAL')}
                         </div>
-                        <div class="col-span-4 flex flex-col gap-4">
-                            <div class="card-stat bg-slate-50 flex-1 flex flex-col justify-center border-none"><p class="text-slate-400 font-bold uppercase text-xs mb-2">Instrutores</p><p class="font-bold text-slate-800">Pagamento Prof. Informática</p></div>
-                            <div class="card-stat bg-slate-50 flex-1 flex flex-col justify-center border-none"><p class="text-slate-400 font-bold uppercase text-xs mb-2">Material</p><p class="font-bold text-slate-800">Certificados e Apostilas</p></div>
-                            <div class="card-stat bg-slate-50 flex-1 flex flex-col justify-center border-none"><p class="text-slate-400 font-bold uppercase text-xs mb-2">Apoio</p><p class="font-bold text-slate-800">Bolsas de Estudo Mensais</p></div>
+                        <div class="col-span-5 flex flex-col justify-center space-y-6">
+                            <h3 class="text-2xl font-bold text-blue-700 italic">"Inclusão Digital no Sertão"</h3>
+                            <p class="text-lg text-slate-600 font-medium">Capacitação de jovens, integrando educação tecnológica com o desenvolvimento do Piauí.</p>
                         </div>
                     </div>
                 </div>`
             },
-            // 11. Conformidade e Gestão
-            { title: "Conformidade e Gestão", content: `
-                <div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto">
-                    <div class="space-y-6">
-                        <div class="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full font-bold text-sm">
-                            <i data-lucide="building" class="w-4 h-4"></i><span>GOVERNANÇA</span>
-                        </div>
-                        <h2 class="text-4xl font-bold text-slate-900">Conformidade e Gestão Administrativa</h2>
-                        <p class="text-xl text-slate-600">
-                            A regularidade institucional é a base do nosso trabalho. Garantimos que todas as obrigações legais e contábeis sejam cumpridas rigorosamente.
-                        </p>
-                        <ul class="space-y-4">
-                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-indigo-500"></i><span>Contabilidade (R&R) em Dia</span></li>
-                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-indigo-500"></i><span>Taxas Legais e Cartoriais Pagas</span></li>
-                            <li class="flex items-center space-x-3 text-slate-700 font-medium"><i data-lucide="check-circle" class="text-indigo-500"></i><span>Sistemas de Gestão Ativos</span></li>
+            // PRACTICE - SLIDES
+            { title: "PRACTICE: Visão Geral", content: `
+                <div class="grid grid-cols-2 gap-12 h-full items-center">
+                    <div class="space-y-8">
+                        <div class="inline-flex items-center space-x-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-bold text-sm uppercase">Cooperação Internacional</div>
+                        <h2 class="text-5xl font-black text-slate-900 leading-tight tracking-tighter uppercase">Projeto PRACTICE</h2>
+                        <p class="text-xl text-slate-600 leading-relaxed font-medium">Parceria estratégica: <strong>GIZ (Alemanha)</strong> e <strong>Hospital ukb de Berlim</strong>.</p>
+                        <ul class="space-y-4 font-bold text-slate-700">
+                             <li class="flex items-center space-x-3"><i data-lucide="check" class="text-emerald-500"></i><span>Prevenção de Traumas Infantis</span></li>
+                             <li class="flex items-center space-x-3"><i data-lucide="check" class="text-emerald-500"></i><span>Treinamentos de Urgência</span></li>
                         </ul>
                     </div>
-                    <div class="h-[400px] rounded-[2rem] bg-indigo-50 flex flex-col items-center justify-center border-2 border-indigo-100 shadow-inner p-8 text-center">
-                        <i data-lucide="file-check" class="w-24 h-24 text-indigo-300 mb-6"></i>
-                        <h3 class="text-2xl font-bold text-indigo-800">100% Regular</h3>
-                        <p class="text-indigo-600 mt-2">A ProBrasil Nordeste opera com total transparência fiscal e administrativa.</p>
+                    <div class="grid grid-cols-2 gap-4 h-[500px]">
+                        ${getImg('9', 'PREPARO VISITA MARÇO')}
+                        ${getImg('10', 'TREINAMENTOS JUNHO')}
                     </div>
                 </div>`
             },
-            // 12. Frota (CORRIGIDO)
+            { title: "PRACTICE: Prevenção", content: `
+                <div class="flex flex-col h-full justify-center text-center space-y-12">
+                    <div class="max-w-4xl mx-auto space-y-6">
+                        <i data-lucide="users" class="w-20 h-20 text-emerald-600 mx-auto"></i>
+                        <h2 class="text-5xl font-black text-slate-900 uppercase tracking-tighter">Impacto em Prevenção</h2>
+                        <div class="p-12 bg-white rounded-[3rem] border border-slate-200 shadow-2xl">
+                             <p class="text-8xl font-black text-emerald-600 tracking-tighter">+500</p>
+                             <p class="text-2xl font-bold text-slate-500 uppercase tracking-widest mt-4">Alunos Atendidos</p>
+                             <p class="text-lg text-slate-400 mt-6 font-medium">Educação abrangente para crianças e pais sobre segurança e prevenção de traumas no trânsito.</p>
+                        </div>
+                    </div>
+                </div>`
+            },
+            { title: "PRACTICE: Saúde", content: `
+                <div class="flex flex-col h-full justify-center text-center space-y-12">
+                    <div class="max-w-4xl mx-auto space-y-6">
+                        <i data-lucide="activity" class="w-20 h-20 text-blue-600 mx-auto"></i>
+                        <h2 class="text-5xl font-black text-slate-900 uppercase tracking-tighter">Impacto na Saúde</h2>
+                        <div class="p-12 bg-white rounded-[3rem] border border-slate-200 shadow-2xl">
+                             <p class="text-8xl font-black text-blue-600 tracking-tighter">228</p>
+                             <p class="text-2xl font-bold text-slate-500 uppercase tracking-widest mt-4">Profissionais Treinados</p>
+                             <p class="text-lg text-slate-400 mt-6 font-medium">Capacitação avançada em urgência e emergência para equipes de saúde da região.</p>
+                        </div>
+                    </div>
+                </div>`
+            },
+            { title: "PRACTICE: Pódio Março", content: `
+                <div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full">
+                    <h2 class="text-4xl font-black text-slate-900 mb-4 text-center uppercase tracking-tighter">Pódio de Resultados: Março</h2>
+                    <p class="text-center text-slate-500 text-xl mb-12 font-medium italic">"Mês fundamental de preparo estratégico e abertura do programa."</p>
+                    <div class="flex justify-center items-end space-x-6 h-[350px]">
+                        <div class="podium-item w-1/3 bg-slate-100 rounded-t-[3rem] p-8 flex flex-col items-center justify-end h-[70%] border border-slate-200">
+                             <span class="text-4xl font-black text-slate-300 mb-4 tracking-tighter">2º</span>
+                             <h4 class="font-bold text-slate-700 text-center">Visitas Técnicas em Fortaleza</h4>
+                        </div>
+                        <div class="podium-item w-1/3 bg-blue-600 rounded-t-[3rem] p-8 flex flex-col items-center justify-end h-full shadow-2xl">
+                             <span class="text-4xl font-black text-blue-200 mb-4 tracking-tighter">1º</span>
+                             <h4 class="font-bold text-white text-center">Marco Zero: Preparo Acadêmico ukb Berlim</h4>
+                        </div>
+                        <div class="podium-item w-1/3 bg-emerald-500 rounded-t-[3rem] p-8 flex flex-col items-center justify-end h-[85%] border border-emerald-400">
+                             <span class="text-4xl font-black text-emerald-200 mb-4 tracking-tighter">3º</span>
+                             <h4 class="font-bold text-white text-center text-sm">Mapeamento Serra da Capivara</h4>
+                        </div>
+                    </div>
+                </div>`
+            },
             { title: "Frota", content: `
-                <div class="flex flex-col justify-center h-full max-w-6xl mx-auto w-full">
-                    <div class="flex items-center justify-between mb-10">
-                        <h2 class="text-4xl font-bold text-slate-800">Gestão de Frota e Logística</h2>
-                        <div class="bg-blue-100 p-3 rounded-full"><i data-lucide="truck" class="text-blue-600 w-8 h-8"></i></div>
-                    </div>
+                <div class="flex flex-col h-full justify-center">
+                    <h2 class="text-4xl font-black text-slate-800 mb-10">Gestão de Logística</h2>
                     <div class="grid grid-cols-3 gap-8">
-                        <div class="card-stat">
-                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                ${getImg('toro.jpg', 'FOTO TORO')}
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800">Fiat Toro</h3>
-                            <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 2.450,00+</p><p class="text-xs text-slate-400">Pneus e Revisão</p></div>
-                        </div>
-                        <div class="card-stat">
-                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                ${getImg('doblo.jpg', 'FOTO DOBLO')}
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800">Fiat Doblo</h3>
-                            <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 1.890,00+</p><p class="text-xs text-slate-400">Vidros e Suspensão</p></div>
-                        </div>
-                        <div class="card-stat">
-                            <div class="h-40 bg-slate-100 rounded-xl mb-4 flex items-center justify-center text-slate-300 font-bold overflow-hidden">
-                                ${getImg('moto.jpg', 'FOTO MOTO')}
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-800">Moto Brós</h3>
-                            <div class="border-t mt-4 pt-4"><p class="font-bold text-blue-600 text-xl">R$ 646,00+</p><p class="text-xs text-slate-400">Revisão Geral</p></div>
-                        </div>
+                        <div class="card-stat">${getImg('11', 'FIAT TORO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Toro</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Pneus e Revisão</div></div>
+                        <div class="card-stat">${getImg('12', 'FIAT DOBLO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Doblo</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Vidros e Suspensão</div></div>
+                        <div class="card-stat">${getImg('13', 'MOTO BRÓS')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Moto Brós</h3><div class="border-t pt-4 mt-4 text-blue-600 font-bold">Revisão Geral</div></div>
                     </div>
                 </div>`
             },
-            // 13. Conectividade
-            { title: "Conectividade", content: `
-                <div class="grid grid-cols-2 gap-12 h-full items-center max-w-5xl mx-auto">
-                    <div class="card-stat bg-slate-900 text-white p-10 border-none">
-                        <i data-lucide="wifi" class="w-12 h-12 text-blue-400 mb-6"></i>
-                        <h3 class="text-3xl font-bold mb-4">Conectividade Total</h3>
-                        <p class="text-slate-400 text-lg leading-relaxed">Mantivemos a operação 100% online com internet para:</p>
-                        <ul class="mt-6 space-y-4 font-semibold text-white"><li>• Prédio JK (Hostel)</li><li>• Centro Ambiental</li><li>• Panificadora Brothaus</li></ul>
-                    </div>
+            { title: "Governança", content: `
+                <div class="grid grid-cols-2 gap-12 h-full items-center">
                     <div class="space-y-6">
-                        <h2 class="text-4xl font-bold text-slate-800">Eficiência Operacional</h2>
-                        <p class="text-xl text-slate-600">A infraestrutura de comunicação garantiu que todos os projetos e atendimentos continuassem sem interrupções.</p>
+                        <h2 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">Conformidade Institucional</h2>
+                        <ul class="space-y-6 font-bold text-slate-600">
+                            <li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>Contabilidade R&R em Dia</span></li>
+                            <li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>Taxas Legais e Licenças</span></li>
+                            <li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>Conectividade 100% Online</span></li>
+                        </ul>
+                    </div>
+                    <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner">
+                        <i data-lucide="shield-check" class="w-24 h-24 text-indigo-300 mb-6"></i>
+                        <h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">Gestão Segura</h3>
                     </div>
                 </div>`
             },
-            // 14. Auditoria
             { title: "Auditoria", content: `
                 <div class="max-w-4xl mx-auto text-center h-full flex flex-col justify-center">
-                    <div class="mx-auto bg-emerald-100 p-6 rounded-full mb-8 text-emerald-600"><i data-lucide="shield-check" class="w-20 h-20"></i></div>
-                    <h2 class="text-5xl font-bold text-slate-900 mb-6">Compromisso com a Transparência</h2>
-                    <p class="text-2xl text-slate-600 mb-12">Todos os dados apresentados neste relatório foram extraídos diretamente das conciliações bancárias mensais e auditados.</p>
+                    <i data-lucide="file-text" class="w-20 h-20 text-emerald-600 mx-auto mb-8"></i>
+                    <h2 class="text-5xl font-black text-slate-900 mb-6 tracking-tighter">Controle e Transparência</h2>
+                    <p class="text-2xl text-slate-500 mb-12 font-medium">Controle rigoroso sobre 100% dos lançamentos bancários.</p>
                     <div class="grid grid-cols-3 gap-6 text-left">
-                        <div class="card-stat border border-slate-200 shadow-sm"><p class="font-bold text-slate-800">9 Meses Auditados</p><p class="text-sm text-slate-500">Jan a Set 2025</p></div>
-                        <div class="card-stat border border-slate-200 shadow-sm"><p class="font-bold text-slate-800">Documentação</p><p class="text-sm text-slate-500">NFs e Recibos Arquivados</p></div>
-                        <div class="card-stat border border-slate-200 shadow-sm"><p class="font-bold text-slate-800">Conciliação</p><p class="text-sm text-slate-500">100% dos Lançamentos</p></div>
+                        <div class="card-stat"><p class="font-bold text-slate-800">Recibos</p><p class="text-sm text-slate-400 italic mt-1">Arquivados</p></div>
+                        <div class="card-stat"><p class="font-bold text-slate-800">Notas Fiscais</p><p class="text-sm text-slate-400 italic mt-1">Validadas</p></div>
+                        <div class="card-stat"><p class="font-bold text-slate-800">Conciliação</p><p class="text-sm text-slate-400 italic mt-1">9 Meses (Jan-Set)</p></div>
                     </div>
                 </div>`
             },
-            // 15. Futuro
-            { title: "Futuro", content: `
-                <div class="flex flex-col items-center justify-center h-full text-center space-y-10 max-w-4xl mx-auto">
-                    <h2 class="text-6xl font-extrabold text-slate-900 tracking-tight">O Futuro é Agora</h2>
-                    <p class="text-2xl text-slate-600 max-w-2xl">
-                        Continuaremos avançando com <span class="text-blue-600 font-bold">Transparência, Responsabilidade e Impacto Social</span>.
+            { title: "Conclusão", content: `
+                <div class="flex flex-col items-center justify-center h-full text-center space-y-10 max-w-4xl mx-auto animate-in fade-in duration-1000">
+                    <h2 class="text-7xl font-black text-slate-900 tracking-tighter uppercase">O Impacto é Real</h2>
+                    <p class="text-3xl text-blue-600 font-bold max-w-2xl italic leading-relaxed">
+                        "Transformando cada real investido em futuro para o Sertão do Piauí."
                     </p>
-                    <button onclick="toggleView('dashboard')" class="bg-blue-600 text-white text-xl font-bold px-10 py-4 rounded-full shadow-xl hover:bg-blue-700 transition-all transform hover:scale-105">
-                        ProBrasil Nordeste 2025
-                    </button>
+                    <div class="p-10 bg-slate-900 rounded-[3rem] text-white w-full shadow-2xl">
+                         <h3 class="text-2xl font-bold mb-2">ProBrasil Nordeste 2025</h3>
+                         <p class="text-slate-400 font-bold uppercase tracking-widest text-sm">Transparência • Responsabilidade • Desenvolvimento</p>
+                    </div>
                     <p class="text-sm text-slate-400 font-bold uppercase tracking-widest mt-12">Obrigado pela Atenção</p>
                 </div>`
             }
@@ -469,7 +407,6 @@
             if (view === 'presentation') {
                 currentSlide = 0;
                 renderSlide();
-                // Request fullscreen for presentation
                 document.documentElement.requestFullscreen().catch((e) => {});
             } else {
                 if (document.fullscreenElement) document.exitFullscreen();
@@ -481,53 +418,35 @@
             container.innerHTML = slides[currentSlide].content;
             document.getElementById('slide-number-label').innerText = `${slides[currentSlide].title} (${currentSlide + 1}/${slides.length})`;
             
-            // Update Progress Bar
             const progress = ((currentSlide) / (slides.length - 1)) * 100;
             document.getElementById('progress-bar').style.width = `${progress}%`;
 
             lucide.createIcons();
-            
-            // Se for o slide do gráfico, renderizar o chart
-            if (currentSlide === 2) { 
-                setTimeout(initSlideChart, 100); 
-            }
+            if (currentSlide === 2) { setTimeout(initSlideChart, 100); }
         }
 
         function nextSlide() {
-            if (currentSlide < slides.length - 1) {
-                currentSlide++;
-                renderSlide();
-            }
+            if (currentSlide < slides.length - 1) { currentSlide++; renderSlide(); }
         }
 
         function prevSlide() {
-            if (currentSlide > 0) {
-                currentSlide--;
-                renderSlide();
-            }
+            if (currentSlide > 0) { currentSlide--; renderSlide(); }
         }
 
-        // Função de Download CSV
         function downloadCSV() {
-            // Cabeçalho CSV
             let csvContent = "data:text/csv;charset=utf-8,Mês,Entradas,Saídas,Destaque,Info\n";
-            
-            // Adiciona as linhas de dados
             dataConsolidada.forEach(row => {
                 csvContent += `${row.mes},${row.entradas},${row.saidas},"${row.destaque}","${row.info}"\n`;
             });
-
-            // Cria o link de download invisível e clica nele
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
             link.setAttribute("download", "Relatorio_ProBrasil_2025.csv");
-            document.body.appendChild(link); // Requerido para Firefox
+            document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Gráficos
         function initMainChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
             new Chart(ctx, {
@@ -539,7 +458,7 @@
                         { label: 'Saídas', data: dataConsolidada.map(d => d.saidas), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top' } }, scales: { y: { beginAtZero: true }, x: { grid: { display: false } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top' } } }
             });
         }
 
@@ -555,7 +474,7 @@
                         { label: 'Saídas', data: dataConsolidada.map(d => d.saidas), backgroundColor: '#3b82f6', borderRadius: 8 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
             });
         }
 
