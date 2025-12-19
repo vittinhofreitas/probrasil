@@ -11,23 +11,18 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .chart-container { position: relative; height: 300px; width: 100%; }
-        
         .slide-content { animation: fadeIn 0.5s ease-out; height: 100%; display: flex; flex-direction: column; justify-content: center; }
         .img-overlay { position: relative; overflow: hidden; border-radius: 24px; height: 100%; min-height: 300px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); background-color: #e2e8f0; }
         .img-placeholder { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s; }
         .img-overlay:hover .img-placeholder { transform: scale(1.05); }
         .img-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: white; font-weight: 700; letter-spacing: 0.5px; }
         .card-stat { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9; }
-        
-        /* Estilo para quando a imagem não carrega (Placeholder) */
         img[src=""], img[src="#"], img[src*="undefined"] { display: none; }
         .img-overlay.missing-img { display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #94a3b8; font-weight: bold; text-align: center; padding: 20px; border: 2px dashed #cbd5e1; }
         .img-overlay.missing-img::after { content: attr(data-label); display: block; }
-
         .podium-item { transition: transform 0.3s; }
         .podium-item:hover { transform: translateY(-10px); }
-        .lang-btn.active { background-color: #2563eb; color: white; border-color: #2563eb; }
-
+        .lang-btn.active, .pres-lang-btn.active { background-color: #2563eb; color: white; border-color: #2563eb; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -61,23 +56,24 @@
         </header>
 
         <main class="flex-grow p-8 max-w-[1600px] mx-auto w-full space-y-8">
+            <!-- KPI Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="card-stat relative overflow-hidden group">
                     <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl t-tag-audited">AUDITADO</div>
                     <div class="p-3 rounded-xl bg-emerald-50 text-emerald-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="wallet" class="w-6 h-6"></i></div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-in">Total Entradas</p>
-                    <p class="text-3xl font-black text-slate-800 tracking-tight">R$ 357.459,74</p>
+                    <p class="text-3xl font-black text-slate-800">R$ 357.459,74</p>
                 </div>
                 <div class="card-stat relative overflow-hidden group">
                     <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl t-tag-audited">AUDITADO</div>
                     <div class="p-3 rounded-xl bg-blue-50 text-blue-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-out">Total Saídas</p>
-                    <p class="text-3xl font-black text-slate-800 tracking-tight">R$ 347.096,94</p>
+                    <p class="text-3xl font-black text-slate-800">R$ 347.096,94</p>
                 </div>
                 <div class="card-stat group">
                     <div class="p-3 rounded-xl bg-slate-900 text-white w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="piggy-bank" class="w-6 h-6"></i></div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-balance">Saldo em Caixa</p>
-                    <p class="text-3xl font-black text-emerald-600 tracking-tight">+ R$ 10.362,80</p>
+                    <p class="text-3xl font-black text-emerald-600">+ R$ 10.362,80</p>
                 </div>
                 <div class="card-stat group">
                     <div class="p-3 rounded-xl bg-amber-50 text-amber-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="award" class="w-6 h-6"></i></div>
@@ -127,7 +123,8 @@
                 <span id="slide-number-label" class="text-xs font-black tracking-widest text-slate-400 uppercase t-pres-label">Apresentação Executiva</span>
             </div>
             <div class="flex items-center space-x-4">
-                <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
+                <!-- Lang Switcher in Presentation -->
+                <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
                     <button onclick="setLang('pt')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="pt">PT</button>
                     <button onclick="setLang('en')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="en">EN</button>
                     <button onclick="setLang('de')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="de">DE</button>
@@ -157,6 +154,10 @@
     </div>
 
     <script>
+        const totalSlides = 18; // FIX: Definindo o número total de slides
+        let currentLang = 'pt';
+        let currentSlide = 0;
+
         // --- DICIONÁRIO DE TRADUÇÃO COMPLETO ---
         const translations = {
             pt: {
@@ -164,6 +165,7 @@
                 slides: {
                     title1: "Relatório de Governança", subtitle1: "Resultados 2025", footer1: "Diretoria Executiva • Coronel José Dias, PI",
                     title2: "Números Consolidados", subtitle2: "Relatório Integrado de Gestão (Jan-Set)", efficiency: "97% de Eficiência: Quase a totalidade do recurso foi convertida em infraestrutura social e educacional direta.",
+                    title3: "Fluxo de Caixa Mensal",
                     title4: "O Terreno", desc4: "Limpeza profunda e preparação do solo para a sede e expansões.", inv4: "Investimento em Limpeza (Fev/Mar)",
                     title5: "Renovação do Prédio JK", desc5: "Pintura externa e interna finalizada (Jan-Abr). Património vital revitalizado para acolher projetos e a comunidade.",
                     title6: "Climatização e Conforto", highlight6_1: "AC 9000 BTUs Instalados", highlight6_2: "Reparos Hidráulicos Finais",
@@ -186,6 +188,7 @@
                 slides: {
                     title1: "Governance Report", subtitle1: "Results 2025", footer1: "Executive Board • Coronel José Dias, PI",
                     title2: "Consolidated Numbers", subtitle2: "Integrated Management Report (Jan-Sep)", efficiency: "97% Efficiency: Almost all resources were converted into direct social and educational infrastructure.",
+                    title3: "Monthly Cash Flow",
                     title4: "The Land", desc4: "Deep cleaning and soil preparation for the headquarters and expansions.", inv4: "Cleaning Investment (Feb/Mar)",
                     title5: "JK Building Renovation", desc5: "External and internal painting completed (Jan-Apr). Vital heritage revitalized to host projects and the community.",
                     title6: "Climatization and Comfort", highlight6_1: "9000 BTUs AC Units Installed", highlight6_2: "Final Hydraulic Repairs",
@@ -208,6 +211,7 @@
                 slides: {
                     title1: "Governance-Bericht", subtitle1: "Ergebnisse 2025", footer1: "Vorstand • Coronel José Dias, PI",
                     title2: "Konsolidierte Zahlen", subtitle2: "Integrierter Managementbericht (Jan-Sep)", efficiency: "97% Effizienz: Fast alle Mittel wurden direkt in soziale und pädagogische Infrastruktur umgewandelt.",
+                    title3: "Monatlicher Cashflow",
                     title4: "Das Grundstück", desc4: "Tiefenreinigung und Bodenvorbereitung für den Hauptsitz und Erweiterungen.", inv4: "Reinigungsinvestition (Feb/März)",
                     title5: "JK-Gebäude Renovierung", desc5: "Außen- und Innenanstrich abgeschlossen (Jan-Apr). Vitales Erbe revitalisiert für Projekte und die Gemeinschaft.",
                     title6: "Klimatisierung und Komfort", highlight6_1: "9000 BTUs Klimageräte Installiert", highlight6_2: "Letzte Hydraulische Reparaturen",
@@ -226,8 +230,6 @@
                 }
             }
         };
-
-        let currentLang = 'pt';
 
         function setLang(lang) {
             currentLang = lang;
@@ -267,7 +269,7 @@
             { mes: 'Fev', entradas: 41189.74, saidas: 43969.48, destaque: {pt: 'Ação Social', en: 'Social Action', de: 'Soziale Aktion'}, info: 'Cestas Básicas' },
             { mes: 'Mar', entradas: 53531.08, saidas: 56981.04, destaque: {pt: 'PRACTICE Março', en: 'PRACTICE March', de: 'PRACTICE März'}, info: 'Início do Programa' },
             { mes: 'Abr', entradas: 27290.53, saidas: 25252.15, destaque: {pt: 'Manutenção', en: 'Maintenance', de: 'Wartung'}, info: 'Centro Ambiental' },
-            { mes: 'Mai', entradas: 25653.60, saidas: 31184.00, destaque: {pt: 'Capacitação', en: 'Training', de: 'Schulung'}, info: 'Projeto Criando Futuro' },
+            { mes: 'Mai', entradas: 25653.60, saidas: 31184.00, destaque: {pt: 'Criando Futuro', en: 'Creating Future', de: 'Zukunft Gestalten'}, info: 'Capacitação' },
             { mes: 'Jun', entradas: 56991.34, saidas: 31810.50, destaque: {pt: 'PRACTICE Junho', en: 'PRACTICE June', de: 'PRACTICE Juni'}, info: 'Visitas Técnicas' },
             { mes: 'Jul', entradas: 86701.22, saidas: 30523.11, destaque: {pt: 'Inclusão Digital', en: 'Digital Inclusion', de: 'Digitale Inklusion'}, info: 'Upgrade TI' },
             { mes: 'Ago', entradas: 53800.91, saidas: 80611.38, destaque: {pt: 'Infraestrutura', en: 'Infrastructure', de: 'Infrastruktur'}, info: 'Finalização Elétrica' },
@@ -282,7 +284,7 @@
             </div>`;
         }
 
-        // --- CONTEÚDO DOS 18 SLIDES DINÂMICOS ---
+        // --- CONTEÚDO DOS SLIDES ---
         function getSlideContent(idx) {
             const t = translations[currentLang].slides;
             const content = [
@@ -364,7 +366,7 @@
                     </div></div>`,
                 // 15. Conformidade
                 `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto"><div class="space-y-6"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter leading-none">${t.title15}</h2><ul class="space-y-6 font-bold text-slate-600 text-xl"><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_1}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_2}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_3}</span></li></ul></div>
-                    <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner"><i data-lucide="shield-check" class="w-24 h-24 text-indigo-300 mb-6"></i><h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">${t.card15}</h3></div>
+                    <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner"><i data-lucide="file-check" class="w-24 h-24 text-indigo-300 mb-6"></i><h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">${t.card15}</h3></div>
                 </div>`,
                 // 16. Auditoria
                 `<div class="max-w-4xl mx-auto text-center h-full flex flex-col justify-center"><i data-lucide="shield-check" class="w-20 h-20 text-emerald-600 mx-auto mb-8"></i><h2 class="text-5xl font-black text-slate-900 mb-6 tracking-tighter uppercase leading-tight">${t.title16}</h2><p class="text-2xl text-slate-500 mb-12 font-medium">${t.desc16}</p>
@@ -400,16 +402,16 @@
             const container = document.getElementById('slide-container');
             container.innerHTML = getSlideContent(currentSlide);
             const slideTitle = translations[currentLang].slides[`title${currentSlide+1}`] || "Slide";
-            document.getElementById('slide-number-label').innerText = `${slideTitle} (${currentSlide + 1}/${slides.length})`;
+            document.getElementById('slide-number-label').innerText = `${slideTitle} (${currentSlide + 1}/${totalSlides})`;
             
-            const progress = ((currentSlide) / (slides.length - 1)) * 100;
+            const progress = ((currentSlide) / (totalSlides - 1)) * 100;
             document.getElementById('progress-bar').style.width = `${progress}%`;
 
             lucide.createIcons();
             if (currentSlide === 2) { setTimeout(initSlideChart, 100); }
         }
 
-        function nextSlide() { if (currentSlide < slides.length - 1) { currentSlide++; renderSlide(); } }
+        function nextSlide() { if (currentSlide < totalSlides - 1) { currentSlide++; renderSlide(); } }
         function prevSlide() { if (currentSlide > 0) { currentSlide--; renderSlide(); } }
 
         function downloadCSV() {
