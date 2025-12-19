@@ -159,7 +159,7 @@
         // FUNÇÃO AUXILIAR PARA IMAGENS
         function getImg(src, label) {
             return `<div class="img-overlay h-full w-full relative">
-                <img src="./assets/${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
+                <img src="./${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
                 <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">${label}</div>
                 <div class="img-caption">${label}</div>
             </div>`;
@@ -241,7 +241,7 @@
             { title: "Prédio JK Externo", content: `
                 <div class="grid grid-cols-12 gap-8 h-full items-center">
                     <div class="col-span-5 h-[500px]">
-                        ${getImg('fachada.jpg', 'FACHADA RENOVADA')}
+                        ${getImg('./fachada.jpg', 'FACHADA RENOVADA')}
                     </div>
                     <div class="col-span-7 space-y-8 pl-4">
                         <h2 class="text-4xl font-bold text-slate-800">Renovação do Prédio JK</h2>
@@ -585,3 +585,4 @@
     </script>
 </body>
 </html>
+
