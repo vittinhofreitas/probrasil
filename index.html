@@ -1,744 +1,512 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viveiro ProBrasil Nordeste</title>
-    
-
+    <title>Governança ProBrasil Nordeste</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        html { scroll-behavior: smooth; }
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #f5f5f4; }
-        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
-        
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.3s ease-out forwards;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .slide-content { animation: fadeIn 0.5s ease-out; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .img-overlay { position: relative; overflow: hidden; border-radius: 24px; height: 100%; min-height: 300px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); background-color: #e2e8f0; }
+        .img-placeholder { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s; }
+        .img-overlay:hover .img-placeholder { transform: scale(1.05); }
+        .img-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: white; font-weight: 700; letter-spacing: 0.5px; }
+        .card-stat { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #f1f5f9; }
+        img[src=""], img[src="#"], img[src*="undefined"] { display: none; }
+        .img-overlay.missing-img { display: flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #94a3b8; font-weight: bold; text-align: center; padding: 20px; border: 2px dashed #cbd5e1; }
+        .img-overlay.missing-img::after { content: attr(data-label); display: block; }
+        .podium-item { transition: transform 0.3s; }
+        .podium-item:hover { transform: translateY(-10px); }
+        .lang-btn.active, .pres-lang-btn.active { background-color: #2563eb; color: white; border-color: #2563eb; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800">
-    <div id="root"></div>
+<body class="overflow-x-hidden text-slate-900">
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-
-
-        const Icon = ({ name, size = 24, className = "", color = "currentColor" }) => {
-            const iconRef = useRef(null);
-            
-            useEffect(() => {
-                if (window.lucide && iconRef.current) {
-                    window.lucide.createIcons({
-                        targets: [iconRef.current]
-                    });
-                }
-            }, [name]);
-
-            return (
-                <i 
-                    ref={iconRef} 
-                    data-lucide={name} 
-                    className={className} 
-                    style={{ width: size, height: size, color: color, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-                ></i>
-            );
-        };
-
-        const Leaf = (props) => <Icon name="leaf" {...props} />;
-        const Sun = (props) => <Icon name="sun" {...props} />;
-        const Sprout = (props) => <Icon name="sprout" {...props} />;
-        const MapPin = (props) => <Icon name="map-pin" {...props} />;
-        const Heart = (props) => <Icon name="heart" {...props} />;
-        const TreeDeciduous = (props) => <Icon name="tree-deciduous" {...props} />;
-        const ArrowRight = (props) => <Icon name="arrow-right" {...props} />;
-        const Menu = (props) => <Icon name="menu" {...props} />;
-        const X = (props) => <Icon name="x" {...props} />;
-        const Camera = (props) => <Icon name="camera" {...props} />;
-        const BookOpen = (props) => <Icon name="book-open" {...props} />;
-        const Phone = (props) => <Icon name="phone" {...props} />;
-        const Mail = (props) => <Icon name="mail" {...props} />;
-        const Instagram = (props) => <Icon name="instagram" {...props} />;
-        const Smartphone = (props) => <Icon name="smartphone" {...props} />;
-        const QrCode = (props) => <Icon name="qr-code" {...props} />;
-        const Users = (props) => <Icon name="users" {...props} />;
-        const Calendar = (props) => <Icon name="calendar" {...props} />;
-        const HandHeart = (props) => <Icon name="hand-heart" {...props} />;
-        const Copy = (props) => <Icon name="copy" {...props} />;
-
-        const IMAGENS_SITE = {
-            capa: "https://lh3.googleusercontent.com/pw/AP1GczPvc6UX0OWHDztBSRV6mTtuFTDWZfBj_fmD32xvQrYf3hBcN0a9nB6KJJW2IsZDTntRFBIFmwqOSHToHtiMKxFq9i_vInc7j2-vil1vtYILHIzD8hlDM98TcCqFxrfAzRwRUvT0IKC4ixlboIZPnTTK=w1159-h869-s-no-gm?authuser=0",
-            sr_pedro: "https://lh3.googleusercontent.com/pw/AP1GczPxmolixEsRRTlqhkWFrmnNGjEU_Imm-gzwxpY5EBGMOtOSkllc67S0FCM5oLSqCOx6588AMlmBPSoZpvh-nbomPZjKhcUIo0nntVHVkH3DslS9rnL0JPoqwIFie9YpUdDOSozFf0yx56oxnVaUPeCa=w651-h869-s-no-gm",
-            
-            galeria: [
-                "https://lh3.googleusercontent.com/pw/AP1GczPZ64In7bYN3ZTLFTUQLlMbvJSw1e9Sz8u6fZtt3CJILoqrWScrCAH8sGf9TQW2EZLgzFj0bhgJZSu7ESlNt09X9X9ztvZF728xLArGoj6CGTN2mhY4ql7Z00IQ7PjEG9vn11WbKpUXCVC_5nVXFVBI=w1159-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczPrtDJuJ3Ha9a2eLzw3TqLkPwEYYpEc6JW2zClN4Fu-HTSIrSkYUn4Hl6OsaAizRezS57XHx7cDCf_MyhBr0vtpHn-heN33pKeR8QUlxd34pT7PirXLyGx_CB9iP_FNi0mRd_7IJ86mLGSiHlkdO72Z=w651-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczODVTZtsN05zL1ut6EG3Yk3tVaRTDOSRbUdqhxc8hu205rM8Il4c8_4gV8FnTzdk9I6vCOcYqxmd563cxmPSFAyHLtmhmQg2ZVDpuP4RQxwixIwGDimqdbjnMJTzpcxR-gobZYTzHawrxl7zHi2MCFX=w651-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczOIVw62qZRlpPBKUrctcfCbvZ2D9KvkwgREGxI_pw13rpFMBYZHOSzkSFkqhr26D6UAKshVhNO_LRDX7C_mmgce1celhYkbJjI-eyS-Gy_C7RO_c-0FEBe--oz7hMPxMah9k1Bcc0vo4c7dtGZ-4CiM=w1159-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczPlH12QOzTYxbIu_QgIOLuiZz6_FoOVEGSCDes4j4aCd9_EJDm2sDk-WmOKxqA5YpRNtlOl_wCe-0enXkz5LHb50pL5ZQoGm0zYsdAeNpaoh8UhIbys_CRpKYi56Vrj_vOENHSWHN86YVkBdrvnbu0G=w651-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczNoAbemXOv5sWdlIFnxX-h9BrO171ZNbzScW1cQUKGPrRyCsAqctXiLtN8PSOwbwxp8WQqRQgp9Ob-6IQ8C_D5ucyRDRYSEnRwvVnjSrlymL2PINZvys2JMwVyyq89IeHAjU0B6kPnyFkQ5aE-cKrlU=w651-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczMCDbaBUup-SvItNpy-nboY4MJIeVgl9McljJt5WXQxwb7yVXKEtWoHUsYHJxqTWF0ZRNy5eyp5C1XpW86lSXqTZ1eR_LQMBG694hkWjvoNCkcr-DFTzhhu_g5G6g61Ln3Y4QC8UspvqDSJxq8KRcYx=w651-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczPtJ1Y7VMdq04-OJOZiTZyUiJdpSjpwNnZzYSzer9WBlNLnUPUaA0dwY_RSLWKhGGNrJX_GwUb17OkdEDetFiumQdXf1uBrblsHQElIrz_eImnLjtj-7Bc_C1ZZrEVm-2Xm3m2aT8sJJ6doCDbZPV8L=w651-h869-s-no-gm?authuser=0",
-                "https://lh3.googleusercontent.com/pw/AP1GczPXDAWWkz7c6HAdFZFMng-b7ZHAYDzsy_LGrFxlTmMk77NnVSw-GHO1AuOCXHYrXAl05FBeu2AlCu7EPgWHAMVkxNJmhm6_u7B3YwwQ41VfLjOGYfZAfd3-H_qJglfWE1gTAYPfB6DjQ0XqYIKCvqAS=w651-h869-s-no-gm?authuser=0"
-            ]
-        };
-        const speciesData = [
-          {
-            id: 1, name: "Angico Vermelho", scientific: "Anadenanthera colubrina", type: "Árvore Nativa", category: "native_tree",
-            description: "Árvore de grande porte (até 20m). Madeira resistente e casca medicinal (cicatrizante).",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczP2DxDSKZSEKJbfSwoyPRVQHpaXud3qS_VNRhRG9eRVmz_sm2I77IpaNjoLpYTI37kfAq1Ax9vt5ht_fjyuRzOWg8FO1HkBk34eYHsEycrk1nYkUZv6BfVrTa46SBwrtmxIpBurY1ByaADSIIdRiaVI=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 2, name: "Aroeira", scientific: "Schinus terebinthifolia", type: "Árvore Nativa", category: "native_tree",
-            description: "Conhecida como Pimenta Rosa. Medicinal anti-inflamatória e usada para recuperar áreas degradadas.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNBbReegJAiO6eWNqxJZtY2JBHLS27lmpFd97kZvxoVP-xD2pNuVXGD6PpTUfIPkYZz2jadiLJqjKcaQ1EiKZ1PeNTsxLrKbNdJv7_0AbD6Zkn4HV9OP43gASOwYnsrtzTMZpPFp0DWBtGErp9iGnLo=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 3, name: "Cajueiro", scientific: "Anacardium occidentale", type: "Árvore Nativa", category: "native_tree",
-            description: "Fruto e castanha essenciais para a economia local. Adaptada ao clima seco.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczOr2iWiTPyJuqRquUFAg6gQAKOiU7LvFIMK8eN5IdL7Ca-83T1ClEwCPsoRib-aOvRjMPXUP5u6kY3YP6mgPQW6OBGPIh-fbDxwsVcLivkWRKaXc50VZ4otQVia4ioJu7WmNVDMZ7HcSnHsVBV2cHme=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 4, name: "Canafístula (Canafista)", scientific: "Peltophorum dubium", type: "Árvore Nativa", category: "native_tree",
-            description: "Belíssima floração amarela que atrai abelhas. Madeira usada em móveis.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczOJpiSDAxaKQYReGV92cPRbkIM7gJUoNBs3itaqoVArbN4bWqOqx0HtPD-bB7HrOLz9kajHsOaq2Jfh9LJVeWWnIXW2g4ju-oHoFCWb4KfIJIxEKC7N8wngAdoYAG2fdUh2lkI_pcgqSZvf4Q_0vOpz=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 5, name: "Goiabeira", scientific: "Psidium guajava", type: "Árvore Nativa", category: "native_tree",
-            description: "Rica em Vitamina C. Atrai pássaros e se adapta bem ao manejo agroflorestal.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczP20QnEwa7_bIKRT5ULgNUxAHXTYrwvGM-nDqi6q9lvuVl3bfhZkjOdIRgH4vh8UH1TTMWHX1vDNdOXZIOSUrysRLv74JoRlOGnorMjmAefTtwNLHP8uiNaSrMcAz2Sm-22ps_5UW_tapMOd7gs3ii1=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 6, name: "Gravioleira (Graviola)", scientific: "Annona muricata", type: "Árvore Nativa", category: "native_tree",
-            description: "Fruta saborosa e medicinal. Requer cuidados com água mas recompensa com produção abundante.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMwv0Av8i_cVJzqGie9aIBXGChwOmUcjRbaNxjhw2my8BHr3iPYELjeeKq5oYv-O5Yf3aVM2IUf-XA2fX3iHqeEhuGl2uob_qC-y-2jh3sYnLgcitG4_imwXaBt65fJC7u7i8RJ5auCxI_vasAhXVBj=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 7, name: "Imburana de Cambão", scientific: "Commiphora leptophloeos", type: "Árvore Nativa", category: "native_tree",
-            description: "Árvore escultural de tronco liso. Resistente à seca e com propriedades medicinais.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMwv0Av8i_cVJzqGie9aIBXGChwOmUcjRbaNxjhw2my8BHr3iPYELjeeKq5oYv-O5Yf3aVM2IUf-XA2fX3iHqeEhuGl2uob_qC-y-2jh3sYnLgcitG4_imwXaBt65fJC7u7i8RJ5auCxI_vasAhXVBj=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 8, name: "Juazeiro", scientific: "Ziziphus joazeiro", type: "Árvore Nativa", category: "native_tree",
-            description: "Árvore que não perde as folhas na seca. Sombra vital e propriedades higiênicas (pasta/shampoo).",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczOENosG_iBIFjsAm8TdfYgavUKRpGpUFQNAJHruxL0_e7RGMtYzXEROqUqGAMOgNOsq6tRHZU7CVi0rMfNImSjdFKNh5rMfeEt4kLafa4j3kbIza3g8u8w6xE7vVv6sUy_GPGDWho3faZbC2MQM9quI=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 9, name: "Maniçoba", scientific: "Manihot pseudiglaziovii", type: "Árvore Nativa", category: "native_tree",
-            description: "Parente da mandioca, usada como forragem na seca. Produzia látex (borracha) no passado.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczOTr9lf9ad0BbvClsvx4qJwwLmzpXdt7kzIATGy2X1NxSAfZRu7DRv419cOc1SGW_vuXcNwzValnA1WE6MKHohmtjE8YORig95BcySPKgcNVVs5DWb2_IwEzKcIKUZ0lz9NmYXE_Pt89c1A0DevBujy=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 10, name: "Angico de Bezerro", scientific: "Piptadenia moniliformis", type: "Árvore Nativa", category: "native_tree",
-            description: "Árvore pequena (3-5m), flores melíferas e sementes usadas como ração para aves.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPwAXr2uTsC9PHiNn8VFujl6vFdz0H9-hS9q_WjyK8ekhUWmaL-eqBBl80XYuDPa46KjMK2OJFwmAY6UnP7eCgSeHfiVGcQLIZuSa6wd2ZBlXoH8FbilLFIrx3RpPvYNf63xn0wOKxv2wKpA3jrA4fi=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 11, name: "Imburana de Cheiro", scientific: "Amburana cearensis", type: "Árvore Nativa", category: "native_tree",
-            description: "Em risco de extinção. Sementes medicinais valiosas e madeira nobre.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczM1rnJEuO_KM1PR__3Tp4JPPdQX4-YDPRPrMgQGFHSohB4h6KMSFVai-m1X7IrPG75Oq19A-BGzz7tXK3y_9GoRuJKJvGnEmEKoRGdC_U7snCKNf17Ao6uepBYHJfdPFKCGynbdNy9v4xfXLCw3JFNP=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 12, name: "Miroró (Pata-de-Vaca)", scientific: "Bauhinia forficata", type: "Árvore Nativa", category: "native_tree",
-            description: "Folhas em formato de pata. Propriedades medicinais (chá) e flores brancas.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPQg-8fAanGAMmwVihzJaHPrYp0mKk8_xayxJtR6SIuSlRZs50YQkK_-zZEpL9FtszAt5EGwula-Zl8bn4AMYN9sPiXTkiq7oicMj8w3UqTQ_GFmZX4ecQFtdkZdvBJllDS3LPrF63QtTd8faIa9SKH=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 13, name: "Muruci", scientific: "Byrsonima crassifolia", type: "Árvore Nativa", category: "native_tree",
-            description: "Arbusto com pequenos frutos amarelos, muito apreciados pelos macacos-prego.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNijOdjNmD1hT6Pg4LrvSNcqzwwwc4_ErTKD96QJhzi585bqUgcUkWPpLof9nFG-XGlAd9_ZgTUxnohs5MnZZImv1AEm-_R-O94l4kvM35V9JfOD3NZJ7c586CA2NA4v36cQ75WeXnO_mQEors_uUN2=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 14, name: "Oiti", scientific: "Moquilea tomentosa", type: "Árvore Nativa", category: "native_tree",
-            description: "Excelente sombra (até 15m). Fruto comestível e folha com película protetora.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPl7yGs6JYzNcX0tms115qA-END8VH6MxG-2o1qf4XHO0qTvIk4mT12qpNRvCH2wpR8OuQkrDJ_MGlS6sGWGyyk5RtJgpHqOr3H-1wdm8vqo4-tLaFDnbc04Y-XXzy2Gue5FnrF5KtRWj-90j4C_MQz=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 15, name: "Pinhão-bravo", scientific: "Jatropha mollissima", type: "Árvore Nativa", category: "native_tree",
-            description: "Leite do tronco tem uso medicinal (gargarejo). Sementes apreciadas por aves.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPLYH4KKhgQxMPtsJsEVixUF8U3b2Z10dLjaqIX_GnTStVBhKVC_UYeP4KfZPUOA7pSb6V1dinAr9Ah6T3btt3gIbjC_9x-K8vHufzqGhOX0pbSjIcc1N5dWSO-lkdbgA-M-ltI8I0t3-pjeiTvFW3O=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 16, name: "Pitomba", scientific: "Talisia esculenta", type: "Árvore Nativa", category: "native_tree",
-            description: "Árvore alta (até 20m) com fruto comestível muito popular na região.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNtWm6MmOF1ZeLS1BGcClneAMONNH2G2edZ1XG_RxeDaASqfuczEt4sH2AOXuD-ctyxcUb99yGe3i9a4WM9F1jzlrwf1P6Xn98sy3zwEIM6DK15fK5Vdu02zIAyloj6yqxXUIckBzNZct8mXFrrOtUN=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 17, name: "Quaresmeira", scientific: "Pleroma granulosa", type: "Árvore Nativa", category: "native_tree",
-            description: "Bela floração rosa/roxa. Madeira usada em marcenaria rural.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPVkVxCFMdausCBjZMVTtm6OOMEapXQMi5QfMGy4fkCPYT1p9p5Ts_IV-3rO-gd384lUX9vDGU5W2vUk2nDEMf06Dlks-67LX55p0VQBz7CQfIs0CWe7qVh_BpL27-otzmcYhHGJO-A6gBH2etQ5guA=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 18, name: "Tamboril", scientific: "Enterolobium maximum", type: "Árvore Nativa", category: "native_tree",
-            description: "Gigante da floresta. Fruto em forma de orelha, doce e apreciado pelo gado.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNUwevbbdJaPfB2vcZyEEqJWIrLZrSLJhCg8W4TRPkbdFp37yIAwxMYLR0fodDdPmyazAi2Z1xayKj_ZIUxhyt_HQOuBiE21WxWLBVaEWasnVGoXL6mfHyduxTuJI-dRtfGkZTT21W7PxcfNu7MbloR=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 19, name: "Umbuzeiro", scientific: "Spondias tuberosa", type: "Árvore Nativa", category: "native_tree",
-            description: "A 'árvore sagrada do sertão'. Frutos para sucos e doces, raízes armazenam água.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMVR1xZJXvc6AyPTmUTFjHqOE6F5s4Je-wlAMMRYEcq5cqPCV7cUmFfL9trF6q_kDjGLCFhAL9raWYwrWEj6iAYHh_NppenSidYDawgyot51YawiX-Ss3xcwZT2IiiL73XnvBwj0XtW8rfV_yNbnDSF=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 20, name: "Moringa", scientific: "Moringa oleifera", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Nativa da Índia. Crescimento rápido, flores melíferas na seca. 'Árvore da vida'.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNByNUbtsrP5futX5bL-8liUcH2_VAMzcAiCDlFdyQJxJU69ElF-O5U_E2PKl2C5muBk8uW1or3Kz_nhZvJpx_--fTDFVmuCzS47HU2RAxbIErOTjlI1IqvtxA6TjFx-sdLuU1JVsOpsoCu7pQGkbxz=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 21, name: "Abacateiro", scientific: "Persea americana", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Sombra densa e frutos ricos em vitaminas e gorduras saudáveis.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNnpcZYjINL8BDGtT-m5EZzV29v_ZM780gX8eRtx9LE2v5Z2gAddF2LES1CAKf_GwHOrmVLZu4iE_Q1tEGs8TayAb74jopv_zvfhfyvUIYPgI9tolFQeybqq7DfPnQNOksXHx9eSBVDxJRBKUsklILF=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 22, name: "Acerola", scientific: "Malpighia emarginata", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Pequena árvore com frutos riquíssimos em Vitamina C.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPGN4K-JfTt8ui5FYxKxt6YM2T9qobXGFOER53Jgk1rD5c6PejgcAt--VmcGCNPq1R1Y7Mb14LiU-chJu0ytxtPUxjVXwTbWm-E1CEhlZ86DNs66E4sY5L1KbLPpxJWSSMvsF9wmZoPyD2o81-fzSPy=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 23, name: "Ateira (Pinha)", scientific: "Annona squamosa", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Fruto doce (Fruta-do-Conde). Folhas usadas em banhos medicinais.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMOBkS94pBcLxrlgROJ3o_ux7wYhFk1DraasOGABWXe_zCdxQIAR2IyRWqMfueHHEZYnwV7EsAc9Sp10mpbaAxtKWuC3i-wd8uRbx5TQ2BkiNZVT63qENKxGjN6Yh1emeiU4udeVETjit7SjJyS-Y8N=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 24, name: "Banana-Prata", scientific: "Musa sapientum", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Alimento base. Tronco rico em água e fibras usadas para artesanato.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMCDbaBUup-SvItNpy-nboY4MJIeVgl9McljJt5WXQxwb7yVXKEtWoHUsYHJxqTWF0ZRNy5eyp5C1XpW86lSXqTZ1eR_LQMBG694hkWjvoNCkcr-DFTzhhu_g5G6g61Ln3Y4QC8UspvqDSJxq8KRcYx=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 25, name: "Leucena", scientific: "Leucaena leucocephala", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Espécie invasora controlada. Usada como forragem para animais.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczO84PS64nw6TDCT4h0eOmykOqWzj7X4q9UFQTANoG8tvrDzNhE0f7iKSEb2_F3N87zoLTEylRfXFXcHCF1uYSC9pC15UGB1ehf6UIKNbSV99SvmvF78pFTMde2g2zu82uVjN0u1Ox5iikP4W4c_C_Dc=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 26, name: "Limeira", scientific: "Citrus aurantifolia", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Produz limões o ano todo com irrigação. Folhas aromáticas.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMKHfGrFRM_n0oHcN5Ud1YRnYvyVfLx49PvizLfvTSBwubfMem3AMqOhKAasqBU_ecdVG6aLU1uZo35BuJOSLD0qab6lEU4YWI66f114aKTcZsdKNdlQ5Id1BDiN0zbGGaCzip39D7Ym7oYJ8Y0QNJ3=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 27, name: "Mamão", scientific: "Carica papaya", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Adaptado à seca. Fruto digestivo e folhas usadas em cataplasmas.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPXDAWWkz7c6HAdFZFMng-b7ZHAYDzsy_LGrFxlTmMk77NnVSw-GHO1AuOCXHYrXAl05FBeu2AlCu7EPgWHAMVkxNJmhm6_u7B3YwwQ41VfLjOGYfZAfd3-H_qJglfWE1gTAYPfB6DjQ0XqYIKCvqAS=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 28, name: "Manga", scientific: "Mangifera indica", type: "Árvore Não Nativa", category: "exotic_tree",
-            description: "Grande porte, excelente sombra e frutos saborosos.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMwXWe-LgEaskLUlcFXE15ucMAzO0pX5_Ynv6cowXdDhng5GKQom8FQzrC6HImLN0-17Ew3iG5Xtw8SNMohxOegkfPz--PEJsRQovyXcRyStIau7Y9-irMeXzozKail4Muh_3XOWx_ID35P_nOLKFR7=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 29, name: "Boa Noite", scientific: "Vinca sortida", type: "Planta Nativa", category: "plant",
-            description: "Floração colorida durante todo o ano. Resistente.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPtJ1Y7VMdq04-OJOZiTZyUiJdpSjpwNnZzYSzer9WBlNLnUPUaA0dwY_RSLWKhGGNrJX_GwUb17OkdEDetFiumQdXf1uBrblsHQElIrz_eImnLjtj-7Bc_C1ZZrEVm-2Xm3m2aT8sJJ6doCDbZPV8L=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 30, name: "Carqueja", scientific: "Baccharis trimera", type: "Planta Nativa", category: "plant",
-            description: "Medicinal (controle de diabetes). Sementes atraem pássaros.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNU3j5VSrYpQEU1eo5HKx4AloSWRzuRAiAm5xUR_LMT-26F3KucOw9UwiNzK-t_4TO0wweJPGzgvCGwn_WXqOrQs8wl5-udmWVerNP3r1eZJQGLV3OAj0YgEGbN02eBCKQyzRpEdAKKTuSHvH4pEGlO=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 31, name: "Croatá", scientific: "Bromelia antiacantha", type: "Planta Nativa", category: "plant",
-            description: "'Bananinha do mato'. Frutos comestíveis para humanos e animais.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMSXCS6VDzdXY-mltSSdRnZ9ITM_nijObpj38kQjy1r2N8FMr7wqU-0HoTUWHpA4IEEwm8O82imsmx4ZescSnS0Pado1EQDN_kRZITUSRGuHLqCJSQD_Tn7XxvIZKxVROlDF8wFvAOGpoflmXsk0Dwt=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 32, name: "Pinhão-roxo", scientific: "Jatropha gossypiifolia", type: "Planta Nativa", category: "plant",
-            description: "Folhagem roxa ornamental e uso medicinal (cautela necessária).",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczN8w4sMAZzWW1bdG3Omdxsl1beJwXt76t7isWoDP7SeKRRwahAJhZwI5s8sY0_xOoJWVDXfBE9qtSvhTdOKxH-iD8wQV3BT_wJM2ZQ5RTzKUIdbexyYrTQM9WSOftC1umX5GjMUokMXKLd_UJL0Op_7=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 33, name: "Abacaxi Roxo", scientific: "Tradescantia spathacea", type: "Planta Não Nativa", category: "plant",
-            description: "Planta ornamental de sombra com folhas arroxeadas.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMGvUnd4oYqJST6IgHTcwI2XiJw_fdtqamIuMcdm3WcY9j0wpuofv2p5HNLiGw68J52f_teusfp1GrOuwncdxJ_95dE8uIOEjk0hAPq9yTJHYFd-bw8tBdbFi-28ReVgUFjryEGIAcUfCFqW6_FXyQ5=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 34, name: "Bucha", scientific: "Luffa aegyptiaca", type: "Planta Não Nativa", category: "plant",
-            description: "Trepadeira. Fruto seco usado como esponja natural.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPWP0Z3qpC3ffiP7JmZloTjr7j9_BCDjAuTkC9vuuDzS_CxSjXNl03WJ41fGFxnL50b5Sano9UjoPS46xB9NFENum1t0Hgr2LwBTkv_NUo0Cr_n3toYlna4wnFKvWh2xAkixeYEiDJ0n-KLeK5L5aO3=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 35, name: "Buquê de Noiva", scientific: "Spiraea cantoniensis", type: "Planta Não Nativa", category: "plant",
-            description: "Arbusto ornamental com flores brancas densas.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMf-sdx_eXMeN3NtJtHHB6eHXs5CywfxScl2FgDJqsidRqiorEwO_t5Q426h-usmnzR_yPIv7frP2GNiDsEsviYO1UVf09_IEdYC7FOdDcYzH6kse6WF2yG3j_nCqVy1dBF472aStextziCqnt9ktAc=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 36, name: "Flor da Jamaica", scientific: "Hibiscus cannabinus", type: "Planta Não Nativa", category: "plant",
-            description: "Hibisco que abre a flor de dia e fecha à noite.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMqS3Wp7mV2Sb-bEhrIhhVfGGWlIiU0Llz8xwbQN9rSKny7lHwGL5B0vby8RMpr1oYbhzhvbT8abyKcDHFB6SPLHyYCsLGL8lWOR3UHPxlY7KxjQn7yD75yfr58ttbS1S5zQ99tEkTpGYGJ6PF1CJ4J=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 37, name: "Língua de Sogra", scientific: "Dracaena trifasciata", type: "Planta Não Nativa", category: "plant",
-            description: "Extremamente resistente. Purifica o ar e decora interiores.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczO4yZp3CXmUTKnrzt-dIy1EpARpj2d7c0TfPSwjIR8J5QKUCf3wurV0_FVfSWbVJEaP4KZxOYIMNsDKD2cHmt1aHnsOkoboGyUwcq2KYCqJ8ynScA_KL4_xrQtS9PMTjTgWHU4UuL-jXFjt1yxpyZII=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 38, name: "Margaridão", scientific: "Tithonia diversifolia", type: "Planta Não Nativa", category: "plant",
-            description: "Girassol mexicano. Usado como adubo verde e forragem.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczP7Xj_4vXZ6Eqg1dqqgTkiQvKE39UoVW30JOgsPg95JC65F6XGzPacAM1U3slZYjovn9l0C0B_CGp1ebZrFYk7tH3ON64kFMbyjCHXpghSlGxVANiYgHSXEP6YqXMXzSjs3k7WdhG_JQZQE5RBsMtdC=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 43, name: "Mandacaru", scientific: "Cereus jamacaru", type: "Cacto", category: "cactus",
-            description: "Símbolo da Caatinga. Flor branca majestosa e fruto alimentício.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczOgcvFMZM1-QLFOh0sramqAvjQuDSrzsIMf0wbqJzmnjhrcsvUu5O5hVvFICARoYFXKk0e7vm2rdMQWSi12OoLZEx4ha4Wfb1tWweBoE0925L7pDUkU_AkoW8KLM_FV-SrcoJgyY0jU_vuGE04_ea6v=w651-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 44, name: "Caroá", scientific: "Neoglaziova variegata", type: "Cacto/Bromélia", category: "cactus",
-            description: "Fibras muito resistentes usadas historicamente para cordas e tecidos.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczN_0zcnlVsiu9VzupupEZuRwMATuQQk_063a91belY9KY0nETJYN7GSdV3QgK22gS9UkCnldqUMa64-TRCqnNq9xTwztJewUtFFvPs3RfZxoFlcVV_n1W0iqhcPXUDceMx2PYvW09Z7IImIDmzIAXXZ=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 45, name: "Coroa de Frade", scientific: "Melocactus zehntneri", type: "Cacto", category: "cactus",
-            description: "Cacto pequeno e arredondado com 'coroa' vermelha. Fruto apreciado.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczNSOAJJm1OHcSdCTNIZYjAkZ_nJHZ6t2Vw1hcOMPcpQzw1GAEyH95WlVG_jD6VursrD2kVrJXJDYi2FBtFeTQhECCdaZlVk4DjoAvwNUmlv6Diom1X2ExKVVs0eLLDx4TS7PPVYEGkNyvV0LpFp__HE=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 46, name: "Palma", scientific: "Opuntia cochenillifera", type: "Cacto", category: "cactus",
-            description: "Palma forrageira. Alimento vital para o gado na seca.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczOn9LdZEmw31FczZ3EyboppK11n85mGYXe9J1lUgKekdX3Gpj-kcsqthVD3_piOqA3pc1LZ9dSt-pws-R9F-gj1KKmFoyvDIxctxVV5sSi220NvJL8tuhXpkZ0uHgeJlj55_JTgcd4rek4VeArO_m3i=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 47, name: "Rabo de Raposa", scientific: "Harrisia adscendens", type: "Cacto", category: "cactus",
-            description: "Cacto fino e rastejante/pendente, com espinhos densos.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczMU_C7OzeGS_9kJzd4iTAzKBVZwUEa1xufAsiiaCTP013n4aIFSkt-59t-96fsPLXe7yQuHrSS7B0N8u4YWSTycCsk_AsAcZKV0gxwB-do8-HK48eRR9ia1A5IWyqc0q_CbiizSgz91v-N_eSQd4oE6=w652-h869-s-no-gm?authuser=0"
-          },
-          {
-            id: 48, name: "Xique-xique", scientific: "Pilosocereus polygonus", type: "Cacto", category: "cactus",
-            description: "Cacto ramificado, frutos consumidos pela fauna local. Resistente à seca extrema.",
-            image: "https://lh3.googleusercontent.com/pw/AP1GczPugpr_8zVXAnxtOo6DHgOEsr7vJQHNHoQNz3NSqBpZjV1QHzLXOnSXY65iKdDaXz3iZgN9IbiXGH-z9TGwrgzi5QsFPzG1rh3VQtzr_py_zZG7rI9x4Ln2QcIjyNUW-3VYB8Kb_2BLUohRgpj2m3v1=w652-h869-s-no-gm?authuser=0"
-          }
-        ];
-
-        const stats = [
-          { label: "Área Total", value: "1.270 m²", icon: "map-pin" },
-          { label: "Mudas e Semeados", value: "1.259", icon: "sprout" },
-          { label: "Árvores Permanentes", value: "167", icon: "tree-deciduous" },
-          { label: "Espécies Totais", value: "45+", icon: "leaf" },
-        ];
-
-        const zones = [
-          {
-            title: "O Viveiro", area: "90 m²", icon: "sprout", color: "bg-green-100 border-green-300",
-            desc: "Área dedicada à germinação e proteção de mudas. Foco na conservação de espécies nativas ameaçadas e cultivo de horta para uso comunitário."
-          },
-          {
-            title: "A Agrofloresta", area: "595 m²", icon: "tree-deciduous", color: "bg-orange-100 border-orange-300",
-            desc: "Onde árvores frutíferas e nativas convivem. Inclui sistema de compostagem que transforma lixo orgânico em fertilizante, vital para o solo estéril."
-          },
-          {
-            title: "O Jardim Nativo", area: "586 m²", icon: "sun", color: "bg-yellow-100 border-yellow-300",
-            desc: "Reflete as condições reais da Caatinga. Recebe água apenas na estação chuvosa, abrigando cactos e árvores ultra-resistentes como o Xique-xique."
-          }
-        ];
-
-        function ProBrasilNursery() {
-          const [filter, setFilter] = useState('all');
-          const [isMenuOpen, setIsMenuOpen] = useState(false);
-          const [scrolled, setScrolled] = useState(false);
-          const [showDonation, setShowDonation] = useState(false);
-
-          const contactInfo = {
-            pix: "44.340.746/0001-10"
-          };
-
-          const copyPix = () => {
-            navigator.clipboard.writeText(contactInfo.pix);
-            alert("Chave PIX copiada para a área de transferência!");
-          };
-
-          useEffect(() => {
-            const handleScroll = () => setScrolled(window.scrollY > 50);
-            window.addEventListener('scroll', handleScroll);
-            return () => window.removeEventListener('scroll', handleScroll);
-          }, []);
-
-          const filteredSpecies = filter === 'all' 
-            ? speciesData 
-            : speciesData.filter(s => s.category === filter);
-
-          const Navigation = () => (
-            <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-lg py-2' : 'bg-transparent py-6'}`}>
-              <div className="container mx-auto px-6 flex justify-center items-center">
-                <div className="hidden md:flex gap-8">
-                  {['História', 'Zonas', 'Espécies', 'Galeria', 'Envolva-se'].map((item) => (
-                    <a key={item} href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`} className={`font-medium hover:text-yellow-400 transition-colors ${scrolled ? 'text-gray-700 hover:text-orange-600' : 'text-white shadow-black/50 drop-shadow-sm'}`}>
-                      {item}
-                    </a>
-                  ))}
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" class="min-h-screen flex flex-col">
+        <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil Logo" class="h-10 object-contain">
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 leading-tight t-app-title">Painel de Governança</h1>
+                    <p class="text-xs text-slate-400 font-medium t-app-subtitle">Relatório Integrado 2025</p>
                 </div>
-                <div className="md:hidden w-full flex justify-end">
-                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white drop-shadow-md">
-                      {isMenuOpen ? <X size={32} color={scrolled ? '#15803d' : 'white'} /> : <Menu size={32} color={scrolled ? '#15803d' : 'white'} />}
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <!-- Seletor de Idioma -->
+                <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
+                    <button onclick="setLang('pt')" id="lang-pt" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all active">PT</button>
+                    <button onclick="setLang('en')" id="lang-en" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all">EN</button>
+                    <button onclick="setLang('de')" id="lang-de" class="lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all">DE</button>
+                </div>
+                
+                <button onclick="toggleView('presentation')" class="group flex items-center space-x-3 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all font-bold shadow-lg shadow-blue-200 active:scale-95">
+                    <i data-lucide="play-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="t-btn-start">Iniciar Apresentação</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow p-8 max-w-[1600px] mx-auto w-full space-y-8">
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="card-stat relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl t-tag-audited">AUDITADO</div>
+                    <div class="p-3 rounded-xl bg-emerald-50 text-emerald-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="wallet" class="w-6 h-6"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-in">Total Entradas</p>
+                    <p class="text-3xl font-black text-slate-800">R$ 357.459,74</p>
+                </div>
+                <div class="card-stat relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-[10px] font-bold px-3 py-1 rounded-bl-xl t-tag-audited">AUDITADO</div>
+                    <div class="p-3 rounded-xl bg-blue-50 text-blue-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-out">Total Saídas</p>
+                    <p class="text-3xl font-black text-slate-800">R$ 347.096,94</p>
+                </div>
+                <div class="card-stat group">
+                    <div class="p-3 rounded-xl bg-slate-900 text-white w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="piggy-bank" class="w-6 h-6"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-balance">Saldo em Caixa</p>
+                    <p class="text-3xl font-black text-emerald-600">+ R$ 10.362,80</p>
+                </div>
+                <div class="card-stat group">
+                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600 w-fit mb-4 group-hover:scale-110 transition-transform"><i data-lucide="award" class="w-6 h-6"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 t-kpi-social">Impacto Social</p>
+                    <p class="text-3xl font-black text-slate-800 t-kpi-social-val">+700 Beneficiários</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 card-stat">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-slate-800 t-chart-title">Fluxo de Caixa Mensal</h3>
+                        <div class="flex space-x-4 text-sm font-semibold">
+                            <span class="flex items-center"><div class="w-3 h-3 rounded-full bg-emerald-500 mr-2"></div><span class="t-legend-in">Entradas</span></span>
+                            <span class="flex items-center"><div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div><span class="t-legend-out">Saídas</span></span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card-stat flex flex-col">
+                    <h3 class="text-xl font-bold text-slate-800 mb-6 t-highlights-title">Destaques Estratégicos</h3>
+                    <div id="timeline-list" class="space-y-6 flex-grow overflow-y-auto pr-2 custom-scrollbar text-sm font-medium">
+                        <!-- JS injected -->
+                    </div>
+                    <button onclick="downloadCSV()" class="w-full mt-6 py-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center space-x-2 border border-slate-100 cursor-pointer">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span class="t-btn-download">Baixar Relatório (CSV)</span>
                     </button>
                 </div>
-              </div>
-              {isMenuOpen && (
-                <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl py-4 px-6 flex flex-col gap-4 border-t border-green-100">
-                  {['História', 'Zonas', 'Espécies', 'Galeria', 'Envolva-se'].map((item) => (
-                    <a key={item} href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`} onClick={() => setIsMenuOpen(false)} className="text-green-800 font-bold py-3 border-b border-gray-100 hover:text-orange-500">
-                      {item}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </nav>
-          );
-
-          const SafeImg = ({ src, alt, className, style, type }) => {
-            const [error, setError] = useState(false);
-            if (error || !src) {
-                return (
-                    <div className={`${className} bg-stone-100 flex flex-col items-center justify-center p-4 text-center border-2 border-dashed border-stone-300`} style={style}>
-                        <Leaf size={32} className="text-stone-300 mb-2" />
-                        <span className="text-xs text-stone-500 font-medium">{alt || "Sem imagem"}</span>
-                    </div>
-                );
-            }
-            return <img src={src} alt={alt} className={className} style={style} onError={() => setError(true)} />;
-          };
-
-          return (
-            <div className="min-h-screen font-sans text-stone-800 bg-stone-50">
-              <Navigation />
-              
-              {/* Botão Flutuante de Doação */}
-              <button 
-                onClick={() => setShowDonation(true)}
-                className="fixed bottom-6 right-6 z-40 bg-yellow-400 hover:bg-yellow-500 text-green-900 p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center gap-2 font-bold border-4 border-white animate-bounce-slow group"
-                title="Fazer uma Doação"
-              >
-                <Heart size={24} className="fill-green-900 group-hover:scale-110 transition-transform" />
-                <span className="hidden md:inline">Doar</span>
-              </button>
-              {showDonation && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setShowDonation(false)}>
-                    <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden relative animate-fade-in-up" onClick={e => e.stopPropagation()}>
-                        <button onClick={() => setShowDonation(false)} className="absolute top-4 right-4 p-2 hover:bg-stone-100 rounded-full transition-colors z-10 bg-white/50 backdrop-blur-sm">
-                            <X size={24} className="text-stone-600" />
-                        </button>
-                        
-                        <div className="bg-green-600 p-8 text-center relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-md relative z-10">
-                                <Heart size={32} className="text-white fill-white" />
-                            </div>
-                            <h3 className="text-2xl font-bold text-white relative z-10">Faça a diferença!</h3>
-                            <p className="text-green-100 text-sm mt-2 relative z-10">Sua contribuição ajuda a preservar a Caatinga.</p>
-                        </div>
-
-                        <div className="p-8 space-y-6">
-                            <div className="text-center">
-                                <p className="text-sm text-stone-500 font-bold uppercase tracking-wider mb-2">Chave PIX (CNPJ)</p>
-                                <div className="bg-stone-100 border-2 border-stone-200 rounded-xl p-4 flex items-center justify-between gap-2 shadow-inner">
-                                    <code className="text-lg font-mono font-bold text-stone-800 truncate select-all">{contactInfo.pix}</code>
-                                    <button onClick={copyPix} className="p-2 bg-yellow-400 hover:bg-yellow-500 rounded-lg text-green-900 transition-colors shadow-sm" title="Copiar Chave">
-                                        <Copy size={20} />
-                                    </button>
-                                </div>
-                                <p className="text-xs text-stone-400 mt-2">Banco Cora - Associação ProBrasil Nordeste</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-sm text-stone-500 font-bold uppercase tracking-wider mb-2">Outras formas de ajudar</p>
-                                <p className="text-stone-600 text-sm">Além de doações financeiras, você pode contribuir com tempo como voluntário, doando materiais para o viveiro ou ajudando a divulgar nosso trabalho nas redes sociais.</p>
-                            </div>
-                        </div>
-                        
-                        <div className="bg-stone-50 p-4 text-center border-t border-stone-100">
-                             <p className="text-xs text-stone-500">Obrigado por apoiar nossa causa!</p>
-                        </div>
-                    </div>
-                </div>
-              )}
-
-              <header className="relative h-[90vh] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-stone-900">
-                   <SafeImg src={IMAGENS_SITE.capa} alt="Capa" className="w-full h-full object-cover opacity-70 scale-105" /> 
-                  <div className="absolute inset-0 bg-gradient-to-t from-green-900/90 via-stone-900/40 to-black/30"></div>
-                </div>
-                <div className="relative container mx-auto px-6 text-center text-white z-10 mt-16">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-yellow-500/90 backdrop-blur-sm rounded-full text-green-900 text-sm font-bold tracking-wider mb-6 uppercase shadow-lg">
-                    <Leaf size={16} /> Proteção e Preservação
-                  </div>
-                  <h1 className="text-4xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-                    Cultivando Vida <br /> 
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-yellow-300">no Coração da Caatinga</span>
-                  </h1>
-                  <p className="text-lg md:text-2xl max-w-3xl mx-auto text-gray-100 mb-10 font-light leading-relaxed drop-shadow-md">
-                     Coronel José Dias/PI - Parque Nacional Serra da Capivara
-                  </p>
-                  <div className="flex flex-col md:flex-row justify-center gap-4">
-                    <a href="#historia" className="inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 shadow-xl border-b-4 border-green-800">
-                      Conhecer a História <ArrowRight size={20} />
-                    </a>
-                    <a href="#galeria" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/50 px-8 py-4 rounded-full font-bold transition-all">
-                      <Camera size={20} /> Ver Fotos
-                    </a>
-                  </div>
-                </div>
-              </header>
-
-              <div className="bg-stone-900 text-white py-4 border-b border-stone-800">
-                <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-center gap-2 text-center md:text-left">
-                    <BookOpen size={20} className="text-orange-500" />
-                    <p className="text-sm md:text-base">
-                        Todo o conteúdo botânico deste site foi pesquisado e documentado pela estudante alemã <strong className="text-orange-400">Hannah Mahlberg</strong> (Junho-Agosto 2024).
-                    </p>
-                </div>
-              </div>
-
-              <section id="historia" className="py-24 container mx-auto px-6">
-                <div className="flex flex-col lg:flex-row items-start gap-16">
-                  <div className="w-full lg:w-1/2 order-2 lg:order-1">
-                    <div className="relative group sticky top-24">
-                      <div className="absolute -top-6 -left-6 w-32 h-32 bg-yellow-200 rounded-full z-0 opacity-60"></div>
-                      <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl rotate-1 group-hover:rotate-0 transition-transform duration-500 border-4 border-white">
-                        <SafeImg src={IMAGENS_SITE.sr_pedro} alt="Sr. Pedro" className="w-full h-auto object-cover aspect-[3/4]" />
-                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-6">
-                          <p className="text-white font-bold text-lg">Sr. Pedro</p>
-                          <p className="text-yellow-400 text-sm">Jardineiro e Guardião</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full lg:w-1/2 order-1 lg:order-2">
-                    <h3 className="text-4xl md:text-5xl font-bold text-green-900 mb-8 leading-tight">O Guardião da <span className="text-orange-600">Caatinga</span></h3>
-                    <div className="prose prose-lg text-stone-600 space-y-6 text-justify">
-                      <p>
-                        <strong>Senhor Pedro</strong> estava contratado como jardineiro na ProBrasil Nordeste, na sede da ONG em Coronel José Dias, no Nordeste do Brasil. Suas tarefas incluíram regar as plantas e árvores diariamente, até cultivar novas mudas e plantá-las. Nascido e criado em Coronel, Senhor Pedro viveu toda a sua vida no bioma da Caatinga.
-                      </p>
-                      
-                      <h4 className="text-2xl font-bold text-green-800 mt-8 mb-4">Sobre o Viveiro da ProBrasil Nordeste</h4>
-                      <p>
-                        Apaixonada pela preservação de plantas e árvores nativas, a ProBrasil Nordeste desenvolveu uma parceria com o Sr. Pedro que iniciou em 2020. Durante dos últimos anos houve um trabalho contínuo de reflorestamento, agrofloresta e produção de mudas em algumas áreas da região da Serra da Capivara. A iniciativa é fruto de décadas de experiência prática acumulada em atividades de manutenção ambiental e reflorestamento no bioma Caatinga.
-                      </p>
-                      <p>
-                        O projeto teve início com o objetivo de cultivar 40 mudas de espécies nativas. Graças ao conhecimento técnico aplicado e à vivência do Sr. Pedro com mais de 20 anos em ações ambientais na região, a meta foi rapidamente superada, dando origem à ideia de criar um espaço mais amplo que integrasse viveiro, agrofloresta e jardim de plantas e árvores nativas.
-                      </p>
-                      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-xl shadow-sm my-8">
-                        <p className="italic text-stone-700 font-medium">
-                            "Quatro anos depois, no terreno antes árido e compactado da ProBrasil Nordeste, essa visão tornou-se realidade."
-                        </p>
-                      </div>
-                      <p>
-                        O espaço é hoje composto por três unidades complementares: agrofloresta, viveiro e jardim nativo, desenvolvidos com foco na recuperação ambiental e na adaptação às condições do semiárido.
-                      </p>
-                      <p>
-                        No processo de reflorestamento, os desafios do solo estéril e da escassez de água são sempre considerados. A ProBrasil Nordeste adota práticas sustentáveis, como a captação da água da estação chuvosa em cisternas e o uso intensivo de compostagem. O aproveitamento de resíduos orgânicos domésticos para a produção de fertilizantes naturais melhora a qualidade do solo e reduz significativamente a necessidade de irrigação.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section className="bg-gradient-to-r from-green-900 to-green-800 text-white py-20">
-                <div className="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-                    {stats.map((s, idx) => (
-                        <div key={idx} className="flex flex-col items-center p-6 bg-white/5 rounded-2xl border border-white/10">
-                            <Icon name={s.icon} size={32} className="text-yellow-400 mb-4" />
-                            <div className="text-3xl md:text-4xl font-bold mb-2">{s.value}</div>
-                            <div className="text-green-200 uppercase text-xs font-bold tracking-widest">{s.label}</div>
-                        </div>
-                    ))}
-                </div>
-              </section>
-
-              <section id="zonas" className="py-24 bg-white">
-                <div className="container mx-auto px-6 text-center mb-16">
-                  <h2 className="text-3xl md:text-5xl font-bold text-green-900 mb-6">Três Unidades, Um Ecossistema</h2>
-                  <p className="text-stone-600 max-w-3xl mx-auto text-lg">O terreno antes árido abriga hoje três unidades complementares desenvolvidas com foco na recuperação ambiental.</p>
-                </div>
-                <div className="container mx-auto px-6 grid md:grid-cols-3 gap-8">
-                    {zones.map((z, idx) => (
-                        <div key={idx} className={`p-8 rounded-3xl border-2 ${z.color} bg-opacity-30 flex flex-col items-center text-center`}>
-                            <div className={`p-4 rounded-full mb-6 ${z.color.split(" ")[0]}`}>
-                                <Icon name={z.icon} size={32} className="text-green-900" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-3">{z.title}</h3>
-                            <div className="inline-block bg-white px-3 py-1 rounded-full text-xs font-bold mb-4 shadow-sm border border-stone-200">{z.area}</div>
-                            <p className="text-stone-700 leading-relaxed">{z.desc}</p>
-                        </div>
-                    ))}
-                </div>
-              </section>
-
-              <section id="galeria" className="py-20 bg-stone-100">
-                <div className="container mx-auto px-6">
-                  <h2 className="text-3xl md:text-4xl font-bold text-green-900 mb-8">Galeria do Viveiro</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-                    {IMAGENS_SITE.galeria.map((img, idx) => (
-                        <div key={idx} className={`relative group overflow-hidden rounded-2xl ${idx === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
-                          <SafeImg src={img} alt={`Galeria ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                        </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              <section id="especies" className="py-24 container mx-auto px-6">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
-                  <div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-green-900 mb-4">Biodiversidade</h2>
-                    <p className="text-stone-600">Catálogo das espécies cultivadas em nossos jardins.</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {['all', 'native_tree', 'exotic_tree', 'cactus', 'plant'].map(f => (
-                      <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${filter === f ? 'bg-green-700 text-white shadow-lg' : 'bg-white border text-stone-600'}`}>
-                        {f === 'all' ? 'Todas' : f === 'native_tree' ? 'Nativas' : f === 'exotic_tree' ? 'Exóticas' : f === 'cactus' ? 'Cactos' : 'Plantas'}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredSpecies.map(p => (
-                    <div key={p.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border flex flex-col h-full group">
-                      <div className="h-64 bg-stone-100 relative overflow-hidden">
-                        <SafeImg src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <div className="absolute top-4 right-4 bg-white/95 px-2 py-1 rounded text-[10px] font-bold text-green-800 uppercase shadow-sm">{p.type}</div>
-                      </div>
-                      <div className="p-6 flex flex-col flex-grow">
-                        <h3 className="text-xl font-bold text-stone-800">{p.name}</h3>
-                        <p className="text-xs text-orange-600 italic mb-4">{p.scientific}</p>
-                        <p className="text-stone-600 text-sm">{p.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-              <section id="envolva-se" className="py-24 bg-green-50">
-                <div className="container mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold text-green-900 mb-4">Impacto e Envolvimento</h2>
-                        <p className="text-stone-600 max-w-2xl mx-auto">Junte-se a nós e faça parte dessa mudança! Cada gesto ajuda a transformar vidas e impactar positivamente nossa comunidade.</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-12">
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-green-100">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-yellow-100 rounded-full text-yellow-600"><HandHeart size={28} /></div>
-                                <h3 className="text-2xl font-bold text-stone-800">Como você pode ajudar</h3>
-                            </div>
-                            <p className="text-stone-600 mb-6">
-                                Existem várias maneiras de apoiar a Centro Sócioambiental Serra da Capivara - ProBrasil Nordeste. Você pode se tornar um voluntário, fazer uma doação ou até mesmo compartilhar nossa missão nas redes sociais.
-                            </p>
-                            <ul className="space-y-3 mb-8">
-                                <li className="flex items-center gap-3 text-stone-700"><span className="w-2 h-2 bg-green-500 rounded-full"></span>Seja um Voluntário</li>
-                                <li className="flex items-center gap-3 text-stone-700"><span className="w-2 h-2 bg-green-500 rounded-full"></span>Faça uma Doação</li>
-                                <li className="flex items-center gap-3 text-stone-700"><span className="w-2 h-2 bg-green-500 rounded-full"></span>Divulgue a Causa</li>
-                            </ul>
-                        </div>
-
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-green-100">
-                             <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-blue-100 rounded-full text-blue-600"><Sprout size={28} /></div>
-                                <h3 className="text-2xl font-bold text-stone-800">Nossos Projetos Atuais</h3>
-                            </div>
-                            <p className="text-stone-600">
-                                Na Centro Sócioambiental Serra da Capivara - ProBrasil Nordeste, desenvolvemos diversos projetos voltados para a educação, saúde e meio ambiente. Cada projeto é projetado para atender às necessidades específicas das comunidades que servimos. Acompanhe nossos esforços e veja como estamos trabalhando para gerar impacto social significativo. Sua participação é fundamental!
-                            </p>
-                        </div>
-
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-green-100">
-                             <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-purple-100 rounded-full text-purple-600"><Users size={28} /></div>
-                                <h3 className="text-2xl font-bold text-stone-800">Nossos Voluntários</h3>
-                            </div>
-                            <p className="text-stone-600">
-                                Os voluntários da Centro Sócioambiental Serra da Capivara - ProBrasil Nordeste são a força motriz de nossa organização. Eles compartilham suas experiências e o impacto que tiveram ao ajudar aqueles que mais precisam. Ouça suas histórias inspiradoras e descubra como você também pode fazer a diferença na vida de alguém. Junte-se a nós e inspire outros!
-                            </p>
-                        </div>
-
-                        <div className="bg-white p-8 rounded-3xl shadow-sm border border-green-100">
-                             <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-red-100 rounded-full text-red-600"><Calendar size={28} /></div>
-                                <h3 className="text-2xl font-bold text-stone-800">Eventos e Atividades</h3>
-                            </div>
-                            <p className="text-stone-600">
-                                A Centro Sócioambiental Serra da Capivara - ProBrasil Nordeste organiza eventos regulares para arrecadar fundos e aumentar a conscientização sobre nossas causas. Esses eventos são uma ótima oportunidade para se envolver, conhecer outras pessoas que compartilham a mesma paixão e contribuir para um futuro melhor. Fique por dentro de nossas próximas atividades e participe!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-              </section>
-
-              <footer className="bg-stone-900 text-stone-300 py-20 border-t-8 border-yellow-500">
-                <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-16">
-                    <div>
-                      <h2 className="text-3xl font-bold text-white mb-8">Entre em Contato</h2>
-                      
-                      <div className="space-y-6">
-                          <div className="flex items-start gap-4">
-                            <MapPin className="text-yellow-500 mt-1 flex-shrink-0" />
-                            <div>
-                                <h4 className="text-white font-bold mb-1">Endereço</h4>
-                                <p>Rua Projetada, 8B - Centro<br/>Cel. José Dias - PI, 64793-000</p>
-                            </div>
-                          </div>
-
-                          <div className="flex items-start gap-4">
-                            <Phone className="text-yellow-500 mt-1 flex-shrink-0" />
-                            <div>
-                                <h4 className="text-white font-bold mb-1">Telefones</h4>
-                                <p>Fixo: (89) 3199-2085</p>
-                                <a href="https://wa.me/5589981158620" target="_blank" className="flex items-center gap-2 hover:text-green-400 transition-colors mt-1">
-                                    <Smartphone size={16} /> WhatsApp: (89) 9 8115-8620
-                                </a>
-                            </div>
-                          </div>
-
-                          <div className="flex items-start gap-4">
-                            <Mail className="text-yellow-500 mt-1 flex-shrink-0" />
-                            <div>
-                                <h4 className="text-white font-bold mb-1">Email</h4>
-                                <a href="mailto:administrativo@probrasil-nordeste.org" className="hover:text-yellow-400 transition-colors">administrativo@probrasil-nordeste.org</a>
-                            </div>
-                          </div>
-
-                           <div className="flex items-start gap-4">
-                            <Instagram className="text-yellow-500 mt-1 flex-shrink-0" />
-                            <div>
-                                <h4 className="text-white font-bold mb-1">Instagram</h4>
-                                <a href="https://instagram.com/probrasil.nordeste" target="_blank" className="hover:text-yellow-400 transition-colors">@probrasil.nordeste</a>
-                            </div>
-                          </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-green-900/20 p-10 rounded-3xl border border-green-800/50 flex flex-col justify-center">
-                      <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                        <Heart className="text-red-500 fill-red-500" /> Apoie nossa causa
-                      </h3>
-                      <p className="mb-8 text-green-100">Sua doação ajuda a manter o viveiro e expandir nossos projetos de reflorestamento na Caatinga. Clique abaixo para ver os dados bancários.</p>
-                      
-                      <button 
-                        onClick={() => setShowDonation(true)} 
-                        className="w-full bg-yellow-400 hover:bg-yellow-500 text-green-900 font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
-                      >
-                         <Heart size={20} className="fill-green-900" />
-                         Fazer uma Doação Agora
-                      </button>
-                    </div>
-                </div>
-                <div className="container mx-auto px-6 mt-16 text-center text-xs border-t border-stone-800 pt-8">
-                    <div className="flex justify-center items-center gap-2 mb-2"><Heart size={14} className="text-red-500" /> ProBrasil Nordeste &copy; 2024</div>
-                    <p>Pesquisa: Hannah Mahlberg</p>
-                </div>
-              </footer>
             </div>
-          );
+        </main>
+    </div>
+
+    <!-- PRESENTATION VIEW -->
+    <div id="presentation-view" class="hidden h-screen w-screen flex flex-col bg-slate-50 fixed top-0 left-0 z-[100]">
+        <div class="h-1 bg-slate-200 w-full">
+            <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <div class="px-8 py-4 flex justify-between items-center bg-white border-b border-slate-200 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" alt="ProBrasil" class="h-8 object-contain">
+                <div class="h-4 w-px bg-slate-300"></div>
+                <span id="slide-number-label" class="text-xs font-black tracking-widest text-slate-400 uppercase t-pres-label">Apresentação Executiva</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- Lang Switcher in Presentation -->
+                <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+                    <button onclick="setLang('pt')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="pt">PT</button>
+                    <button onclick="setLang('en')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="en">EN</button>
+                    <button onclick="setLang('de')" class="pres-lang-btn px-3 py-1 rounded-lg text-xs font-bold transition-all" data-l="de">DE</button>
+                </div>
+                <button onclick="toggleView('dashboard')" class="flex items-center space-x-2 text-slate-500 hover:text-red-600 transition-colors font-bold text-sm bg-slate-100 px-4 py-2 rounded-full">
+                    <span class="t-btn-close">Encerrar</span>
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-grow relative overflow-hidden flex items-center justify-center p-8">
+            <div id="slide-container" class="w-full h-full max-w-[1400px] max-h-[800px] bg-white rounded-[40px] shadow-2xl p-12 relative border border-white overflow-hidden">
+                <!-- Slide content injected-->
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center space-x-6 bg-white/90 backdrop-blur px-8 py-4 rounded-full shadow-lg border border-slate-200">
+            <button onclick="prevSlide()" class="p-3 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+            <span class="text-sm font-black text-slate-400 select-none uppercase tracking-[0.2em] t-nav">Navegação</span>
+            <button onclick="nextSlide()" class="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-md transition-all transform hover:scale-110 active:scale-95">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const totalSlides = 17; 
+        let currentLang = 'pt';
+        let currentSlide = 0;
+
+        // --- DICIONÁRIO DE TRADUÇÃO COMPLETO ---
+        const translations = {
+            pt: {
+                appTitle: "Painel de Governança", appSubtitle: "Relatório Integrado 2025", btnStart: "Iniciar Apresentação", audited: "AUDITADO", kpiIn: "Total Entradas", kpiOut: "Total Saídas", kpiBalance: "Saldo em Caixa", kpiSocial: "Impacto Social", kpiSocialVal: "+700 Beneficiários", chartTitle: "Fluxo de Caixa Mensal", legendIn: "Entradas", legendOut: "Saídas", highlights: "Destaques Estratégicos", download: "Baixar Relatório (CSV)", presLabel: "Apresentação Executiva", close: "Encerrar", nav: "Navegação",
+                slides: {
+                    title1: "Relatório de Governança", subtitle1: "Resultados 2025", footer1: "Diretoria Executiva • Coronel José Dias, PI",
+                    title2: "Números Consolidados", subtitle2: "Relatório Integrado de Gestão (Jan-Set)", efficiency: "97% de Eficiência: Quase a totalidade do recurso foi convertida em infraestrutura social e educacional direta.",
+                    title3: "Fluxo de Caixa Mensal",
+                    // New Satellite Slide
+                    title4: "Localização Estratégica", desc4: "Serra da Capivara: Um patrimônio mundial no coração do Piauí. Nossa atuação em Coronel José Dias conecta o Sertão ao Mundo.", label4_1: "Visão Macro", label4_2: "Visão Local",
+                    title5: "O Terreno", desc5: "Limpeza profunda e preparação do solo para a sede e expansões.", inv5: "Investimento em Limpeza (Fev/Mar)",
+                    title6: "Renovação do Prédio JK", desc6: "Pintura externa e interna finalizada (Jan-Abr). Património vital revitalizado para acolher projetos e a comunidade.",
+                    title7: "Climatização e Conforto", highlight7_1: "AC 9000 BTUs Instalados", highlight7_2: "Reparos Hidráulicos Finais",
+                    title8: "Infraestrutura Digital", desc8: "Upgrade realizado em Julho e Agosto. Laboratório 100% equipado para o Projeto Criando Futuro.", inv8: "Investimento em TI",
+                    title9: "Segurança Alimentar", desc9: "Distribuição emergencial de alimentos realizada em Fevereiro para as famílias atendidas.", inv9: "R$ 4.000,00 Doação Direta",
+                    title10: "Projeto Criando Futuro", subtitle10: "Inclusão no Sertão", desc10: "Capacitação intensiva de jovens e adultos, unindo educação ao desenvolvimento do Piauí.",
+                    title11: "Projeto PRACTICE", desc11: "Aliança estratégica com a GIZ (Alemanha) e o Hospital ukb de Berlim para salvaguardar vidas.", check11_1: "Prevenção de Traumas Infantis", check11_2: "Treinamentos de Urgência",
+                    title12: "PRACTICE: Impacto", desc12: "Educação preventiva abrangente para crianças e pais sobre segurança no trânsito e traumas domiciliares.", label12: "Alunos Atendidos",
+                    title13: "PRACTICE: Saúde", desc13: "Capacitação técnica em urgência e emergência para equipas de saúde de São Raimundo Nonato e região.", label13: "Profissionais Treinados",
+                    title14: "Gestão de Logística",
+                    title15: "Conformidade e Gestão", check15_1: "Contabilidade R&R em Dia", check15_2: "Taxas Legais e Cartoriais", check15_3: "Conectividade 100% Online", card15: "Gestão 100% Regular",
+                    title16: "Eficiência em Tempo Real", desc16: "Manutenção da rede para Hostel JK, Centro Ambiental e Panificadora.", support: "Suporte Contínuo", supportDesc: "Operação ininterrupta.", remote: "Gestão Remota", remoteDesc: "Monitoramento em tempo real.",
+                    title17: "O Impacto é Visível", quote17: "Transformando cada real investido em futuro para o Sertão do Piauí.", footer17: "Responsabilidade • Transparência • Eficiência"
+                }
+            },
+            en: {
+                appTitle: "Governance Dashboard", appSubtitle: "Integrated Report 2025", btnStart: "Start Presentation", audited: "AUDITED", kpiIn: "Total Inflow", kpiOut: "Total Outflow", kpiBalance: "Cash Balance", kpiSocial: "Social Impact", kpiSocialVal: "+700 Beneficiaries", chartTitle: "Monthly Cash Flow", legendIn: "Inflows", legendOut: "Outflows", highlights: "Strategic Highlights", download: "Download Report (CSV)", presLabel: "Executive Presentation", close: "Close", nav: "Navigation",
+                slides: {
+                    title1: "Governance Report", subtitle1: "Results 2025", footer1: "Executive Board • Coronel José Dias, PI",
+                    title2: "Consolidated Numbers", subtitle2: "Integrated Management Report (Jan-Sep)", efficiency: "97% Efficiency: Almost all resources were converted into direct social and educational infrastructure.",
+                    title3: "Monthly Cash Flow",
+                    // New Satellite Slide
+                    title4: "Strategic Location", desc4: "Serra da Capivara: A world heritage site in the heart of Piauí. Connecting the Sertão to the World in Coronel José Dias.", label4_1: "Macro View: Brazil", label4_2: "Local View: National Park",
+                    title5: "The Land", desc5: "Deep cleaning and soil preparation for the headquarters and expansions.", inv5: "Cleaning Investment (Feb/Mar)",
+                    title6: "JK Building Renovation", desc6: "External and internal painting completed (Jan-Apr). Vital heritage revitalized to host projects and the community.",
+                    title7: "Climatization and Comfort", highlight7_1: "9000 BTUs AC Units Installed", highlight7_2: "Final Hydraulic Repairs",
+                    title8: "Digital Infrastructure", desc8: "Upgrade completed in July and August. Laboratory 100% equipped for the Creating Future Project.", inv8: "IT Investment",
+                    title9: "Food Security", desc9: "Emergency food distribution carried out in February for the families served.", inv9: "R$ 4,000.00 Direct Donation",
+                    title10: "Creating Future Project", subtitle10: "Inclusion in the Sertão", desc10: "Intensive training for youth and adults, linking education to the development of Piauí.",
+                    title11: "PRACTICE Project", desc11: "Strategic alliance with GIZ (Germany) and ukb Hospital Berlin to safeguard lives.", check11_1: "Childhood Trauma Prevention", check11_2: "Emergency Training",
+                    title12: "PRACTICE: Impact", desc12: "Comprehensive preventive education for children and parents on traffic safety and home traumas.", label12: "Students Served",
+                    title13: "PRACTICE: Health", desc13: "Technical training in urgency and emergency for health teams in São Raimundo Nonato and region.", label13: "Professionals Trained",
+                    title14: "Logistics Management",
+                    title15: "Compliance and Management", check15_1: "Accounting (R&R) Up to Date", check15_2: "Legal Fees and Notary Fees", check15_3: "100% Online Connectivity", card15: "100% Regular Management",
+                    title16: "Operational Excellence", desc16: "Network maintenance for Hostel JK, Environmental Center and Bakery.", support: "Continuous Support", supportDesc: "Uninterrupted operation.", remote: "Remote Management", remoteDesc: "Real-time monitoring.",
+                    title17: "The Impact is Visible", quote17: "Transforming every invested real into a future for the Piauí Sertão.", footer17: "Responsibility • Transparency • Efficiency"
+                }
+            },
+            de: {
+                appTitle: "Governance-Dashboard", appSubtitle: "Integrierter Bericht 2025", btnStart: "Präsentation Starten", audited: "GEPRÜFT", kpiIn: "Einnahmen Gesamt", kpiOut: "Ausgaben Gesamt", kpiBalance: "Kassenbestand", kpiSocial: "Soziale Wirkung", kpiSocialVal: "+700 Begünstigte", chartTitle: "Monatlicher Cashflow", legendIn: "Einnahmen", legendOut: "Ausgaben", highlights: "Strategische Highlights", download: "Bericht Herunterladen (CSV)", presLabel: "Vorstandspräsentation", close: "Beenden", nav: "Navigation",
+                slides: {
+                    title1: "Governance-Bericht", subtitle1: "Ergebnisse 2025", footer1: "Vorstand • Coronel José Dias, PI",
+                    title2: "Konsolidierte Zahlen", subtitle2: "Integrierter Managementbericht (Jan-Sep)", efficiency: "97% Effizienz: Fast alle Mittel wurden direkt in soziale und pädagogische Infrastruktur umgewandelt.",
+                    title3: "Monatlicher Cashflow",
+                    // New Satellite Slide
+                    title4: "Strategische Lage", desc4: "Serra da Capivara: Ein Weltkulturerbe im Herzen von Piauí. Wir verbinden den Sertão mit der Welt in Coronel José Dias.", label4_1: "Makroansicht: Brasilien", label4_2: "Lokale Ansicht: Nationalpark",
+                    title5: "Das Grundstück", desc5: "Tiefenreinigung und Bodenvorbereitung für den Hauptsitz und Erweiterungen.", inv5: "Reinigungsinvestition (Feb/März)",
+                    title6: "JK-Gebäude Renovierung", desc6: "Außen- und Innenanstrich abgeschlossen (Jan-Apr). Vitales Erbe revitalisiert für Projekte und die Gemeinschaft.",
+                    title7: "Klimatisierung und Komfort", highlight7_1: "9000 BTUs Klimageräte Installiert", highlight7_2: "Letzte Hydraulische Reparaturen",
+                    title8: "Digitale Infrastruktur", desc8: "Upgrade im Juli und August abgeschlossen. Labor zu 100 % für das Projekt 'Zukunft Gestalten' ausgestattet.", inv8: "IT-Investition",
+                    title9: "Ernährungssicherheit", desc9: "Notfall-Lebensmittelverteilung im Februar für die betreuten Familien durchgeführt.", inv9: "R$ 4.000,00 Direktspende",
+                    title10: "Projekt Zukunft Gestalten", subtitle10: "Inklusion im Sertão", desc10: "Intensive Schulung für Jugendliche und Erwachsene, die Bildung mit der Entwicklung von Piauí verbindet.",
+                    title11: "PRACTICE Projekt", desc11: "Strategische Allianz mit der GIZ (Deutschland) und dem ukb Krankenhaus Berlin zum Schutz von Leben.", check11_1: "Prävention von Kindertrauma", check11_2: "Notfallschulungen",
+                    title12: "PRACTICE: Wirkung", desc12: "Umfassende präventive Aufklärung für Kinder und Eltern über Verkehrssicherheit und häusliche Traumen.", label12: "Betreute Schüler",
+                    title13: "PRACTICE: Gesundheit", desc13: "Technische Schulung in Dringlichkeit und Notfall für Gesundheitsteams in São Raimundo Nonato und Region.", label13: "Geschulte Fachkräfte",
+                    title14: "Logistikmanagement",
+                    title15: "Compliance und Management", check15_1: "Buchhaltung (R&R) auf aktuellem Stand", check15_2: "Rechts- und Notargebühren", check15_3: "100% Online-Konnektivität", card15: "100% Ordnungsgemäße Verwaltung",
+                    title16: "Operative Exzellenz", desc16: "Netzwerkwartung für Hostel JK, Umweltzentrum und Bäckerei.", support: "Dauerhafter Support", supportDesc: "Unterbrechungsfreier Betrieb.", remote: "Fernverwaltung", remoteDesc: "Echtzeit-Überwachung.",
+                    title17: "Die Wirkung ist Sichtbar", quote17: "Jeden investierten Real in eine Zukunft für den Sertão von Piauí verwandeln.", footer17: "Verantwortung • Transparenz • Effizienz"
+                }
+            }
+        };
+
+        function setLang(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            
+            document.querySelectorAll('.lang-btn, .pres-lang-btn').forEach(btn => {
+                const btnId = btn.getAttribute('id');
+                const btnData = btn.dataset.l;
+                btn.classList.toggle('active', btnId === `lang-${lang}` || btnData === lang);
+            });
+            
+            document.querySelector('.t-app-title').innerText = t.appTitle;
+            document.querySelector('.t-app-subtitle').innerText = t.appSubtitle;
+            document.querySelector('.t-btn-start').innerText = t.btnStart;
+            document.querySelectorAll('.t-tag-audited').forEach(el => el.innerText = t.audited);
+            document.querySelector('.t-kpi-in').innerText = t.kpiIn;
+            document.querySelector('.t-kpi-out').innerText = t.kpiOut;
+            document.querySelector('.t-kpi-balance').innerText = t.kpiBalance;
+            document.querySelector('.t-kpi-social').innerText = t.kpiSocial;
+            document.querySelector('.t-kpi-social-val').innerText = t.kpiSocialVal;
+            document.querySelector('.t-chart-title').innerText = t.chartTitle;
+            document.querySelector('.t-legend-in').innerText = t.legendIn;
+            document.querySelector('.t-legend-out').innerText = t.legendOut;
+            document.querySelector('.t-highlights-title').innerText = t.highlights;
+            document.querySelector('.t-btn-download').innerText = t.download;
+            document.querySelector('.t-pres-label').innerText = t.presLabel;
+            document.querySelector('.t-btn-close').innerText = t.close;
+            document.querySelector('.t-nav').innerText = t.nav;
+
+            initTimeline();
+            if (document.getElementById('presentation-view').classList.contains('active-view')) { renderSlide(); }
         }
 
-        const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<ProBrasilNursery />);
+        // --- DADOS ---
+        const dataConsolidada = [
+            { mes: 'Jan', entradas: 6156.82, saidas: 5000.00, destaque: {pt: 'Reforma JK', en: 'JK Renovation', de: 'JK Renovierung'}, info: 'Início das pinturas' },
+            { mes: 'Fev', entradas: 41189.74, saidas: 43969.48, destaque: {pt: 'Ação Social', en: 'Social Action', de: 'Soziale Aktion'}, info: 'Cestas Básicas' },
+            { mes: 'Mar', entradas: 53531.08, saidas: 56981.04, destaque: {pt: 'PRACTICE Março', en: 'PRACTICE March', de: 'PRACTICE März'}, info: 'Início do Programa' },
+            { mes: 'Abr', entradas: 27290.53, saidas: 25252.15, destaque: {pt: 'Manutenção', en: 'Maintenance', de: 'Wartung'}, info: 'Centro Ambiental' },
+            { mes: 'Mai', entradas: 25653.60, saidas: 31184.00, destaque: {pt: 'Criando Futuro', en: 'Creating Future', de: 'Zukunft Gestalten'}, info: 'Capacitação' },
+            { mes: 'Jun', entradas: 56991.34, saidas: 31810.50, destaque: {pt: 'PRACTICE Junho', en: 'PRACTICE June', de: 'PRACTICE Juni'}, info: 'Visitas Técnicas' },
+            { mes: 'Jul', entradas: 86701.22, saidas: 30523.11, destaque: {pt: 'Inclusão Digital', en: 'Digital Inclusion', de: 'Digitale Inklusion'}, info: 'Upgrade TI' },
+            { mes: 'Ago', entradas: 53800.91, saidas: 80611.38, destaque: {pt: 'Infraestrutura', en: 'Infrastructure', de: 'Infrastruktur'}, info: 'Finalização Elétrica' },
+            { mes: 'Set', entradas: 6144.50, saidas: 41765.28, destaque: {pt: 'Governança', en: 'Governance', de: 'Governance'}, info: 'Gestão Ativa' },
+        ];
+
+        function getImg(src, label) {
+            return `<div class="img-overlay h-full w-full relative">
+                <img src="./${src}" class="img-placeholder" onerror="this.parentElement.classList.add('missing-img')">
+                <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-bold text-center p-4" style="z-index:-1">RECURSO: ${src}</div>
+                <div class="img-caption">${label}</div>
+            </div>`;
+        }
+
+        function getSlideContent(idx) {
+            const t = translations[currentLang].slides;
+            const content = [
+                // 1. Capa
+                `<div class="flex flex-col items-center justify-center h-full text-center space-y-8 animate-in fade-in zoom-in duration-700">
+                    <div class="p-10 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-sm"><img src="https://img1.wsimg.com/isteam/ip/c12329ff-4adf-463c-918b-b23fd6da22ab/logo-probrasil-nordeste.png" class="h-48 object-contain"></div>
+                    <div><h1 class="text-6xl font-black text-slate-900 tracking-tight mb-4 uppercase leading-none">${t.title1}</h1><div class="inline-block bg-blue-600 text-white text-xl font-bold px-6 py-2 rounded-full tracking-widest uppercase mt-4">${t.subtitle1}</div></div>
+                    <p class="text-slate-400 font-bold uppercase tracking-widest mt-8">${t.footer1}</p>
+                </div>`,
+                // 2. Visão Geral
+                `<div class="flex flex-col justify-center h-full max-w-5xl mx-auto w-full">
+                    <h2 class="text-4xl font-bold text-slate-800 mb-2 text-center uppercase tracking-tight">${t.title2}</h2>
+                    <p class="text-slate-500 mb-12 text-xl text-center">${t.subtitle2}</p>
+                    <div class="grid grid-cols-3 gap-8">
+                        <div class="card-stat border-l-8 border-emerald-500"><p class="text-emerald-600 font-bold uppercase text-xs mb-2">PT: Entradas</p><p class="text-4xl font-black text-emerald-700 tracking-tight">R$ 357.459,74</p></div>
+                        <div class="card-stat border-l-8 border-blue-500"><p class="text-blue-600 font-bold uppercase text-xs mb-2">PT: Saídas</p><p class="text-4xl font-black text-blue-700 tracking-tight">R$ 347.096,94</p></div>
+                        <div class="card-stat border-l-8 border-slate-800 bg-slate-900 text-white"><p class="text-slate-400 font-bold uppercase text-xs mb-2">PT: Saldo</p><p class="text-4xl font-black text-white tracking-tight">+ R$ 10.362,80</p></div>
+                    </div>
+                    <div class="mt-12 p-8 bg-blue-50 rounded-2xl border border-blue-100 flex items-center space-x-6 shadow-sm"><i data-lucide="info" class="text-blue-600 w-12 h-12"></i><p class="text-blue-900 font-medium text-xl leading-relaxed">${t.efficiency}</p></div>
+                </div>`,
+                // 3. Gráfico
+                `<div class="flex flex-col h-full w-full max-w-6xl mx-auto"><h2 class="text-4xl font-black text-slate-800 mb-8 text-center uppercase tracking-tight">${translations[currentLang].chartTitle}</h2><div class="flex-grow relative w-full"><canvas id="slideChart"></canvas></div></div>`,
+                
+                // 4. SATÉLITE / LOCALIZAÇÃO
+                `<div class="flex flex-col h-full justify-center max-w-7xl mx-auto w-full">
+                    <div class="mb-8 text-center">
+                        <h2 class="text-5xl font-black text-slate-900 leading-tight uppercase mb-4">${t.title4}</h2>
+                        <p class="text-xl text-slate-600 max-w-3xl mx-auto font-medium">${t.desc4}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 h-[500px]">
+                        <div class="flex flex-col h-full">
+                            ${getImg('imagem1.png', t.label4_1)}
+                        </div>
+                        <div class="flex flex-col h-full">
+                            ${getImg('imagem2.png', t.label4_2)}
+                        </div>
+                    </div>
+                </div>`,
+
+                // 5. O Terreno
+                `<div class="grid grid-cols-2 gap-12 h-full items-center">
+                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight">${t.title5}</h2><p class="text-xl text-slate-600 leading-relaxed italic font-medium">"${t.desc5}"</p><div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 w-fit"><p class="text-3xl font-black text-slate-800">R$ 4.000,00+</p><p class="text-sm text-slate-400 font-bold uppercase">${t.inv5}</p></div></div>
+                    <div class="grid grid-rows-2 gap-6 h-full max-h-[600px]">${getImg('terreno_m.jpeg', 'BEFORE')}${getImg('terreno_l.jpeg', 'AFTER')}</div>
+                </div>`,
+                // 6. Prédio JK Fachada
+                `<div class="grid grid-cols-12 gap-8 h-full items-center">
+                    <div class="col-span-6 h-[550px]">${getImg('fachada.jpg', 'FACADE')}</div>
+                    <div class="col-span-6 space-y-8 pl-4"><h2 class="text-4xl font-black text-slate-800 tracking-tight uppercase leading-none">${t.title6}</h2><p class="text-lg text-slate-600 leading-relaxed font-medium">${t.desc6}</p></div>
+                </div>`,
+                // 7. Prédio JK Interno
+                `<div class="flex flex-col h-full justify-center"><h2 class="text-4xl font-black text-slate-800 mb-8 text-center uppercase tracking-tight">${t.title7}</h2><div class="grid grid-cols-3 gap-8 h-[400px]">
+                        ${getImg('novos_aparelhos.jpeg', 'AC UNITS')}${getImg('eletrica.jpeg', 'ELECTRICAL')}
+                        <div class="card-stat flex flex-col justify-center space-y-6 bg-slate-50 border-none shadow-sm"><ul class="space-y-4 font-semibold text-slate-600"><li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>${t.highlight7_1}</span></li><li class="flex items-start space-x-3"><i data-lucide="check" class="text-emerald-500 mt-1"></i><span>${t.highlight7_2}</span></li></ul></div>
+                    </div></div>`,
+                // 8. Centro Informática
+                `<div class="grid grid-cols-2 gap-12 h-full items-center">
+                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase leading-none">${t.title8}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc8}</p><div class="card-stat bg-blue-600 text-white p-10 border-none shadow-xl"><p class="text-blue-200 font-bold uppercase text-sm mb-2 tracking-widest">${t.inv8}</p><p class="text-5xl font-black tracking-tighter">R$ 38.000,00+</p></div></div>
+                    ${getImg('centro.jpg', 'IT LAB')}
+                </div>`,
+                // 9. Segurança Alimentar
+                `<div class="flex flex-col h-full justify-center space-y-8">
+                    <div class="h-[300px] w-full">${getImg('causa.jpeg', 'SOCIAL')}</div>
+                    <div class="space-y-6 text-center max-w-4xl mx-auto">
+                        <i data-lucide="heart" class="text-rose-500 w-16 h-16 mx-auto"></i>
+                        <h2 class="text-4xl font-black text-slate-900 leading-tight uppercase">${t.title9}</h2>
+                        <p class="text-xl text-slate-600 font-medium">${t.desc9}</p>
+                        <p class="text-3xl font-black text-rose-600 tracking-tighter uppercase uppercase">${t.inv9}</p>
+                    </div>
+                </div>`,
+                // 10. Projeto Criando Futuro
+                `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight leading-none">${t.title10}</h2><div class="grid grid-cols-12 gap-8 h-[450px]">
+                        <div class="col-span-8 h-full">${getImg('aula.jpeg', 'AULA DIGITAL')}</div>
+                        <div class="col-span-4 flex flex-col justify-center space-y-6"><h3 class="text-2xl font-bold text-blue-700 italic">"${t.subtitle10}"</h3><p class="text-lg text-slate-600 font-medium leading-relaxed">${t.desc10}</p></div>
+                    </div></div>`,
+                // 11. PRACTICE VISÃO GERAL
+                `<div class="grid grid-cols-2 gap-12 h-full items-center">
+                    <div class="space-y-8"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter">${t.title11}</h2><p class="text-xl text-slate-600 leading-relaxed font-medium">${t.desc11}</p>
+                        <div class="grid grid-cols-2 gap-4"><div class="p-6 bg-white border-2 border-emerald-100 rounded-3xl shadow-sm"><p class="text-emerald-600 font-black text-3xl tracking-tighter">+500</p><p class="text-xs font-bold text-slate-400 uppercase">PT: Alunos</p></div><div class="p-6 bg-white border-2 border-blue-100 rounded-3xl shadow-sm"><p class="text-blue-600 font-black text-3xl tracking-tighter">228</p><p class="text-xs font-bold text-slate-400 uppercase">PT: Saúde</p></div></div></div>
+                    <div class="grid grid-cols-2 grid-rows-2 gap-4 h-[500px]">${getImg('1.jpeg', 'PRACTICE 1')}${getImg('2.jpeg', 'PRACTICE 2')}${getImg('3.jpeg', 'PRACTICE 3')}${getImg('4.jpeg', 'PRACTICE 4')}</div>
+                </div>`,
+                // 12. PRACTICE IMPACTO PREVENÇÃO
+                `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><div class="grid grid-cols-12 gap-8 h-[500px] items-center">
+                        <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('7.jpeg', 'PRACTICE 7')}${getImg('8.jpeg', 'PRACTICE 8')}</div>
+                        <div class="col-span-5 space-y-6 text-right"><i data-lucide="users" class="w-16 h-16 text-emerald-600 ml-auto"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title12}</h2><p class="text-xl text-slate-600 font-medium">${t.desc12}</p></div>
+                    </div></div>`,
+                // 13. PRACTICE IMPACTO SAÚDE
+                `<div class="flex flex-col h-full justify-center max-w-6xl mx-auto w-full"><div class="grid grid-cols-12 gap-8 h-[500px] items-center">
+                        <div class="col-span-5 space-y-6"><i data-lucide="activity" class="w-16 h-16 text-blue-600"></i><h2 class="text-4xl font-black text-slate-900 uppercase leading-none">${t.title13}</h2><p class="text-xl text-slate-600 font-medium">${t.desc13}</p></div>
+                        <div class="col-span-7 h-full grid grid-cols-2 gap-4">${getImg('5.jpeg', 'PRACTICE 5')}${getImg('6.jpeg', 'PRACTICE 6')}</div>
+                    </div></div>`,
+
+                // 14. Frota
+                `<div class="flex flex-col h-full justify-center"><h2 class="text-4xl font-black text-slate-800 mb-10 text-center uppercase tracking-tight leading-none">${t.title14}</h2><div class="grid grid-cols-3 gap-8">
+                        <div class="card-stat">${getImg('toro.jpg', 'TORO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Toro</h3></div>
+                        <div class="card-stat">${getImg('doblo.jpg', 'DOBLO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Fiat Doblo</h3></div>
+                        <div class="card-stat">${getImg('moto.jpg', 'MOTO')}<h3 class="font-bold text-slate-800 mt-4 text-xl">Moto Brós</h3></div>
+                    </div></div>`,
+                // 15. Conformidade
+                `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-6xl mx-auto"><div class="space-y-6"><h2 class="text-5xl font-black text-slate-900 leading-tight uppercase tracking-tighter leading-none">${t.title15}</h2><ul class="space-y-6 font-bold text-slate-600 text-xl"><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_1}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_2}</span></li><li class="flex items-center space-x-4"><i data-lucide="check-circle" class="text-emerald-500"></i><span>${t.check15_3}</span></li></ul></div>
+                    <div class="h-[400px] rounded-[3rem] bg-indigo-50 flex flex-col items-center justify-center p-12 text-center border-2 border-indigo-100 shadow-inner"><i data-lucide="file-check" class="w-24 h-24 text-indigo-300 mb-6"></i><h3 class="text-3xl font-black text-indigo-800 uppercase tracking-tighter">${t.card15}</h3></div>
+                </div>`,
+
+                // 16. Conectividade 
+                `<div class="grid grid-cols-2 gap-12 h-full items-center max-w-5xl mx-auto"><div class="card-stat bg-slate-900 text-white p-10 border-none shadow-2xl"><i data-lucide="wifi" class="w-12 h-12 text-blue-400 mb-6"></i><h3 class="text-3xl font-bold mb-4 tracking-tighter">${t.title16}</h3><p class="text-slate-400">${t.desc16}</p></div>
+                    <div class="space-y-6 flex flex-col justify-center">
+                        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm"><h4 class="font-bold text-slate-800 mb-2">${t.support}</h4><p class="text-slate-500 text-sm">${t.supportDesc}</p></div>
+                        <div class="p-6 bg-white rounded-2xl border border-slate-100 shadow-sm"><h4 class="font-bold text-slate-800 mb-2">${t.remote}</h4><p class="text-slate-500 text-sm">${t.remoteDesc}</p></div>
+                    </div></div>`,
+                // 17. Conclusão
+                `<div class="flex flex-col items-center justify-center h-full text-center space-y-10 max-w-4xl mx-auto animate-in fade-in duration-1000"><h2 class="text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">${t.title17}</h2><p class="text-3xl text-blue-600 font-bold max-w-2xl italic leading-relaxed">"${t.quote17}"</p>
+                    <div class="p-10 bg-slate-900 rounded-[3rem] text-white w-full shadow-2xl"><h3 class="text-2xl font-bold mb-2">ProBrasil Nordeste 2025</h3><p class="text-slate-400 font-bold uppercase tracking-widest text-sm">${t.footer17}</p></div>
+                </div>`
+            ];
+            return content[idx];
+        }
+
+        // --- LÓGICA ---
+        function toggleView(view) {
+            document.getElementById('dashboard-view').classList.toggle('hidden', view === 'presentation');
+            document.getElementById('presentation-view').classList.toggle('hidden', view === 'dashboard');
+            if (view === 'presentation') {
+                document.getElementById('presentation-view').classList.add('active-view');
+                currentSlide = 0;
+                renderSlide();
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.getElementById('presentation-view').classList.remove('active-view');
+                if (document.fullscreenElement) document.exitFullscreen();
+            }
+        }
+
+        function renderSlide() {
+            const container = document.getElementById('slide-container');
+            container.innerHTML = getSlideContent(currentSlide);
+            const slideTitle = translations[currentLang].slides[`title${currentSlide+1}`] || "Slide";
+            document.getElementById('slide-number-label').innerText = `${slideTitle} (${currentSlide + 1}/${totalSlides})`;
+            
+            const progress = ((currentSlide) / (totalSlides - 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            lucide.createIcons();
+            if (currentSlide === 2) { setTimeout(initSlideChart, 100); }
+        }
+
+        function nextSlide() { if (currentSlide < totalSlides - 1) { currentSlide++; renderSlide(); } }
+        function prevSlide() { if (currentSlide > 0) { currentSlide--; renderSlide(); } }
+
+        function downloadCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Month,Inflow,Outflow,Highlight,Info\n";
+            dataConsolidada.forEach(row => {
+                const highlight = row.destaque[currentLang];
+                csvContent += `${row.mes},${row.entradas},${row.saidas},"${highlight}","${row.info}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `ProBrasil_Report_2025_${currentLang}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function initMainChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dataConsolidada.map(d => d.mes),
+                    datasets: [
+                        { label: translations[currentLang].legendIn, data: dataConsolidada.map(d => d.entradas), borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.4 },
+                        { label: translations[currentLang].legendOut, data: dataConsolidada.map(d => d.saidas), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, position: 'top' } } }
+            });
+        }
+
+        function initSlideChart() {
+            const ctx = document.getElementById('slideChart');
+            if(!ctx) return;
+            new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: dataConsolidada.map(d => d.mes),
+                    datasets: [
+                        { label: translations[currentLang].legendIn, data: dataConsolidada.map(d => d.entradas), backgroundColor: '#10b981', borderRadius: 8 },
+                        { label: translations[currentLang].legendOut, data: dataConsolidada.map(d => d.saidas), backgroundColor: '#3b82f6', borderRadius: 8 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        function initTimeline() {
+            const list = document.getElementById('timeline-list');
+            list.innerHTML = dataConsolidada.slice().reverse().map(item => `
+                <div class="flex space-x-4 p-3 hover:bg-slate-50 rounded-xl transition-colors">
+                    <div class="w-12 h-12 bg-white text-slate-800 rounded-xl flex items-center justify-center font-black text-xs border border-slate-100 shadow-sm flex-shrink-0">${item.mes}</div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-800">${item.destaque[currentLang]}</p>
+                        <p class="text-xs text-slate-500 line-clamp-1">${item.info}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('presentation-view').classList.contains('hidden')) return;
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'Escape') toggleView('dashboard');
+        });
+
+        window.onload = () => {
+            lucide.createIcons();
+            initMainChart();
+            initTimeline();
+            setLang('pt');
+        };
     </script>
 </body>
 </html>
+
+
+
+
